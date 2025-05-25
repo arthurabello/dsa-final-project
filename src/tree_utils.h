@@ -5,8 +5,7 @@
 #include <vector>
 
 namespace TREE {
-
-        /**
+    /**
      * @brief Here we present the creation of a more general BST
      * 
      * The BST will have substructs: The RBT and AVL tree
@@ -40,22 +39,22 @@ namespace TREE {
 
     BinaryTree* createTree();
 
-        /**
+    /**
      * @brief Creates a new binary search tree.
      *
      * @returns the tree
      */
 
     Node* createNode(std::string word,std::vector<int>documentIds,int color = 0);
-        /**
-    *  @brief Creates a new node of a tree.
+    /**
+    * @brief Creates a new node of a tree.
+    *
+    * @param word: word to be put in the node.
+    * @param documentIds: ID of the document in which the word appears.
+    * @param color: color of the Node. 0 for black and 1 for red.
 
-    *  @param word: word to be put in the node.
-    *  @param documentIds: ID of the document in which the word appears.
-    *  @param color: color of the Node. 0 for black and 1 for red.
-
-    *  @returns Node*: Node with the passed word and documentIds
-        */
+    * @returns Node*: Node with the passed word and documentIds
+    */
     
     SearchResult search(BinaryTree* binary_tree, const std::string& word);
 
@@ -83,12 +82,19 @@ namespace TREE {
      void deleteBinaryTree(BinaryTree* binary_tree);
      /**
      * @brief Delete the passed binary tree    
-
+     *
      * @param binary_tree: BinaryTree you want to delete.  
      */
 
 
-    int calculateHeight(BinaryTree* binary_tree); //TO BE IMPLEMENTED
+    int calculateHeight(BinaryTree* binary_tree);
+    /**
+     * @brief Calculates the height of a binary tree.
+     * 
+     * @param binary_tree: BinaryTree you wish to know the height.BinaryTree.
+     * @return height of binary_tree.
+     * 
+     */
 
 }
 
