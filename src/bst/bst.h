@@ -3,49 +3,26 @@
 
 #include <iostream>
 #include <vector>
+#include "tree_utils.h"
+//here we will define necessary structures and functions for the classical binary search tree (BST)
 
-// Here we will define necessary structures and functions for the binary search tree (BST)
+namespace TREE::BST {
 
-namespace BST {
-    
-    struct Node {
-    std::string word;
-    std::vector<int> documentIds;
-    Node* parent;
-    Node* left;
-    Node* right;
-    int height;    // usado na AVL
-    };
+    InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId);
+    /**
+    * @brief Inserts a word into the binary search tree.
+    *
+    * If the word already exists in the tree, the document ID is added
+    * to its list (if not already present). If the word doesn't exist, a new node is created.
+    * It also collects statistics like number of comparisons and execution time.
+    *
+    * @param binary_tree Pointer to the BinaryTree where the word will be inserted.
+    * @param word The word to insert or update in the tree.
+    * @param documentId The ID of the document where the word appears.
+    *
+    * @return InsertResult Struct containing the number of comparisons and the insertion time.
+    */
 
-    struct BinaryTree {
-        Node* root;
-    };
-
-    struct InsertResult {
-        int numComparisons;
-        double executionTime;
-    };
-    
-    struct SearchResult {
-        int found;
-        std::vector<int> documentIds;
-        double executionTime;
-        int numComparisons;
-    };
-
-    BinaryTree* create();
-
-        /**
-     * @brief Inserts a word into the binary search tree.
-     * 
-     * Initializes the binary search tree with a nullptr root.
-     */
-   
-    InsertResult insert(BinaryTree* tree, const std::string& word, int documentId);
-    
-    SearchResult search(BinaryTree* tree, const std::string& word);
-    
-    void deleteBinaryTree(BinaryTree* tree);
 }
 
 #endif
