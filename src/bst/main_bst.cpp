@@ -6,6 +6,8 @@
 #include "bst.cpp"
 #include "bst.h"
 
+using namespace TREE::BST; // is this right?l
+
 int main(int argc, char *argv[]){  //gabrielle m
 
     // Verifying if there is correctly 4 arguments
@@ -38,10 +40,13 @@ int main(int argc, char *argv[]){  //gabrielle m
     // Printing infos
     std::cout << "Command: " << command << ", Number of documents: " << n_docs_int << ", Directory: " << std::endl;
     
+
     // TODO: main logic
     // Reading files according to n_docs and dir
+
     // Build inverted indices
 
+    
     // Running search in stats or search only
     if(command == "stats"){
         // TODO: show statistics 
