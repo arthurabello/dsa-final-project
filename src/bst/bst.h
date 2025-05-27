@@ -8,7 +8,6 @@
 
 namespace TREE::BST {
 
-    InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId);
     /**
     * @brief Inserts a word into the binary search tree.
     *
@@ -22,6 +21,7 @@ namespace TREE::BST {
     *
     * @return InsertResult Struct containing the number of comparisons and the insertion time.
     */
+    InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId);
 
 }
 

@@ -1,18 +1,16 @@
-// main_bst.cpp
+// main_avl.cpp
 #include <iostream> // for std::cout, std::cerr
 #include <string>   // for std::string, std::stoi
 
 #include "data.cpp"
-#include "bst.cpp"
-#include "bst.h"
-
-using namespace TREE::BST; // is this right?l
+#include "avl.cpp"
+#include "avl.h"
 
 int main(int argc, char *argv[]){  //gabrielle m
 
     // Verifying if there is correctly 4 arguments
     if(argc!=4){ 
-        std::cerr << "Using: ./bst <search|stats> <n_docs> <diretorio>" << std::endl;
+        std::cerr << "Using: ./avl <search|stats> <n_docs> <diretorio>" << std::endl;
         return 1; //error code
     } 
 
@@ -40,20 +38,17 @@ int main(int argc, char *argv[]){  //gabrielle m
     // Printing infos
     std::cout << "Command: " << command << ", Number of documents: " << n_docs_int << ", Directory: " << std::endl;
     
-
     // TODO: main logic
     // Reading files according to n_docs and dir
-
     // Build inverted indices
 
-    
     // Running search in stats or search only
     if(command == "stats"){
         // TODO: show statistics 
     } else if (command == "search"){
         // TODO: get it in loop of word search
         // read choosen word
-        // search in BST
+        // search in avl
         // show results
     } else{
         std::cerr << "Error: Unkowned command: " << command << ". Use 'search' or 'stats'." << std::endl;
