@@ -1,198 +1,213 @@
-#include <iostream>
-#include <bst.h>
-#include <cassert>
+#include "bst.h"
+#include "../../Unity/src/unity.h"
 
-namespace TREE::BST{
+void setUp(void) {}
 
-void test_one_insertion() {
-    BinaryTree* tree = createTree();
-    InsertResult result = insert(tree, "arvore", 1);
+void tearDown(void) {}
 
-    assert(tree->root != nullptr);
-    assert(tree->root->word == "arvore");
-    assert(tree->root->documentIds.size() == 1);
-    assert(tree->root->documentIds[0] == 1);
-    assert(result.numComparisons == 0);
+namespace TREE::BST {
+    void test_one_insertion() {
+        BinaryTree* tree = createTree();
+        InsertResult result = insert(tree, "arvore", 1);
+    
+        TEST_ASSERT_NOT_NULL(tree->root);
+        TEST_ASSERT_EQUAL_STRING((const char*) "arvore", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(0, result.numComparisons);
+    }
+    
+    void test_left_tree_insertion() {
+        BinaryTree* tree = createTree();
+    
+        InsertResult r1 = insert(tree, "zebra", 1);
+        InsertResult r2 = insert(tree, "yak", 2);
+        InsertResult r3 = insert(tree, "xexeu", 3);
+    
+        TEST_ASSERT_EQUAL_STRING("zebra", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("yak", tree->root->left->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("xexeu", tree->root->left->left->word.c_str());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(2, tree->root->left->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(3, tree->root->left->left->documentIds[0]);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+        TEST_ASSERT_EQUAL_INT(2, r3.numComparisons);
+    }
+    
+    void test_right_tree_insertion() {
+        BinaryTree* tree = createTree();
+    
+        InsertResult r1 = insert(tree, "arara", 1);
+        InsertResult r2 = insert(tree, "baleia", 2);
+        InsertResult r3 = insert(tree, "cachorro", 3);
+    
+        TEST_ASSERT_EQUAL_STRING("arara", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("baleia", tree->root->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("cachorro", tree->root->right->right->word.c_str());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(2, tree->root->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(3, tree->root->right->right->documentIds[0]);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+        TEST_ASSERT_EQUAL_INT(2, r3.numComparisons);
+    }
+    
+    void test_generic_tree_insertion() {
+        BinaryTree* tree = createTree();
+    
+        InsertResult r1 = insert(tree, "macaco", 1);
+        InsertResult r2 = insert(tree, "girafa", 2);
+        InsertResult r3 = insert(tree, "tigre", 3);
+        InsertResult r4 = insert(tree, "jabuti", 4);
+        InsertResult r5 = insert(tree, "panda", 5);
+    
+        TEST_ASSERT_EQUAL_STRING("macaco", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("girafa", tree->root->left->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("jabuti", tree->root->left->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("tigre", tree->root->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("panda", tree->root->right->left->word.c_str());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(2, tree->root->left->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(4, tree->root->left->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(3, tree->root->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(5, tree->root->right->left->documentIds[0]);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r3.numComparisons);
+        TEST_ASSERT_EQUAL_INT(2, r4.numComparisons);
+        TEST_ASSERT_EQUAL_INT(2, r5.numComparisons);
+    }
+    
+    void test_numbers_and_words_tree_insertion() {
+        BinaryTree* tree = createTree();
+    
+        InsertResult r1 = insert(tree, "12345", 1);
+        InsertResult r2 = insert(tree, "sucuri", 2);
+        InsertResult r3 = insert(tree, "23450", 3);
+        InsertResult r4 = insert(tree, "ornitorrinco", 4);
+    
+        TEST_ASSERT_EQUAL_STRING("12345", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("sucuri", tree->root->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("23450", tree->root->right->left->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("ornitorrinco", tree->root->right->left->left->word.c_str());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(2, tree->root->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(3, tree->root->right->left->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(4, tree->root->right->left->left->documentIds[0]);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+        TEST_ASSERT_EQUAL_INT(2, r3.numComparisons);
+        TEST_ASSERT_EQUAL_INT(3, r4.numComparisons);
+    }
+    
+    void test_different_words_same_doc_tree_insertion(){
+        BinaryTree* tree = createTree();
+        InsertResult r1 = insert(tree, "cobra", 1);
+        InsertResult r2 = insert(tree, "jararaca", 1);
+    
+        TEST_ASSERT_EQUAL_STRING("cobra", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("jararaca", tree->root->right->word.c_str());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->documentIds[0]);
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->documentIds.size());
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+    }
+    
+    void test_same_word_same_doc_tree_insertion(){
+        BinaryTree* tree = createTree();
+        InsertResult r1 = insert(tree, "capivara", 1);
+        InsertResult r2 = insert(tree, "capivara", 1);
+    
+        TEST_ASSERT_EQUAL_STRING("capivara", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
+        TEST_ASSERT_NULL(tree->root->left);
+        TEST_ASSERT_NULL(tree->root->right);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+    }
+    
+    void test_same_word_different_docs_insertion(){
+        BinaryTree* tree = createTree();
+        InsertResult r1 = insert(tree, "tucano", 1);
+        InsertResult r2 = insert(tree, "tucano", 2);
+    
+        TEST_ASSERT_EQUAL_STRING("tucano", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(2, tree->root->documentIds[1]);
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
+        TEST_ASSERT_NULL(tree->root->left);
+        TEST_ASSERT_NULL(tree->root->right);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+    }
+    
+    void test_similar_words_insertion() {
+        BinaryTree* tree = createTree();
+    
+        InsertResult r1 = insert(tree, "e", 1);
+        InsertResult r2 = insert(tree, "el", 2);
+        InsertResult r3 = insert(tree, "eli", 3);
+        InsertResult r4 = insert(tree, "elia", 4);
+        InsertResult r5 = insert(tree, "elian", 4);
+        InsertResult r6 = insert(tree, "eliane", 3);
+    
+        TEST_ASSERT_EQUAL_STRING("e", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("el", tree->root->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("eli", tree->root->right->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("elia", tree->root->right->right->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("elian", tree->root->right->right->right->right->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("eliane", tree->root->right->right->right->right->right->word.c_str());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->right->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->right->right->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->right->right->right->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(1, tree->root->right->right->right->right->right->documentIds.size());
+    
+        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(2, tree->root->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(3, tree->root->right->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(4, tree->root->right->right->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(4, tree->root->right->right->right->right->documentIds[0]);
+        TEST_ASSERT_EQUAL_INT(3, tree->root->right->right->right->right->right->documentIds[0]);
+    
+        TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
+        TEST_ASSERT_EQUAL_INT(2, r3.numComparisons);
+        TEST_ASSERT_EQUAL_INT(3, r4.numComparisons);
+        TEST_ASSERT_EQUAL_INT(4, r5.numComparisons);
+        TEST_ASSERT_EQUAL_INT(5, r6.numComparisons);
+    }
 }
 
-void test_left_tree_insertion() {
-    BinaryTree* tree = createTree();
-
-    InsertResult r1 = insert(tree, "zebra", 1);
-    InsertResult r2 = insert(tree, "yak", 2);
-    InsertResult r3 = insert(tree, "xexeu", 3);
-
-    assert(tree->root->word == "zebra");
-    assert(tree->root->left->word == "yak");
-    assert(tree->root->left->left->word == "xexeu");
-
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->left->documentIds[0] == 2);
-    assert(tree->root->left->left->documentIds[0] == 3);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-    assert(r3.numComparisons == 2);
-}
-
-void test_right_tree_insertion() {
-    BinaryTree* tree = createTree();
-
-    InsertResult r1 = insert(tree, "arara", 1);
-    InsertResult r2 = insert(tree, "baleia", 2);
-    InsertResult r3 = insert(tree, "cachorro", 3);
-
-    assert(tree->root->word == "arara");
-    assert(tree->root->right->word == "baleia");
-    assert(tree->root->right->right->word == "cachorro");
-
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->right->documentIds[0] == 2);
-    assert(tree->root->right->right->documentIds[0] == 3);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-    assert(r3.numComparisons == 2);
-}
-
-void test_generic_tree_insertion() {
-    BinaryTree* tree = createTree();
-
-    InsertResult r1 = insert(tree, "macaco", 1);
-    InsertResult r2 = insert(tree, "girafa", 2);
-    InsertResult r3 = insert(tree, "tigre", 3);
-    InsertResult r4 = insert(tree, "jabuti", 4);
-    InsertResult r5 = insert(tree, "panda", 5);
-
-    assert(tree->root->word == "macaco");
-    assert(tree->root->left->word == "girafa");
-    assert(tree->root->left->right->word == "jabuti");
-    assert(tree->root->right->word == "tigre");
-    assert(tree->root->right->left->word == "panda");
-
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->left->documentIds[0] == 2);
-    assert(tree->root->left->right->documentIds[0] == 4);
-    assert(tree->root->right->documentIds[0] == 3);
-    assert(tree->root->right->left->documentIds[0] == 5);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-    assert(r3.numComparisons == 1);
-    assert(r4.numComparisons == 2);
-    assert(r5.numComparisons == 2);
-}
-
-void test_numbers_and_words_tree_insertion() {
-    BinaryTree* tree = createTree();
-
-    InsertResult r1 = insert(tree, "12345", 1);
-    InsertResult r2 = insert(tree, "sucuri", 2);
-    InsertResult r3 = insert(tree, "23450", 3);
-    InsertResult r4 = insert(tree, "ornitorrinco", 4);
-
-    assert(tree->root->word == "12345");
-    assert(tree->root->right->word == "sucuri");
-    assert(tree->root->right->left->word == "23450");
-    assert(tree->root->right->left->left->word == "ornitorrinco");
-
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->right->documentIds[0] == 2);
-    assert(tree->root->right->left->documentIds[0] == 3);
-    assert(tree->root->right->left->left->documentIds[0] == 4);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-    assert(r3.numComparisons == 2);
-    assert(r4.numComparisons == 3);
-}
-
-void test_different_words_same_doc_tree_insertion(){
-    BinaryTree* tree = createTree();
-    InsertResult r1 = insert(tree, "cobra", 1);
-    InsertResult r2 = insert(tree, "jararaca", 1);
-
-    assert(tree->root->word == "cobra");
-    assert(tree->root->right->word == "jararaca");
-
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->right->documentIds[0] == 1);
-
-    assert(tree->root->documentIds.size() == 1);
-    assert(tree->root->right->documentIds.size() == 1);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-}
-
-void test_same_word_same_doc_tree_insertion(){
-    BinaryTree* tree = createTree();
-    InsertResult r1 = insert(tree, "capivara", 1);
-    InsertResult r2 = insert(tree, "capivara", 1);
-
-    assert(tree->root->word == "capivara");
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->documentIds.size() == 1);
-    assert(tree->root->left == nullptr);
-    assert(tree->root->right == nullptr);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-}
-
-void test_same_word_different_docs_insertion(){
-    BinaryTree* tree = createTree();
-    InsertResult r1 = insert(tree, "tucano", 1);
-    InsertResult r2 = insert(tree, "tucano", 2);
-
-    assert(tree->root->word == "tucano");
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->documentIds[1] == 2);
-    assert(tree->root->documentIds.size() == 1);
-    assert(tree->root->left == nullptr);
-    assert(tree->root->right == nullptr);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-}
-
-void test_similar_words_insertion() {
-    BinaryTree* tree = createTree();
-
-    InsertResult r1 = insert(tree, "e", 1);
-    InsertResult r2 = insert(tree, "el", 2);
-    InsertResult r3 = insert(tree, "eli", 3);
-    InsertResult r4 = insert(tree, "elia", 4);
-    InsertResult r5 = insert(tree, "elian", 4);
-    InsertResult r6 = insert(tree, "eliane", 3);
-
-    assert(tree->root->word == "e");
-    assert(tree->root->right->word == "el");
-    assert(tree->root->right->right->word == "eli");
-    assert(tree->root->right->right->right->word == "elia");
-    assert(tree->root->right->right->right->right->word == "elian");
-    assert(tree->root->right->right->right->right->right->word == "eliane");
-
-    assert(tree->root->documentIds.size() == 1);
-    assert(tree->root->right->documentIds.size() == 1);
-    assert(tree->root->right->right->documentIds.size() == 1);
-    assert(tree->root->right->right->right->documentIds.size() == 1);
-    assert(tree->root->right->right->right->right->documentIds.size() == 1);
-    assert(tree->root->right->right->right->right->right->documentIds.size() == 1);
-
-    assert(tree->root->documentIds[0] == 1);
-    assert(tree->root->right->documentIds[0] == 2);
-    assert(tree->root->right->right->documentIds[0] == 3);
-    assert(tree->root->right->right->right->documentIds[0] == 4);
-    assert(tree->root->right->right->right->right->documentIds[0] == 4);
-    assert(tree->root->right->right->right->right->right->documentIds[0] == 3);
-
-    assert(r1.numComparisons == 0);
-    assert(r2.numComparisons == 1);
-    assert(r3.numComparisons == 2);
-    assert(r4.numComparisons == 3);
-    assert(r5.numComparisons == 4);
-    assert(r6.numComparisons == 5);
-}
-
+int main() {
+    UNITY_BEGIN();
+    RUN_TEST(TREE::BST::test_one_insertion);
+    RUN_TEST(TREE::BST::test_left_tree_insertion);
+    RUN_TEST(TREE::BST::test_right_tree_insertion);
+    RUN_TEST(TREE::BST::test_generic_tree_insertion);
+    RUN_TEST(TREE::BST::test_numbers_and_words_tree_insertion);
+    RUN_TEST(TREE::BST::test_different_words_same_doc_tree_insertion);
+    RUN_TEST(TREE::BST::test_same_word_same_doc_tree_insertion);
+    RUN_TEST(TREE::BST::test_same_word_different_docs_insertion);
+    RUN_TEST(TREE::BST::test_similar_words_insertion);
+    return UNITY_END();
 }

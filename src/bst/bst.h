@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include "tree_utils.h"
+#include "../tree_utils.h"
 //here we will define necessary structures and functions for the classical binary search tree (BST)
 
 namespace TREE::BST {
