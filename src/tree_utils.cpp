@@ -3,7 +3,7 @@
 #include <vector>
 #include <chrono>
 #include <cstring>          
-
+#include <algorithm>
 namespace TREE {
 
     Node* createNode(std::string word, std::vector<int>documentIds, int color = 0) { //sets for 0 if it the tree doesnt support red-black, gabriel carneiro
@@ -64,20 +64,49 @@ namespace TREE {
         Node* root = binary_tree->root;
         
         if(root != nullptr){
+            //Creates a copy of the left subtree.
             Node* leftNode = root->left;
             BinaryTree* leftSubTree = createTree();
             leftSubTree->root = leftNode;
-            
+            //Creates a copy of the right subtree
             Node* rightNode = root->right;
             BinaryTree* rightSubTree = createTree();
             rightSubTree->root = rightNode;
-            
+            //Deletes the root of the original tree (supposing it was created using 'new')
             delete root;
-
+            //Recursive call of the function to both subtrees.
             deleteBinaryTree(leftSubTree);
             deleteBinaryTree(rightSubTree);
-
+            //Deletes original structure.
+            delete binary_tree;
+        }
+        else{
+            delete root;
             delete binary_tree;
         }
     }
+
+    int calculateHeight(BinaryTree* binary_tree){
+        //Treats the case in which the root is empty.
+        if(binary_tree->root == nullptr) return 0;
+        
+        //Copies the left subtree.
+        Node* leftNode = binary_tree->root->left;
+        BinaryTree* leftSubTree = createTree();
+        leftSubTree->root = leftNode;
+        
+        //Copies the right subtree.
+        Node* rightNode = binary_tree->root->right;
+        BinaryTree* rightSubTree = createTree();
+        rightSubTree->root = rightNode;
+        
+        //Calculate the height of the tree by a recursive call.
+        int height = 1 + std::max(calculateHeight(rightSubTree),calculateHeight(leftSubTree));
+        
+        delete leftSubTree;
+        delete rightSubTree;
+
+        return height;
+    }
+
 }
