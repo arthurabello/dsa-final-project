@@ -1,16 +1,17 @@
 // main_bst.cpp
 #include <iostream> // for std::cout, std::cerr
 #include <string>   // for std::string, std::stoi
-
-#include "data.cpp"
-#include "bst.cpp"
+#include <vector>
+#include "../data.h"
 #include "bst.h"
 
-using namespace TREE::BST; // is this right?l
+using namespace TREE; // is this right?l
 
 int main(int argc, char *argv[]){  //gabrielle m
 
     // Verifying if there is correctly 4 arguments
+    //Didnt get it, because the number of archives must be the number
+    //of directories that were put in the command line.
     if(argc!=4){ 
         std::cerr << "Using: ./bst <search|stats> <n_docs> <diretorio>" << std::endl;
         return 1; //error code
@@ -45,6 +46,26 @@ int main(int argc, char *argv[]){  //gabrielle m
     // Reading files according to n_docs and dir
 
     // Build inverted indices
+    //gabriel the sheep
+
+    BinaryTree *tree = createTree();
+    std::vector<InsertResult> listOfResults;
+    for(int i = 0; i<n_docs_int;i++){
+        std::string path = "../data/"+ dir_path[3+i] + ".txt" ;
+
+        std::vector<std::string> listOfWords = DATA::tokenize(path);
+
+        for(int i = 0; i<listOfWords.size();i++){
+            InsertResult result = BST::insert(tree,listOfWords[i],int(dit_path))
+
+
+        }
+
+    }
+
+    BinaryTree *tree = createTree();
+
+    for()
 
     
     // Running search in stats or search only
