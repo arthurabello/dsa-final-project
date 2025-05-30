@@ -1,7 +1,5 @@
 #include "bst.h"
-#include "tree_utils.h"
-#include <iostream>
-#include <vector>
+#include "../tree_utils.h"
 #include <chrono>
 #include <cstring>
 

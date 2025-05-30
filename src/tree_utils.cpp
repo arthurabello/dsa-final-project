@@ -1,10 +1,8 @@
 #include "tree_utils.h"
-#include <iostream>
 #include <vector>
 #include <chrono>
 #include <cstring>          
 #include <algorithm>
-namespace TREE {
 
     Node* createNode(std::string word, std::vector<int>documentIds, int color = 0) { //sets for 0 if it the tree doesnt support red-black, gabriel carneiro
         

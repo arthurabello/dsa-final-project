@@ -11,7 +11,7 @@ namespace TREE {
      * The BST will have substructs: The RBT and AVL tree
      */
     
-    struct Node {
+    struct Node { // spaniol: talk about inheritance
         std::string word;
         std::vector<int> documentIds;
         Node* parent;
@@ -45,7 +45,7 @@ namespace TREE {
      * @returns the tree
      */
 
-    Node* createNode(std::string word,std::vector<int>documentIds,int color = 0);
+    Node& createNode(std::string word,std::vector<int>documentIds,int color = 0);
     /**
     * @brief Creates a new node of a tree.
     *
