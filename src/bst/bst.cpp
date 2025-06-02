@@ -61,6 +61,8 @@ namespace TREE::BST {
             } else {
                 parent->right = newNode;
             }
+
+            updateHeightUp(newNode)
         }
 
         auto end_time = std::chrono::high_resolution_clock::now();
