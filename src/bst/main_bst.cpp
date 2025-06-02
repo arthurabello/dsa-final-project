@@ -40,14 +40,8 @@ int main(int argc, char *argv[]){  // gabrielle m
 
     // Printing infos
     std::cout << "Command: " << command << ", Number of documents: " << n_docs_int << ", Directory: " << std::endl;
-    
 
-
-    // TODO: main logic
-    // Reading files according to n_docs and dir
-
-
-    // Initialize bst tree
+    // Initializing bst tree
     TREE::BinaryTree* bst_tree = TREE::createTree();
 
     // Get List of .txt files
@@ -66,7 +60,7 @@ int main(int argc, char *argv[]){  // gabrielle m
         std::cout << "Processing the firsts " << files_to_process_count << " docs." << std::endl;
     }
 
-    // Loop Through Selected Files for Indexing 
+    // Loop through selected files for indexing 
     for (int i = 0; i < files_to_process_count; ++i) {
 
         // Making logic to acess file (path + its name = whole path)
@@ -77,39 +71,100 @@ int main(int argc, char *argv[]){  // gabrielle m
         }
         full_path_to_file += filename_only;
 
-        // Getting the document ID (to do in)
+        // Getting the document id (to put in inverse indexing)
+        int document_id; // default for error is -1
+        try {
+            // Find the position of '.' in "22.txt" for ex
+            size_t dot_position = filename_only.find('.'); // size_t is a positive integer
+            if (dot_position != std::string::npos) { // npos indicates it was not found
+                // Extract the substring before '.', which is "22"
+                std::string id_str = filename_only.substr(0, dot_position);
+                // Convert this string "22" to an integer
+                document_id = std::stoi(id_str);
+            } else {
+                std::cerr << "Warning: Filename '" << filename_only
+                          << "' does not contain a '.' to separate ID from extension. Using default ID -1." << std::endl;
+                document_id = -1;
+            }
+        } catch (const std::invalid_argument& ia) {
+            std::cerr << "Warning: Could not parse numeric ID from filename part '"
+                      << filename_only.substr(0, filename_only.find('.')) << "' for file '" << filename_only << std::endl;
+            document_id = -1; 
+        } catch (const std::out_of_range& oor) {
+            std::cerr << "Warning: Numeric ID from filename part '"
+                      << filename_only.substr(0, filename_only.find('.')) << "' for file '" << filename_only
+                      << "' is out of range for an integer. " << std::endl;
+            document_id = -1;
+        }
 
         // Getting a vector of tokens out of content read
         std::vector<std::string> words_in_doc = DATA::tokenize(full_path_to_file);
-        // maybe here do another check if tokenize works really
+        // Just checking again (tokenize does a check also)
+        if (words_in_doc.empty() && !std::ifstream(full_path_to_file).good()) {
+             std::cerr << "Warning: No words tokenized or error reading file: " << full_path_to_file << std::endl;
+             continue;
+        }
 
         // Iter in each token of current file being analized
         for(const std::string& word : words_in_doc){
-            // call for bst insert
-
+            // Finally insert word in tree
+            if(!word.empty()){
+                TREE::InsertResult result = TREE::BST::insert(bst_tree, word, document_id);
+            }
 
             // stats (later)
         }
-
     }
-
-
 
     // Running search in stats or search only
     if(command == "stats"){
         // TODO: show statistics 
+
     } else if (command == "search"){
-        // TODO: get it in loop of word search
-        // read choosen word
-        // search in BST
-        // show results
+
+        std::string query_from_term;
+        while(true){
+            std::cout << "Insert word to search or 'exit_search' to quit: ";
+            std::cin >> query_from_term; // read word from terminal
+
+            if(query_from_term == "exit_search"){
+                break;
+            }
+            // Normalizing word from query
+            std::string normalised_query = DATA::normalise(query_from_term);
+            if(normalised_query.empty()){
+                std::cout << "Invalid search after normalization: " << normalised_query << " Try again." << std::endl;
+                continue;
+            }
+            std::cout << "Searching for normalized word: '" << normalised_query << "'..." << std::endl;
+
+            // Call the generic search function from tree_utils
+            TREE::SearchResult search_result = TREE::search(bst_tree, normalised_query);
+
+            // Display search results
+            std::cout << "  Search Time: " << search_result.executionTime << " ms" << std::endl;
+            std::cout << "  Comparisons: " << search_result.numComparisons << std::endl;
+            if(search_result.found){
+                std::cout << "Word " << normalised_query << " found in documents IDs: " << std::endl;
+                for(size_t k = 0; k < search_result.documentIds.size(); k++){
+                    std::cout << search_result.documentIds[k] << "; ";
+                }
+                std::cout << std::endl;
+            }else{
+                std::cout << "Word " << normalised_query << " not found." << std::endl;
+            }
+            
+        }
+
     } else{
         std::cerr << "Error: Unkowned command: " << command << ". Use 'search' or 'stats'." << std::endl;
         return 1;
     }
     
-
-    // HERE ALLOC MEMORY AND DELETE TREE!!!
+    // Cleanup: Deallocate the tree
+    std::cout << "Deallocating tree..." << std::endl;
+    TREE::deleteBinaryTree(bst_tree); 
+    bst_tree = nullptr;
 
     return 0;
 }
