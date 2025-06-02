@@ -6,7 +6,7 @@
 #include "tree_utils.h"
 
 namespace DATA {
-    static std::string normalise(std::string w);
+    static std::string normalise(const std::string& w);
     /**
      * @brief Converts the string passed as argument
      * in standard ascii format, i.e all letters in
@@ -29,7 +29,7 @@ namespace DATA {
 
     std::vector<TREE::Node*> buildNodes(std::string filename);
 }
-=======
+
 /**
  * @brief Retrieves a list of all .txt filenames from a specified directory.
  *

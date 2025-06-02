@@ -1,1 +1,4 @@
 *.txt
+.vscode
+a.out
+.helix

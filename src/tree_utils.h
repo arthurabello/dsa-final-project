@@ -79,7 +79,7 @@ namespace TREE {
      *  - number_of_comparisons (int): Total number of node comparisons performed.
      */
 
-     void deleteBinaryTree(BinaryTree* binary_tree);
+     void destroy(BinaryTree* binary_tree);
      /**
      * @brief Delete the passed binary tree    
      *
