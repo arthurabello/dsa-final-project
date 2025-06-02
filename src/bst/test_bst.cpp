@@ -151,7 +151,7 @@ namespace TREE::BST {
         TEST_ASSERT_EQUAL_STRING("tucano", tree->root->word.c_str());
         TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
         TEST_ASSERT_EQUAL_INT(2, tree->root->documentIds[1]);
-        TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
+        TEST_ASSERT_EQUAL_INT(2, tree->root->documentIds.size());
         TEST_ASSERT_NULL(tree->root->left);
         TEST_ASSERT_NULL(tree->root->right);
     
