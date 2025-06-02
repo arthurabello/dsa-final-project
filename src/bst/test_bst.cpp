@@ -96,17 +96,18 @@ namespace TREE::BST {
         TEST_ASSERT_EQUAL_STRING("12345", tree->root->word.c_str());
         TEST_ASSERT_EQUAL_STRING("sucuri", tree->root->right->word.c_str());
         TEST_ASSERT_EQUAL_STRING("23450", tree->root->right->left->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("ornitorrinco", tree->root->right->left->left->word.c_str());
-    
+        TEST_ASSERT_EQUAL_STRING("ornitorrinco", tree->root->right->left->right->word.c_str());
+
         TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);
         TEST_ASSERT_EQUAL_INT(2, tree->root->right->documentIds[0]);
         TEST_ASSERT_EQUAL_INT(3, tree->root->right->left->documentIds[0]);
-        TEST_ASSERT_EQUAL_INT(4, tree->root->right->left->left->documentIds[0]);
-    
+        TEST_ASSERT_EQUAL_INT(4, tree->root->right->left->right->documentIds[0]);
+
         TEST_ASSERT_EQUAL_INT(0, r1.numComparisons);
-        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);
-        TEST_ASSERT_EQUAL_INT(2, r3.numComparisons);
-        TEST_ASSERT_EQUAL_INT(3, r4.numComparisons);
+        TEST_ASSERT_EQUAL_INT(1, r2.numComparisons);  
+        TEST_ASSERT_EQUAL_INT(2, r3.numComparisons);  
+        TEST_ASSERT_EQUAL_INT(3, r4.numComparisons);  
+
     }
     
     void test_different_words_same_doc_tree_insertion(){
