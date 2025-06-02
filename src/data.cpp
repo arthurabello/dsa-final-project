@@ -5,20 +5,25 @@
 #include "tree_utils.h"
 #include <unordered_set>
 #include <string>
+#include <filesystem>
+#include <cctype>
 
 namespace DATA {
 
-    static std::string normalise(std::string w) {
-    std::string out;
-    
-    for (char c : w)
-    {
-        c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); //converts to lowercase
-        if (std::isalnum(static_cast<unsigned char>(c))) //checks if it's alphanumeric
-            out.push_back(c);
+    static std::string normalise(const std::string& w) { //artu
+        std::string out;
+
+        for (unsigned char c : w) {
+            if (c > 127) { //checks if non-ascii stuff is given
+                return ""; //empty string indicates an error
+            }
+            char lower_c = static_cast<char>(std::tolower(c)); //converts to lowercase
+            if (std::isalnum(static_cast<unsigned char>(lower_c))) { //only alphanumeric characters
+                out.push_back(lower_c);
+            }
+        }
+        return out;
     }
-    return out;
-}
 
     std::vector<std::string> tokenize(std::string filename){
         std::vector<std::string> fileWords; //vector with the words of the file.
@@ -61,8 +66,27 @@ namespace DATA {
         return nodeList;
     }    
 
-    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path){
-    //
+    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path) { //artu
+
+        std::vector<std::string> txt_files;
+        namespace fs = std::filesystem; //shortcut
+        fs::path path(dir_path); //checks if directory exists and is a directory
+        if (!fs::exists(path) || !fs::is_directory(path)) {
+            return txt_files;  //empty
+
+        } else {
+            for (const auto& directory_entry : fs::directory_iterator(path)) { //iterates through the directory
+                if (directory_entry.is_regular_file()) {
+                    auto filename = directory_entry.path().filename().string();
+                    auto ext = directory_entry.path().extension().string();
+                    if (ext.size() == 4 && //case-insensitive check for ".txt"
+                        (ext == ".txt" || ext == ".TXT" || ext == ".Txt" || ext == ".tXt" || ext == ".txT" /* etc */)) {
+                        txt_files.push_back(filename);
+                    }
+                }
+        }
+        return txt_files;
+        }
     }
 
     std::string read_file_content(const std::string& full_file_path) { // gabrielle m
