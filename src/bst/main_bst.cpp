@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){  // gabrielle m
 
     // Loop Through Selected Files for Indexing 
     for (int i = 0; i < files_to_process_count; ++i) {
-        
+
         // Making logic to acess file (path + its name = whole path)
         std::string& filename_only = all_filenames[i];
         std::string full_path_to_file = dir_path;
@@ -77,6 +77,8 @@ int main(int argc, char *argv[]){  // gabrielle m
         }
         full_path_to_file += filename_only;
 
+        // Getting the document ID (to do in)
+
         // Getting a vector of tokens out of content read
         std::vector<std::string> words_in_doc = DATA::tokenize(full_path_to_file);
         // maybe here do another check if tokenize works really
@@ -84,6 +86,7 @@ int main(int argc, char *argv[]){  // gabrielle m
         // Iter in each token of current file being analized
         for(const std::string& word : words_in_doc){
             // call for bst insert
+
 
             // stats (later)
         }
