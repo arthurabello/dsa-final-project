@@ -33,7 +33,7 @@ namespace DATA {
         
         if (!archive.is_open()) {
             std::cerr << "Erro ao abrir o arquivo!\n";
-            return;
+            return std::vector<std::string>();
         }
         
         std::string word;

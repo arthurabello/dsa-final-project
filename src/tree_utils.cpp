@@ -1,5 +1,4 @@
 #include "tree_utils.h"
-#include <iostream>
 #include <vector>
 #include <chrono>
 #include <cstring>          
@@ -61,7 +60,7 @@ namespace TREE {
     }
 
 	void DeletionPostOrder(Node* n){
-		if(n!=null){
+		if(n != nullptr){
 			DeletionPostOrder(n->left);
 			DeletionPostOrder(n->right);
 			delete n;

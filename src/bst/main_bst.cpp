@@ -1,9 +1,7 @@
-// main_bst.cpp
 #include <iostream> 
 #include <string>   
-#include <chrono>
 
-#include "data.cpp"
+#include "../data.cpp"
 #include "bst.cpp"
 #include "bst.h"
 
@@ -12,7 +10,7 @@ using namespace TREE::BST; // is this right?
 int main(int argc, char *argv[]){  // gabrielle m
 
     // Verifying if there is correctly 4 arguments
-    if(argc!=4){ 
+    if(argc!=4){
         std::cerr << "Using: ./bst <search|stats> <n_docs> <diretorio>" << std::endl;
         return 1; //error code
     } 
@@ -54,16 +52,16 @@ int main(int argc, char *argv[]){  // gabrielle m
     int files_to_process_count;
     if(all_filenames.size() <= n_docs_int){
         files_to_process_count = all_filenames.size();
-        std::cout << "Processing the firsts " << files_to_process_count << " docs. There were only " << files_to_process_count << "files available." << std::endl;
+        std::cout << "Processing the first " << files_to_process_count << " docs. There were only " << files_to_process_count << " files available." << std::endl;
     }else{
         files_to_process_count = n_docs_int;
-        std::cout << "Processing the firsts " << files_to_process_count << " docs." << std::endl;
+        std::cout << "Processing the first " << files_to_process_count << " docs." << std::endl;
     }
 
-    // Loop through selected files for indexing 
+    // Loop through selected files for indexing
     for (int i = 0; i < files_to_process_count; ++i) {
 
-        // Making logic to acess file (path + its name = whole path)
+        // Making logic to access file (path + its name = whole path)
         std::string& filename_only = all_filenames[i];
         std::string full_path_to_file = dir_path;
         if(!dir_path.empty() && dir_path.back() != '/' && dir_path.back() != '\\'){ // add a "universal" bar at the end in case it's not there
@@ -99,7 +97,7 @@ int main(int argc, char *argv[]){  // gabrielle m
 
         // Getting a vector of tokens out of content read
         std::vector<std::string> words_in_doc = DATA::tokenize(full_path_to_file);
-        // Just checking again (tokenize does a check also)
+        // Just checking again (tokenize also does a check)
         if (words_in_doc.empty() && !std::ifstream(full_path_to_file).good()) {
              std::cerr << "Warning: No words tokenized or error reading file: " << full_path_to_file << std::endl;
              continue;
@@ -163,7 +161,7 @@ int main(int argc, char *argv[]){  // gabrielle m
     
     // Cleanup: Deallocate the tree
     std::cout << "Deallocating tree..." << std::endl;
-    TREE::deleteBinaryTree(bst_tree); 
+    TREE::destroy(bst_tree); 
     bst_tree = nullptr;
 
     return 0;
