@@ -11,6 +11,7 @@ namespace TREE::BST {
         InsertResult result = insert(tree, "arvore", 1);
     
         TEST_ASSERT_NOT_NULL(tree->root);
+		
         TEST_ASSERT_EQUAL_STRING((const char*) "arvore", tree->root->word.c_str());
         TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds.size());
         TEST_ASSERT_EQUAL_INT(1, tree->root->documentIds[0]);

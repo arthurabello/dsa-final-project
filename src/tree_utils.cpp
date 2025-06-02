@@ -60,12 +60,12 @@ namespace TREE {
         }
     }
 
-	void DeletionPostOrder(Node* n){
-		if(n!=null){
-			DeletionPostOrder(n->left);
-			DeletionPostOrder(n->right);
-			delete n;
+	void deletionPostOrder(Node* n){//gabriel carneiro
+		if(n!=nullptr){
+			deletionPostOrder(n->left);
+			deletionPostOrder(n->right);
 		}
+		delete n;
 	}
 	
     void destroy(BinaryTree* binary_tree){ //gabriel carneiro
@@ -74,7 +74,7 @@ namespace TREE {
 		delete binary_tree;
     }
 
-    int calculateHeight(Node* root){
+    int calculateHeight(Node* root){//gabriel carneiro
         //Treats the case in which the root is empty.
         if(root == nullptr) return 0;
         
