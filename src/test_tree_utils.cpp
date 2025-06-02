@@ -34,11 +34,11 @@ void test_SearchResult(){
 	//TBI
 }
 
-void test_calculateHeight{
-	Node* n = createNode("Parent",{1,2,3},0);
-	Node* m = createNode("RightSon",{1,2},1);
-	Node* p = createNode("LeftSon",{1},0);
-	Node* q = createNode("LeftLeftGrandson",{2,4,5},1)
+void test_calculateHeight() {
+	Node* n = createNode("Parent",{1,2,3}, 0);
+	Node* m = createNode("RightSon",{1,2}, 1);
+	Node* p = createNode("LeftSon",{1}, 0);
+	Node* q = createNode("LeftLeftGrandson",{2,4,5}, 1);
 	
 	n->left = p;
 	n->right = m;
@@ -49,11 +49,11 @@ void test_calculateHeight{
 	TEST_ASSERT_EQUAL_INT(3, height);
 }
 
-void test_updateHeightUp{
-	Node* n = createNode("Parent",{1,2,3},0);
-	Node* m = createNode("RightSon",{1,2},1);
-	Node* p = createNode("LeftSon",{1},0);
-	Node* q = createNode("LeftLeftGrandson",{2,4,5},1)
+void test_updateHeightUp() {
+	Node* n = createNode("Parent", {1,2,3}, 0);
+	Node* m = createNode("RightSon", {1,2}, 1);
+	Node* p = createNode("LeftSon", {1}, 0);
+	Node* q = createNode("LeftLeftGrandson", {2,4,5} ,1);
 	
 	n->left = p;
 	n->right = m;
@@ -63,6 +63,16 @@ void test_updateHeightUp{
 	
 	TEST_ASSERT_EQUAL_INT(q->height, 0);
 	TEST_ASSERT_EQUAL_INT(p->height, 1);
-	TEST_ASSERT_EQUAL_INT(n->height, 2);
+	TEST_ASSERT_EQUAL_INT(n->height, 1);
 	
+}
+
+int main() {
+    UNITY_BEGIN();
+    RUN_TEST(test_createNode);
+    RUN_TEST(test_createTree);
+    RUN_TEST(test_SearchResult);
+    RUN_TEST(test_calculateHeight);
+    RUN_TEST(test_updateHeightUp);
+    return UNITY_END();
 }

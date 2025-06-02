@@ -87,7 +87,7 @@ namespace TREE {
      */
 
 
-    int calculateHeight(BinaryTree* binary_tree);
+    int calculateHeight(Node* root);
     /**
      * @brief Calculates the height of a binary tree.
      * 
