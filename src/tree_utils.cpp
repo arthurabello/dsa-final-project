@@ -108,4 +108,44 @@ namespace TREE {
 
         return height;
     }
+
+    void updateHeightUp(Node* node) {//eliane
+        if (node == nullptr) {
+            return;
+        }
+
+        // Calculates the heights of the children and get the max
+        int leftHeight;
+        if (node->left == nullptr) {
+            leftHeight = -1;
+        } else {
+            leftHeight = node->left->height;
+        }
+
+        int rightHeight;
+        if (node->right == nullptr) {
+            rightHeight = -1;
+        } else {
+            rightHeight = node->right->height;
+        }
+
+        int maxHeight;
+        if (leftHeight > rightHeight) {
+            maxHeight = leftHeight;
+        } else {
+            maxHeight = rightHeight;
+        }
+
+        int newHeight = 1 + maxHeight;
+
+        if (node->height == newHeight) {
+            return;
+        }
+
+        node->height = newHeight;
+
+        // Calculates the height of the father by a recursive call
+        updateHeightUp(node->parent);
+    }
+
 }

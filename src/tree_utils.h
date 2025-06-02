@@ -96,6 +96,22 @@ namespace TREE {
      * 
      */
 
+    void updateHeightUp(Node* node); 
+    /**
+    * @brief Recursively updates the height of a node up to the root.
+    *
+    * This function walks the path from a node to the root of the tree,
+    * recomputing the height of each node based on the heights of its
+    * left and right children. If the height of the node does not change,
+    * the recursion ends early, since no further modifications are needed 
+    * to the ancestors.
+    *
+    * @param node Pointer to the node from which the update should start.
+    * @note This function **does not recursively update the children**.
+    * It assumes that the heights of the children are already correct, which is the case
+    * after a simple insert.
+    */
+
 }
 
 #endif
