@@ -65,15 +65,16 @@ namespace TREE {
 			DeletionPostOrder(n->right);
 			delete n;
 		}
+		delete n;
 	}
 	
     void destroy(BinaryTree* binary_tree){ //gabriel carneiro
         Node* root = binary_tree->root;
-		DeletionPostOrder(root);
+		deletionPostOrder(root);
 		delete binary_tree;
     }
 
-    int calculateHeight(Node* root){
+    int calculateHeight(Node* root){//gabriel carneiro
         //Treats the case in which the root is empty.
         if(root == nullptr) return 0;
         
