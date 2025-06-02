@@ -70,7 +70,7 @@ namespace TREE {
 	
     void destroy(BinaryTree* binary_tree){ //gabriel carneiro
         Node* root = binary_tree->root;
-		DeletionPostOrder(root);
+		deletionPostOrder(root);
 		delete binary_tree;
     }
 
