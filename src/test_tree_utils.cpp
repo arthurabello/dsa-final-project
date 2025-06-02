@@ -50,5 +50,19 @@ void test_calculateHeight{
 }
 
 void test_updateHeightUp{
+	Node* n = createNode("Parent",[1,2,3],0);
+	Node* m = createNode("RightSon",[1,2],1);
+	Node* p = createNode("LeftSon",[1],0);
+	Node* q = createNode("LeftLeftGrandson",[2,4,5],1)
+	
+	n->left = p;
+	n->right = m;
+	p->left = q;
+	
+	updateHeightUp(q);
+	
+	TEST_ASSERT_EQUAL_INT(q->height, 0);
+	TEST_ASSERT_EQUAL_INT(p->height, 1);
+	TEST_ASSERT_EQUAL_INT(n->height, 2);
 	
 }
