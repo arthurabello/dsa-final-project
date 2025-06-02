@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <sstream>
 #include "data.h"
 #include "tree_utils.h"
 #include <unordered_set>
@@ -59,13 +60,27 @@ namespace DATA {
 
         return nodeList;
     }    
+
+    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path){
+    //
+    }
+
+    std::string read_file_content(const std::string& full_file_path) { // gabrielle m
+        // Open the file and check if it worked
+        std::ifstream file_stream(full_file_path);
+        if (!file_stream.is_open()) {
+            // std::cerr << "Error: Could not open file: " << full_file_path << std::endl;
+            return "";
+        }
+        // Create a stringstream object to act as a buffer
+        std::stringstream buffer;
+        // Read the content of the file's buffer into the stringstream buffer
+        buffer << file_stream.rdbuf();
+        // Close the file and get the content from the stringstream buffer as a string
+        file_stream.close();
+        return buffer.str();
+        }
 }
 
-std::vector<std::string> list_files_txt_in_path(const std::string &dir_path){
-    //
-}
 
-std::string read_file_content(const std::string& full_file_path){
-    //
-}
 
