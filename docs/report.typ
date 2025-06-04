@@ -49,7 +49,7 @@
 ])
 
 #align(center, text(11pt)[
-  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarello, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
+  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarelo, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
 ])
 #set par(first-line-indent: 1.5em,justify: true)
 
@@ -186,7 +186,7 @@ SearchResult search(BinaryTree* binary_tree, const std::string& word); //tree_ut
 
 ```
 
-== Gabrielle Mascarello
+== Gabrielle Mascarelo
 <section_task_division_gabrielle>
 
 Implemented and documented the following functions:
