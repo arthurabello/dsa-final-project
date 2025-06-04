@@ -10,7 +10,7 @@
 
 namespace DATA {
 
-    static std::string normalise(const std::string& w) { //artu
+    static std::string normalise(const std::string& w) { 
         std::string out;
 
         for (unsigned char c : w) {
@@ -66,7 +66,7 @@ namespace DATA {
         return nodeList;
     }    
 
-    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path) { //artu
+    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path) {
 
         std::vector<std::string> txt_files;
         namespace fs = std::filesystem; //shortcut
@@ -89,7 +89,7 @@ namespace DATA {
         }
     }
 
-    std::string read_file_content(const std::string& full_file_path) { // gabrielle m
+    std::string read_file_content(const std::string& full_file_path) {
         // Open the file and check if it worked
         std::ifstream file_stream(full_file_path);
         if (!file_stream.is_open()) {

@@ -7,7 +7,7 @@
 
 using namespace TREE::BST; // is this right?
 
-int main(int argc, char *argv[]){  // gabrielle m
+int main(int argc, char *argv[]){
 
     // Verifying if there is correctly 4 arguments
     if(argc!=4){
