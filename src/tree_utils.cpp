@@ -59,10 +59,10 @@ namespace TREE {
         }
     }
 
-	void DeletionPostOrder(Node* n){
+	void deletionPostOrder(Node* n){
 		if(n != nullptr){
-			DeletionPostOrder(n->left);
-			DeletionPostOrder(n->right);
+			deletionPostOrder(n->left);
+			deletionPostOrder(n->right);
 			delete n;
 		}
 		delete n;
