@@ -204,14 +204,7 @@ Implemented and documented the following functions:
 ```cpp
 InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId); //bst.cpp
 void updateHeightUp(Node* node); //tree_utils.cpp
-```
 
-== Nícolas Spaniol
-<section_task_division_nicolas>
-
-Implemented and documented the following functions:
-
-```cpp
 void test_one_insertion(); //bst_test.cpp
 void test__left_tree_insertion(); //bst_test.cpp
 void test_right_tree_insertion(); //bst_test.cpp
@@ -229,6 +222,9 @@ void test_updateHeightUp(); //test_tree_utils.cpp
 int main(); //test_tree_utils.cpp
 
 ```
+
+== Nícolas Spaniol
+<section_task_division_nicolas>
 
 == Gabriel Carneiro
 <section_task_division_gabriel>
