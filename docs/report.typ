@@ -49,7 +49,7 @@
 ])
 
 #align(center, text(11pt)[
-  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarello, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
+  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarelo, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
 ])
 #set par(first-line-indent: 1.5em,justify: true)
 
@@ -186,7 +186,7 @@ SearchResult search(BinaryTree* binary_tree, const std::string& word); //tree_ut
 
 ```
 
-== Gabrielle Mascarello
+== Gabrielle Mascarelo
 <section_task_division_gabrielle>
 
 Implemented and documented the following functions:
@@ -215,10 +215,6 @@ void test_same_word_same_doc_tree_insertion(); //bst_test.cpp
 void test_same_word_different_docs_insertion(); //bst_test.cpp
 void test_similar_words_insertion();
 int main(); //bst_test.cpp
-void test_createNode(); //test_tree_utils.cpp
-void test_createTree(); //test_tree_utils.cpp
-void test_calculateHeight(); //test_tree_utils.cpp
-void test_updateHeightUp(); //test_tree_utils.cpp
 int main(); //test_tree_utils.cpp
 
 ```
@@ -236,6 +232,10 @@ Node* createNode(std::string word, std::vector<int>documentIds, int color = 0); 
 std::vector<std::string> tokenize(std::string filename); //data.cpp
 void destroy(BinaryTree* binary_tree); //tree_utils.cpp
 int calculateHeight(Node* root); //tree_utils.cpp
+void test_createNode(); //test_tree_utils.cpp
+void test_createTree(); //test_tree_utils.cpp
+void test_calculateHeight(); //test_tree_utils.cpp
+void test_updateHeightUp(); //test_tree_utils.cpp
 
 ```
 
