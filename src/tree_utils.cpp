@@ -134,4 +134,63 @@ namespace TREE {
         return;
     }
 
+    int calculateMinDepth(Node* root) {//eliane
+        if (root == nullptr) {
+            return 0;
+        }
+
+        // If is a leaf
+        if (root->left == nullptr && root->right == nullptr) {
+            return 1;
+        }
+
+        // Recurse only on the right subtree
+        if (root->left == nullptr) {
+            return 1 + calculateMinDepth(root->right);
+        }
+
+        // Recurse only on the left subtree
+        if (root->right == nullptr) {
+            return 1 + calculateMinDepth(root->left);
+        }
+
+        // Smaller depth between left and right
+        int leftDepth = calculateMinDepth(root->left);
+        int rightDepth = calculateMinDepth(root->right);
+
+        return 1 + std::min(leftDepth, rightDepth);
+    }
+
+    int countNodes(Node* root) {//eliane
+        if (root == nullptr) {
+            return 0;
+        }
+
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+
+    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree) {//eliane
+        stats.final_node_count = countNodes(tree->root);
+    }
+
+    void updateFinalHeight(AggregateStats& stats, BinaryTree* tree) {//eliane
+        stats.final_tree_height = calculateHeight(tree->root);
+    }
+
+    double getAverageInsertionTime(const AggregateStats& stats) {//eliane
+        if (stats.total_words_processed == 0){
+            return 0.0;
+        } 
+        
+        return stats.sum_of_insertion_times_ms / stats.total_words_processed;
+    }
+
+    double getAverageComparisonsPerInsertion(const AggregateStats& stats) {//eliane
+        if (stats.total_words_processed == 0) {
+            return 0.0;
+        }
+
+        return static_cast<double>(stats.total_comparisons_insertion) / stats.total_words_processed;
+    }
+
 }
