@@ -173,7 +173,7 @@ namespace TREE {
         stats.final_node_count = countNodes(tree->root);
     }
 
-    void updateFinalHeight(AggregateStats& stats, BinaryTree* tree) {//eliane
+    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree) {//eliane
         stats.final_tree_height = calculateHeight(tree->root);
     }
 
