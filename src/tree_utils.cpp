@@ -129,4 +129,9 @@ namespace TREE {
         updateHeightUp(node->parent);
     }
 
+    // TODO
+    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv"){
+        return;
+    }
+
 }

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 namespace TREE {
     /**
@@ -35,6 +36,19 @@ namespace TREE {
         std::vector<int> documentIds;
         double executionTime;
         int numComparisons;
+    };
+
+    struct AggregateStats {
+        std::string tree_type;
+        int num_docs_indexed;
+
+        long long total_indexing_time_ms = 0;
+        long long total_words_processed = 0;
+        long long total_comparisons_insertion = 0;
+        double sum_of_insertion_times_ms = 0.0;
+
+        int final_node_count = 0; // unique words
+        int final_tree_height = 0;
     };
 
     BinaryTree* createTree();
@@ -111,6 +125,9 @@ namespace TREE {
     * It assumes that the heights of the children are already correct, which is the case
     * after a simple insert.
     */
+
+    // TODO
+    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv");
 
 }
 
