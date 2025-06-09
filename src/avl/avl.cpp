@@ -14,11 +14,17 @@ namespace TREE::AVL {
 		return lHeight - rHeight;
 	}
 	
-	//in this one I guess I've left behing the possibility of the father being the root and blablabla
-	void transplant(Node* A, Node* B) {//srry Mateus I stole your idea
+	//I gotta calculate the heights missing here
+	void transplant(Node* A, Node* B) {//srry Mateus I stole your idea;  gabriel carneiro
 		if (B != A->left && B != A->right) return;
 		
 		Node* grandpa = A->parent;
+		
+		if (grandpa == nullptr) {
+			if (B == A->left) A->left = nullptr;
+			else if (B == A->right) A->right = nullptr;
+		}
+		
 		if (A == grandpa->left) {
 			B = grandpa->left;
 		}
@@ -29,26 +35,31 @@ namespace TREE::AVL {
 	
 	void leftRotation(Node* pivot) {//gabriel carneiro
 		Node* papa = pivot->parent;
+		papa->right = pivot->left;
 		transplant(papa,pivot);
 		pivot->left = papa;
 	}
 	
 	void rightRotation(Node* pivot) {//gabriel carneiro
 		Node* papa = pivot->parent;
+		papa->left = pivot->right;
 		transplant(papa,pivot);
 		pivot->right = papa;
 	}
-	void balanceTree(Node* grandpa) {//gabriel carneiro
+	void balanceTree(Node* desbalancedNode) {//gabriel carneiro
 		// I think I gotta fix the heights of the nodes bruh.
+		if(desbalancedNode == nullptr) return;
 		
-		if (std::abs(bf(grandpa))<=1) return;		
+		if (std::abs(bf(desbalancedNode))<=1) return;		
 		
-		if(bf(grandpa)>0) {
-			if (bf(grandpa->left)>0) rightRotation(grandpa->left);
-			
-			if (bf(grandpa->left)<0) {
-				leftRotation(grandpa->left->right);
-				rightRotation(grandpa->left);
+		if(bf(desbalancedNode)>0) {
+			if (bf(desbalancedNode->left)>0) {
+				rightRotation(desbalancedNode->left);
+				
+			}
+			if (bf(desbalancedNode->left)<0) {
+				leftRotation(desbalancedNode->left->right);
+				rightRotation(desbalancedNode->left);
 			}
 		}
 		
@@ -65,14 +76,7 @@ namespace TREE::AVL {
 		//else if (bf(grandpa)*bf(grandpa->left)>0) rightRotation(grandpa->left);
 		//else if (bf(grandpa)*bf(grandpa->right)>0) leftRotation(grandpa->right);
 		
-		else if(bf(grandpa)*bf(grandpa->left)>0)
-		
 	}
-	
-	
-	
-	
-	
 	
 	
     InsertResult insert(BinaryTree& binary_tree, const std::string& word, int documentId) {
@@ -128,10 +132,14 @@ namespace TREE::AVL {
             } else {
                 parent->right = newNode;
             }
-        
+			
 			updateHeightUp(newNode); //idea: maybe i'll already balance the tree here?
 			
-			balanceTree(newNode->parent->parent); //implement this function, with all the rotation combinations possible
+			Node* desbalance = newNode;
+			
+			while(std::abs(bf(desbalance))<=1) desbalance = desbalance ->parent;
+			
+			balanceTree(desbalance); //implement this function, with all the rotation combinations possible
 		
 		
 		}
