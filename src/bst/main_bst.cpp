@@ -41,8 +41,13 @@ int main(int argc, char *argv[]){  // gabrielle m
     // Printing infos
     std::cout << "Command: " << command << ", Number of documents: " << n_docs_int << ", Directory: " << std::endl;
 
-    // Initializing bst tree
+    // Initializing bst tree and stats struct
     TREE::BinaryTree* bst_tree = TREE::createTree();
+    AggregateStats bst_stats;
+    bst_stats.tree_type = "BST";
+
+    // Starting overall total time
+    auto overall_indexing_start_time = std::chrono::high_resolution_clock::now() // this auto identifies this super specific type 
 
     // Get List of .txt files
     std::vector<std::string> all_filenames = DATA::list_files_txt_in_path(dir_path);
@@ -59,6 +64,9 @@ int main(int argc, char *argv[]){  // gabrielle m
         files_to_process_count = n_docs_int;
         std::cout << "Processing the firsts " << files_to_process_count << " docs." << std::endl;
     }
+
+    // Updating the count of files to process in stats
+    bst_stats.num_docs_indexed = files_to_process_count;
 
     // Loop through selected files for indexing 
     for (int i = 0; i < files_to_process_count; ++i) {
