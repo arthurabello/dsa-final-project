@@ -12,7 +12,7 @@
         newNode->parent = nullptr;
         newNode->left = nullptr;
         newNode->right = nullptr;
-        newNode->height = 1; //height of a new node is 1
+        newNode->height = 0; //height of a new node is 0
         newNode->isRed = color; //0 for red, 1 for black
         return newNode;
     }
@@ -84,27 +84,54 @@
         }
     }
 
-    int calculateHeight(BinaryTree* binary_tree){
+    int calculateHeight(Node* root){
         //Treats the case in which the root is empty.
-        if(binary_tree->root == nullptr) return 0;
+        if(root == nullptr) return 0;
         
         //Copies the left subtree.
-        Node* leftNode = binary_tree->root->left;
-        BinaryTree* leftSubTree = createTree();
-        leftSubTree->root = leftNode;
+        Node* leftNode = root->left;
         
         //Copies the right subtree.
-        Node* rightNode = binary_tree->root->right;
-        BinaryTree* rightSubTree = createTree();
-        rightSubTree->root = rightNode;
+        Node* rightNode = root->right;
         
         //Calculate the height of the tree by a recursive call.
-        int height = 1 + std::max(calculateHeight(rightSubTree),calculateHeight(leftSubTree));
-        
-        delete leftSubTree;
-        delete rightSubTree;
+        int height = 1 + std::max(calculateHeight(rightNode),calculateHeight(leftNode));
 
         return height;
+    }
+
+    void updateHeightUp(Node* node) {//eliane
+        if (node == nullptr) {
+            return;
+        }
+
+        // Calculates the heights of the children and get the max
+        int leftHeight;
+        if (node->left == nullptr) {
+            leftHeight = -1;
+        } else {
+            leftHeight = node->left->height;
+        }
+
+        int rightHeight;
+        if (node->right == nullptr) {
+            rightHeight = -1;
+        } else {
+            rightHeight = node->right->height;
+        }
+
+        int maxHeight = std::max(leftRight,rightHeight)
+
+        int newHeight = 1+maxHeight;
+
+        if (node->height == newHeight) {
+            return;
+        }
+
+        node->height = newHeight;
+
+        // Calculates the height of the father by a recursive call
+        updateHeightUp(node->parent);
     }
 
 }
