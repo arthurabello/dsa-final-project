@@ -6,7 +6,7 @@
 #include "tree_utils.h"
 
 namespace DATA {
-    static std::string normalise(std::string w);
+    static std::string normalise(const std::string& w);
     /**
      * @brief Converts the string passed as argument
      * in standard ascii format, i.e all letters in

@@ -1,5 +1,4 @@
 #include "tree_utils.h"
-#include <iostream>
 #include <vector>
 #include <chrono>
 #include <cstring>          
@@ -60,51 +59,32 @@ namespace TREE {
         }
     }
 
-    void deleteBinaryTree(BinaryTree* binary_tree){ //gabriel carneiro
+	void DeletionPostOrder(Node* n){
+		if(n != nullptr){
+			DeletionPostOrder(n->left);
+			DeletionPostOrder(n->right);
+			delete n;
+		}
+	}
+	
+    void destroy(BinaryTree* binary_tree){ //gabriel carneiro
         Node* root = binary_tree->root;
-        
-        if(root != nullptr){
-            //Creates a copy of the left subtree.
-            Node* leftNode = root->left;
-            BinaryTree* leftSubTree = createTree();
-            leftSubTree->root = leftNode;
-            //Creates a copy of the right subtree
-            Node* rightNode = root->right;
-            BinaryTree* rightSubTree = createTree();
-            rightSubTree->root = rightNode;
-            //Deletes the root of the original tree (supposing it was created using 'new')
-            delete root;
-            //Recursive call of the function to both subtrees.
-            deleteBinaryTree(leftSubTree);
-            deleteBinaryTree(rightSubTree);
-            //Deletes original structure.
-            delete binary_tree;
-        }
-        else{
-            delete root;
-            delete binary_tree;
-        }
+		DeletionPostOrder(root);
+		delete binary_tree;
     }
 
-    int calculateHeight(BinaryTree* binary_tree){
+    int calculateHeight(Node* root){
         //Treats the case in which the root is empty.
-        if(binary_tree->root == nullptr) return 0;
+        if(root == nullptr) return 0;
         
         //Copies the left subtree.
-        Node* leftNode = binary_tree->root->left;
-        BinaryTree* leftSubTree = createTree();
-        leftSubTree->root = leftNode;
+        Node* leftNode = root->left;
         
         //Copies the right subtree.
-        Node* rightNode = binary_tree->root->right;
-        BinaryTree* rightSubTree = createTree();
-        rightSubTree->root = rightNode;
+        Node* rightNode = root->right;
         
         //Calculate the height of the tree by a recursive call.
-        int height = 1 + std::max(calculateHeight(rightSubTree),calculateHeight(leftSubTree));
-        
-        delete leftSubTree;
-        delete rightSubTree;
+        int height = 1 + std::max(calculateHeight(rightNode),calculateHeight(leftNode));
 
         return height;
     }
