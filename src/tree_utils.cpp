@@ -5,7 +5,7 @@
 #include <algorithm>
 namespace TREE {
 
-    Node* createNode(std::string word, std::vector<int>documentIds, int color) { //sets for 0 if it the tree doesnt support red-black, gabriel carneiro
+    Node* createNode(std::string word, std::vector<int>documentIds, int color) { //sets for 0 if it the tree doesnt support red-black
         
         Node* newNode = new Node;
         newNode->word = word;
@@ -18,12 +18,12 @@ namespace TREE {
         return newNode;
     }
 
-    BinaryTree* createTree(){ //artu
+    BinaryTree* createTree(){ 
         BinaryTree* newBinaryTree = new BinaryTree{nullptr};
         return newBinaryTree;
     }
 
-    SearchResult search(BinaryTree* binary_tree, const std::string& word) { //artu
+    SearchResult search(BinaryTree* binary_tree, const std::string& word) {
         auto start_time = std::chrono::high_resolution_clock::now(); //start measuring time
         
         if (binary_tree == nullptr || binary_tree->root == nullptr) {
@@ -59,17 +59,18 @@ namespace TREE {
         }
     }
 
-	void DeletionPostOrder(Node* n){
+	void deletionPostOrder(Node* n){
 		if(n != nullptr){
-			DeletionPostOrder(n->left);
-			DeletionPostOrder(n->right);
+			deletionPostOrder(n->left);
+			deletionPostOrder(n->right);
 			delete n;
 		}
+		delete n;
 	}
 	
-    void destroy(BinaryTree* binary_tree){ //gabriel carneiro
+    void destroy(BinaryTree* binary_tree){
         Node* root = binary_tree->root;
-		DeletionPostOrder(root);
+		deletionPostOrder(root);
 		delete binary_tree;
     }
 
@@ -89,7 +90,7 @@ namespace TREE {
         return height;
     }
 
-    void updateHeightUp(Node* node) {//eliane
+    void updateHeightUp(Node* node) {
         if (node == nullptr) {
             return;
         }

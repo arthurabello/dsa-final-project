@@ -49,7 +49,7 @@
 ])
 
 #align(center, text(11pt)[
-  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarello, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
+  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarelo, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
 ])
 #set par(first-line-indent: 1.5em,justify: true)
 
@@ -179,50 +179,22 @@
 Implemented and documented the following functions:
 
 ```cpp
-BinaryTree* createTree(){ //artu
-        BinaryTree* newBinaryTree = new BinaryTree{nullptr};
-        return newBinaryTree;
-    }
+BinaryTree* createTree(); //bst.cpp
+static std::string normalise(const std::string& w); //data.cpp
+std::vector<std::string> list_files_txt_in_path(const std::string &dir_path);
+SearchResult search(BinaryTree* binary_tree, const std::string& word); //tree_utils.cpp
 
-SearchResult search(BinaryTree* binary_tree, const std::string& word) { //artu
-        auto start_time = std::chrono::high_resolution_clock::now(); //start measuring time
-        
-        if (binary_tree == nullptr || binary_tree->root == nullptr) {
-            auto end_time = std::chrono::high_resolution_clock::now(); //done lol
-            double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-            return {0, {}, duration, 0};
-            
-        } else {
-            Node* current_node = binary_tree->root;
-            int number_of_comparisons = 0;
-            
-            while (current_node != nullptr) {
-                number_of_comparisons++;
-                
-                int compareResult = strcmp(word.c_str(), current_node->word.c_str());
-                
-                if (compareResult == 0) { //found!
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-                    return {1, current_node->documentIds, duration, number_of_comparisons};
-
-                } else if (compareResult < 0) {
-                    current_node = current_node->left; //go left because word is smaller
-                } else {
-                    current_node = current_node->right; //go right because word is bigger
-                }
-            }
-            
-            //if word not found
-            auto end_time = std::chrono::high_resolution_clock::now();
-            double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-            return {0, {}, duration, number_of_comparisons};
-        }
-    }
 ```
 
-== Gabrielle Mascarello
+== Gabrielle Mascarelo
 <section_task_division_gabrielle>
+
+Implemented and documented the following functions:
+
+```cpp
+std::string read_file_content(const std::string& full_file_path); //data.cpp
+int main(int argc, char *argv[]); //main_bst.cpp
+```
 
 == Eliane Moreira
 <section_task_division_eliane>
@@ -230,69 +202,25 @@ SearchResult search(BinaryTree* binary_tree, const std::string& word) { //artu
 Implemented and documented the following functions:
 
 ```cpp
-InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId){ //eliane
-        InsertResult result;
-        int comparisons = 0;
-        auto start_time = std::chrono::high_resolution_clock::now();
+InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId); //bst.cpp
+void updateHeightUp(Node* node); //tree_utils.cpp
 
-        Node* newNode = nullptr;
-        
-        if(binary_tree->root == nullptr){
-            newNode = createNode(word, {documentId});
-            binary_tree->root = newNode;
-        } else {
-            Node* current = binary_tree->root;
-            Node* parent = nullptr;
+void test_one_insertion(); //bst_test.cpp
+void test__left_tree_insertion(); //bst_test.cpp
+void test_right_tree_insertion(); //bst_test.cpp
+void test_generic_tree_insertion(); //bst_test.cpp
+void test_numbers_and_words_tree_insertion(); //bst_test.cpp
+void test_different_words_same_doc_tree_insertion(); //bst_test.cpp
+void test_same_word_same_doc_tree_insertion(); //bst_test.cpp
+void test_same_word_different_docs_insertion(); //bst_test.cpp
+void test_similar_words_insertion();
+int main(); //bst_test.cpp
+void test_createNode(); //test_tree_utils.cpp
+void test_createTree(); //test_tree_utils.cpp
+void test_calculateHeight(); //test_tree_utils.cpp
+void test_updateHeightUp(); //test_tree_utils.cpp
+int main(); //test_tree_utils.cpp
 
-            while (current != nullptr){
-                parent = current;
-                comparisons++;
-
-                if(word == current->word){
-                    //checks if documentId has already been added
-                    bool found = false;
-                    for(size_t i = 0; i < current->documentIds.size(); i++){
-                        if (current->documentIds[i] == documentId) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    
-                    if (found == false) {
-                        current->documentIds.push_back(documentId);
-                    }
-
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-    
-                    result.numComparisons = comparisons;
-                    result.executionTime = duration;
-                    return result;
-
-                } else if(word < current->word){
-                    current = current->left;
-                } else {
-                    current = current->right;
-                }
-            }
-
-            newNode = createNode(word, {documentId});
-            newNode->parent = parent;
-
-            if(word < parent->word){
-                parent->left = newNode;
-            } else {
-                parent->right = newNode;
-            }
-        }
-
-        auto end_time = std::chrono::high_resolution_clock::now();
-        double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-
-        result.numComparisons = comparisons;
-        result.executionTime = duration;
-        return result; 
-    }
 ```
 
 == Nícolas Spaniol
@@ -304,39 +232,11 @@ InsertResult insert(BinaryTree* binary_tree, const std::string& word, int docume
 Implemented and documented the following functions:
 
 ```cpp
-Node* createNode(std::string word, std::vector<int>documentIds, int color = 0) { //sets for 0 if it the tree doesnt support red-black, gabriel carneiro
-        
-        Node* newNode = new Node;
-        newNode->word = word;
-        newNode->documentIds = documentIds;
-        newNode->parent = nullptr;
-        newNode->left = nullptr;
-        newNode->right = nullptr;
-        newNode->height = 1; //height of a new node is 1
-        newNode->isRed = color; //0 for red, 1 for black
-        return newNode;
-    }
+Node* createNode(std::string word, std::vector<int>documentIds, int color = 0); //tree_utils.cpp
+std::vector<std::string> tokenize(std::string filename); //data.cpp
+void destroy(BinaryTree* binary_tree); //tree_utils.cpp
+int calculateHeight(Node* root); //tree_utils.cpp
 
-    void deleteBinaryTree(BinaryTree* binary_tree){ //gabriel carneiro
-        Node* root = binary_tree->root;
-        
-        if(root != nullptr){
-            Node* leftNode = root->left;
-            BinaryTree* leftSubTree = createTree();
-            leftSubTree->root = leftNode;
-            
-            Node* rightNode = root->right;
-            BinaryTree* rightSubTree = createTree();
-            rightSubTree->root = rightNode;
-            
-            delete root;
-
-            deleteBinaryTree(leftSubTree);
-            deleteBinaryTree(rightSubTree);
-
-            delete binary_tree;
-        }
-    }
 ```
 
 
