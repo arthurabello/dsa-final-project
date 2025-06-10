@@ -39,16 +39,33 @@ namespace TREE {
     };
 
     struct AggregateStats {
-        std::string tree_type;
-        int num_docs_indexed;
+    std::string tree_type;      
+    int num_docs_indexed = 0;    
 
-        long long total_indexing_time_ms = 0;
-        long long total_words_processed = 0;
-        long long total_comparisons_insertion = 0;
-        double sum_of_insertion_times_ms = 0.0;
+    // Insertion data
+    long long total_indexing_time_ms = 0;         
+    long long total_words_processed = 0;         
+    long long total_comparisons_insertion = 0;   
+    double sum_of_insertion_times_ms = 0.0;      
+    double max_insertion_time_ms = 0.0; 
+    
+    // Search data
+    double total_search_time_ms = 0.0;
+    long long total_searches = 0;
+    long long total_comparisons_search = 0; 
+    double sum_of_search_times_ms = 0.0;                                
+    double max_search_time_ms = 0.0; 
 
-        int final_node_count = 0; // unique words
-        int final_tree_height = 0;
+    // Tree structure
+    int final_node_count = 0;       // Unique words
+    int final_tree_height = 0;      // max depth
+    int final_tree_min_depth = 0;   // min depth                   
+
+    // Averages
+    double average_insertion_time_ms = 0.0;   
+    double average_comparisons_insertion = 0.0;    
+    double average_search_time_ms = 0.0;          
+    double average_comparisons_search = 0.0;     
     };
 
     BinaryTree* createTree();
@@ -126,8 +143,17 @@ namespace TREE {
     * after a simple insert.
     */
 
-    // TODO
     void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv");
+    /**
+     * @brief Saves the aggregate statistics to a CSV file.
+     *
+     * This function writes the statistical data contained in the AggregateStats
+     * object into a CSV file. The CSV will contain a header row followed by
+     * a single row with the corresponding values.
+     *
+     * @param stats The AggregateStats object containing the data to save.
+     * @param filename The name of the CSV file to write to "results.csv".
+     */
 
     int calculateMinDepth(Node* root);
     /**
@@ -148,29 +174,6 @@ namespace TREE {
      *
      * @param root Pointer to the root node of the tree.
      * @return The total number of nodes in the tree.
-     */
-
-    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree);
-    /**
-     * @brief Updates the final node count in the AggregateStats.
-     *
-     * This function calculates the total number of nodes in the given
-     * binary tree and updates the 'final_node_count' field in the
-     * AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree.
-     */
-
-    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree);
-    /**
-     * @brief Updates the final tree height in the AggregateStats.
-     *
-     * This function calculates the height of the given binary tree
-     * and updates the 'final_tree_height' field in the AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree.
      */
 
     double getAverageInsertionTime(const AggregateStats& stats);
@@ -197,6 +200,117 @@ namespace TREE {
      * @return The average number of comparisons per insertion, or 0.0 if no words were processed.
      */
 
+    double getAverageSearchTime(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average search time.
+     *
+     * This function computes the average time taken for searches
+     * based on the total sum of search times and the total number of searches.
+     *
+     * @param stats The AggregateStats object containing search time data.
+     * @return The average search time, or 0.0 if no searches were performed.
+     */
+
+    double getAverageComparisonsPerSearch(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average number of comparisons per search.
+     *
+     * This function computes the average number of comparisons made during
+     * searches based on the total number of comparisons and the total
+     * number of searches performed.
+     *
+     * @param stats The AggregateStats object containing search comparison data.
+     * @return The average number of comparisons per search, or 0.0 if no searches were performed.
+     */
+
+    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates the final node count in the AggregateStats.
+     *
+     * This function calculates the total number of nodes in the given
+     * binary tree and updates the 'final_node_count' field in the
+     * AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree.
+     */
+
+    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates the final tree height in the AggregateStats.
+     *
+     * This function calculates the height of the given binary tree
+     * and updates the 'final_tree_height' field in the AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree.
+     */
+
+    void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates the minimum depth of the tree in the AggregateStats.
+     *
+     * This function calculates the minimum depth from the root to the nearest
+     * leaf node of the given binary tree and updates the 'final_tree_min_depth'
+     * field in the AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree.
+     */
+
+    void updateAverageInsertionTime(AggregateStats& stats);
+    /**
+     * @brief Updates the average insertion time in the AggregateStats.
+     *
+     * This function calculates the average insertion time using the current
+     * data stored in the AggregateStats and updates the 'average_insertion_time_ms'.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     */
+
+    void updateAverageComparisonsPerInsertion(AggregateStats& stats);
+    /**
+     * @brief Updates the average comparisons per insertion in the AggregateStats.
+     *
+     * This function calculates the average number of comparisons per insertion
+     * using the current data stored in the AggregateStats and updates the 'average_comparisons_insertion'.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     */
+
+    void updateAverageSearchTime(AggregateStats& stats);
+    /**
+     * @brief Updates the average search time in the AggregateStats.
+     *
+     * This function calculates the average search time using the current
+     * data stored in the AggregateStats and updates the 'average_search_time_ms'.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     */
+
+    void updateAverageComparisonsPerSearch(AggregateStats& stats);
+    /**
+     * @brief Updates the average comparisons per search in the AggregateStats.
+     *
+     * This function calculates the average number of comparisons per search
+     * using the current data stored in the AggregateStats and updates the 'average_comparisons_search'.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     */
+
+    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates all aggregate statistics for the given binary tree.
+     *
+     * This function calls all individual update functions to compute the
+     * final node count, tree height, minimum depth, and all averages
+     * (insertion times, comparisons per insertion, search times, and comparisons per search)
+     * and stores them in the AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree whose statistics are being calculated.
+     */
+    
 }
 
 #endif
