@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 
     // Initializing bst tree and stats struct
     TREE::BinaryTree* bst_tree = TREE::createTree();
-    AggregateStats bst_stats;
+    TREE::AggregateStats bst_stats = new Aggre;
     bst_stats.tree_type = "BST";
 
     // Starting overall total time
@@ -113,18 +113,35 @@ int main(int argc, char *argv[]){
 
         // Iter in each token of current file being analized
         for(const std::string& word : words_in_doc){
-            // Finally insert word in tree
+            // Finally insert word in tree and update stats qith its stats
             if(!word.empty()){
-                TREE::InsertResult result = TREE::BST::insert(bst_tree, word, document_id);
-            }
+                bst_stats.total_words_processed ++;
 
-            // stats (later)
+                TREE::InsertResult result = TREE::BST::insert(bst_tree, word, document_id);
+
+                bst_stats.sum_of_insertion_times_ms += result.executionTime;
+                bst_stats.total_comparisons_insertion += result.numComparisons;
+            }
         }
     }
 
+    // getting final indexing time for stats
+    auto overal_indexing_end_time = std::chrono::high_resolution_clock::now();
+    bst_stats.total_indexing_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(overal_indexing_end_time - overall_indexing_start_time).count()
+    std::cout << "Indexing completed in " << bst_stats.total_indexing_time_ms << " ms." << std::endl;
+
+    // updating stats nodes and height
+    bst_stats.final_node_count = TREE::countNodes(bst_tree);
+    bst_stats.final_tree_height = TREE::calculateHeight(bst_tree);
+
     // Running search in stats or search only
     if(command == "stats"){
-        // TODO: show statistics 
+        std::cout << "Documents indexed: " << bst_stats.num_docs_indexed << std::endl;
+        std::cout << "etc: " << bst_stats. << std::endl;
+        std::cout << "etc: " << bst_stats. << std::endl;
+
+        // TODO
+        save_stats_to_csv();
 
     } else if (command == "search"){
 
