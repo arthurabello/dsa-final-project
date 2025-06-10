@@ -1,0 +1,50 @@
+* {
+    font-family: inherit;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: monospace;
+    background-color: #f2f0e5;
+    color: #212123;
+}
+
+svg {
+    border: 2px solid rgba(0, 0, 0, .2);
+    border-radius: 10px;
+    overscroll-behavior: contain;
+}
+
+svg text {
+    font-family: monospace;
+    pointer-events: none;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+}
+
+#container {
+    display: flex;
+    gap: 0 15px;
+}
+
+#tooltip {
+    position: absolute;
+    background-color: #f2f0e5;
+    color: #212123;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 15px;
+    border: 2px solid #ccc;
+}
+
+h2 {
+    margin: 3px;
+}

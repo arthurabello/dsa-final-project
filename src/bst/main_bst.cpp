@@ -5,6 +5,8 @@
 #include "bst.cpp"
 #include "bst.h"
 
+#include "../../tinyhttp/http.cpp"
+
 using namespace TREE::BST; // is this right?
 
 int main(int argc, char *argv[]){
@@ -151,10 +153,39 @@ int main(int argc, char *argv[]){
             }else{
                 std::cout << "Word " << normalised_query << " not found." << std::endl;
             }
-            
         }
+    } else if (command == "view") {
+        // static é necessário pra acessar a variável de dentro do `requested`
+        static std::string json = "[";
 
-    } else{
+        std::function<void(TREE::Node*)> add_node = [&](TREE::Node *n) {
+            if (n == nullptr) { return; }
+
+            size_t id = (size_t) n; // Usa posição na memória como ID
+            size_t parent_id = (size_t) n->parent;
+            json += "[\"" + n->word + "\",";
+            json += std::to_string(id) + ",";
+            json += std::to_string(parent_id) + ",";
+            json += std::to_string(n->documentIds.size()) + "],";
+
+            add_node(n->left);
+            add_node(n->right);
+        };
+        add_node(bst_tree->root);
+        
+        json.pop_back();
+        json += "]";
+
+        HttpServer server;
+        server.when("/")->serveFile("view/index.html");
+        server.whenMatching("/static/[^/]+")->serveFromFolder("view");
+        server.when("/data")->requested([](const HttpRequest& req) {
+            return HttpResponse { 200, "text/plain", json };
+        });
+        std::cout << "Live on: http://127.0.0.1:8055" << std::endl;
+        server.startListening(8055);
+
+    } else {
         std::cerr << "Error: Unkowned command: " << command << ". Use 'search' or 'stats'." << std::endl;
         return 1;
     }
