@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="module">
+        const json = await d3.json("/data")
+
+        import tree from "/static/tree.js"
+        import bubble from "/static/bubble.js"
+
+        function debounce(callback, wait) {
+            let timeoutId = null
+            return (...args) => {
+                clearTimeout(timeoutId)
+                timeoutId = setTimeout(() => {callback(...args)}, wait)
+            }
+        }
+
+        tree(json, debounce)
+        bubble(json, debounce)
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <div id="tree">
+        <h2>Tree visualization</h2>
+        </div>
+
+        <div id="bubble">
+        <h2>Word frequency</h2>
+        </div>
+    </div>
+</body>
+
+</html>
