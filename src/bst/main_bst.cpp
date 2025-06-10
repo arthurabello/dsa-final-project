@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 
     // Initializing bst tree and stats struct
     TREE::BinaryTree* bst_tree = TREE::createTree();
-    TREE::AggregateStats bst_stats = new Aggre;
+    TREE::AggregateStats bst_stats;
     bst_stats.tree_type = "BST";
 
     // Starting overall total time
