@@ -129,6 +129,74 @@ namespace TREE {
     // TODO
     void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv");
 
+    int calculateMinDepth(Node* root);
+    /**
+     * @brief Calculates the minimum depth of a binary tree.
+     *
+     * This function recursively calculates the minimum depth from the root
+     * to the nearest leaf node (node with no children).
+     *
+     * @param root Pointer to the root node of the tree.
+     * @return The minimum depth of the tree. Returns 0 if the tree is empty.
+     */
+
+    int countNodes(Node* root);
+    /**
+     * @brief Counts the total number of nodes in a binary tree.
+     *
+     * This function traverses the tree recursively and counts each node.
+     *
+     * @param root Pointer to the root node of the tree.
+     * @return The total number of nodes in the tree.
+     */
+
+    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates the final node count in the AggregateStats.
+     *
+     * This function calculates the total number of nodes in the given
+     * binary tree and updates the 'final_node_count' field in the
+     * AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree.
+     */
+
+    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates the final tree height in the AggregateStats.
+     *
+     * This function calculates the height of the given binary tree
+     * and updates the 'final_tree_height' field in the AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree.
+     */
+
+    double getAverageInsertionTime(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average insertion time.
+     *
+     * This function computes the average time taken for insertions
+     * based on the total sum of insertion times and the total number
+     * of words processed.
+     *
+     * @param stats The AggregateStats object containing insertion time data.
+     * @return The average insertion time, or 0.0 if no words were processed.
+     */
+
+    double getAverageComparisonsPerInsertion(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average number of comparisons per insertion.
+     *
+     * This function computes the average number of comparisons made during
+     * insertions based on the total number of comparisons and the total
+     * number of words processed.
+     *
+     * @param stats The AggregateStats object containing insertion comparison data.
+     * @return The average number of comparisons per insertion, or 0.0 if no words were processed.
+     */
+
 }
 
 #endif
