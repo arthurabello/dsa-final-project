@@ -148,9 +148,9 @@ See the [LICENSE](./LICENSE) file for details.
 ## Authors
 
 1. **[Arthur Rabello Oliveira](https://github.com/arthurabello)**
-2. **[Gabriel Caneiro](https://github.com/gabcarn)**
-3. **[Gabrielle MAscarello](https://github.com/g4briwlle)**
-4. **[Nícolas Spaniol](https://github.com/nicolasspaniol)**
-5. **[Eliane Moreira](https://github.com/ElianeMoreira)**
+2. **[Eliane Moreira](https://github.com/ElianeMoreira)**
+3. **[Gabriel Caneiro](https://github.com/gabcarn)**
+4. **[Gabrielle Mascarelo](https://github.com/g4briwlle)**
+5. **[Nícolas Spaniol](https://github.com/nicolasspaniol)**
 
 *This README is intentionally skeletal – we will flesh out each section as development progresses*
