@@ -10,7 +10,7 @@
 
 namespace DATA {
 
-    static std::string normalise(const std::string& w) { 
+    std::string normalise(const std::string& w) { 
         std::string out;
 
         for (unsigned char c : w) {
@@ -58,7 +58,7 @@ namespace DATA {
 
         int index = std::stoi(filename.substr(0, filename.find('.')));
 
-        for(int i=0; i<fileWords.size();i++){
+        for (std::size_t i = 0; i < fileWords.size(); ++i){
             TREE::Node* node = TREE::createNode(fileWords[i],{index});
             nodeList.push_back(node);
         }
@@ -105,6 +105,3 @@ namespace DATA {
         return buffer.str();
         }
 }
-
-
-

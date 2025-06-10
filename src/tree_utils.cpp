@@ -130,7 +130,7 @@ namespace TREE {
         updateHeightUp(node->parent);
     }
 
-    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv") {//eliane
+    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {//eliane
         std::ofstream file(filename);
         
         if (!file.is_open()) {
