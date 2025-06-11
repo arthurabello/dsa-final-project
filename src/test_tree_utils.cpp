@@ -137,60 +137,60 @@ void test_getAverageInsertionTime() {
     AggregateStats stats;
     stats.total_words_processed = 0;
     stats.sum_of_insertion_times_ms = 100.0;
-    TEST_ASSERT_EQUAL_DOUBLE(0.0, getAverageInsertionTime(stats));
+    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageInsertionTime(stats));
 
     stats.total_words_processed = 5;
     stats.sum_of_insertion_times_ms = 50.0;
-    TEST_ASSERT_EQUAL_DOUBLE(10.0, getAverageInsertionTime(stats));
+    TEST_ASSERT_EQUAL_FLOAT(10.0, getAverageInsertionTime(stats));
 
     stats.total_words_processed = 10;
     stats.sum_of_insertion_times_ms = 200.0;
-    TEST_ASSERT_EQUAL_DOUBLE(20.0, getAverageInsertionTime(stats));
+    TEST_ASSERT_EQUAL_FLOAT(20.0, getAverageInsertionTime(stats));
 }
 
 void test_getAverageComparisonsPerInsertion() {
     AggregateStats stats;
     stats.total_words_processed = 0;
     stats.total_comparisons_insertion = 50;
-    TEST_ASSERT_EQUAL_DOUBLE(0.0, getAverageComparisonsPerInsertion(stats));
+    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageComparisonsPerInsertion(stats));
 
     stats.total_words_processed = 5;
     stats.total_comparisons_insertion = 50;
-    TEST_ASSERT_EQUAL_DOUBLE(10.0, getAverageComparisonsPerInsertion(stats));
+    TEST_ASSERT_EQUAL_FLOAT(10.0, getAverageComparisonsPerInsertion(stats));
 
     stats.total_words_processed = 20;
     stats.total_comparisons_insertion = 100;
-    TEST_ASSERT_EQUAL_DOUBLE(5.0, getAverageComparisonsPerInsertion(stats));
+    TEST_ASSERT_EQUAL_FLOAT(5.0, getAverageComparisonsPerInsertion(stats));
 }
 
 void test_getAverageSearchTime() {
     AggregateStats stats;
     stats.total_searches = 0;
     stats.sum_of_search_times_ms = 120.0;
-    TEST_ASSERT_EQUAL_DOUBLE(0.0, getAverageSearchTime(stats));
+    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageSearchTime(stats));
 
     stats.total_searches = 4;
     stats.sum_of_search_times_ms = 100.0;
-    TEST_ASSERT_EQUAL_DOUBLE(25.0, getAverageSearchTime(stats));
+    TEST_ASSERT_EQUAL_FLOAT(25.0, getAverageSearchTime(stats));
 
     stats.total_searches = 8;
     stats.sum_of_search_times_ms = 400.0;
-    TEST_ASSERT_EQUAL_DOUBLE(50.0, getAverageSearchTime(stats));
+    TEST_ASSERT_EQUAL_FLOAT(50.0, getAverageSearchTime(stats));
 }
 
 void test_getAverageComparisonsPerSearch() {
     AggregateStats stats;
     stats.total_searches = 0;
     stats.total_comparisons_search = 50;
-    TEST_ASSERT_EQUAL_DOUBLE(0.0, getAverageComparisonsPerSearch(stats)); 
+    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageComparisonsPerSearch(stats)); 
 
     stats.total_searches = 5;
     stats.total_comparisons_search = 100;
-    TEST_ASSERT_EQUAL_DOUBLE(20.0, getAverageComparisonsPerSearch(stats));
+    TEST_ASSERT_EQUAL_FLOAT(20.0, getAverageComparisonsPerSearch(stats));
 
     stats.total_searches = 10;
     stats.total_comparisons_search = 300;
-    TEST_ASSERT_EQUAL_DOUBLE(30.0, getAverageComparisonsPerSearch(stats));
+    TEST_ASSERT_EQUAL_FLOAT(30.0, getAverageComparisonsPerSearch(stats));
 }
 
 int main() {
