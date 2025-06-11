@@ -14,7 +14,7 @@ namespace TREE::BST {
         Node* newNode = nullptr;
         
         if(binary_tree->root == nullptr){
-            *newNode = createNode(word, {documentId});
+            newNode = &createNode(word, {documentId});
             binary_tree->root = newNode;
         } else {
             Node* current = binary_tree->root;
@@ -52,7 +52,7 @@ namespace TREE::BST {
                 }
             }
 
-            *newNode = createNode(word, {documentId});
+            newNode = &createNode(word, {documentId});
             newNode->parent = parent;
 
             if(word < parent->word){
