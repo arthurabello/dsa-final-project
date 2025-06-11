@@ -56,7 +56,7 @@ namespace DATA {
         std::vector<std::string> files;
         int index = 1;
 
-        while(True){
+        while(true){
             std::string file_name = filename + std::to_string(index) + ".txt";
             std::ifstream file(file_name);
 
