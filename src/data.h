@@ -6,7 +6,7 @@
 #include "tree_utils.h"
 
 namespace DATA {
-    static std::string normalise(std::string w);
+    std::string normalise(const std::string& w);
     /**
      * @brief Converts the string passed as argument
      * in standard ascii format, i.e all letters in
@@ -28,8 +28,18 @@ namespace DATA {
     void buildIndex(const std::string& rootFolder, TREE::BinaryTree* tree);
 
     std::vector<TREE::Node*> buildNodes(std::string filename);
+
+    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path);
+
+/**
+ * @brief Reads the entire content of a specified file into a string.
+ *
+ * @param full_file_path The complete path (including filename) to the file to be read.
+ * @return std::string The content of the file.
+ * Returns an empty string if the file cannot be opened or read.
+ */
 }
-=======
+
 /**
  * @brief Retrieves a list of all .txt filenames from a specified directory.
  *
@@ -40,15 +50,7 @@ namespace DATA {
  * @return std::vector<std::string> A list of .txt filenames.
  * Returns an empty vector if the directory cannot be accessed or no .txt files are found.
  */
-std::vector<std::string> list_files_txt_in_path(const std::string &dir_path);
 
-/**
- * @brief Reads the entire content of a specified file into a string.
- *
- * @param full_file_path The complete path (including filename) to the file to be read.
- * @return std::string The content of the file.
- * Returns an empty string if the file cannot be opened or read.
- */
 std::string read_file_content(const std::string& full_file_path);
 
 #endif

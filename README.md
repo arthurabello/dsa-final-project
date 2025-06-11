@@ -55,7 +55,7 @@ to be determined...
 
 *Being worked on*
 
-* **[C++](https://cpp-lang.net/)** compiler  *being worked on*
+* **[C++](https://cpp-lang.net/)** compiler (we used g++ 15.1.1 20250425)
 
 * **[Python](https://www.python.org/)** ≥ 3.10 (optional, for analysis notebooks)          *being worked on*
 
@@ -72,7 +72,9 @@ to be determined...
 ## Usage
 
 ```bash
-to be determined...
+# For BST
+g++ src/tree_utils.cpp src/bst/main_bst.cpp -o bst
+./bst <search|stats> <n_docs> <diretorio>
 ```
 
 
@@ -84,7 +86,7 @@ to be determined...
 
 | Command        | Description                     | Status |
 | -------------- | ------------------------------- | ------ |
-| `bst_index`    | Build BST‑backed inverted index | *WIP*  |
+| `bst_index`    | Build BST‑backed inverted index | done  |
 | `avl_index`    | Build AVL‑backed inverted index | *WIP*  |
 | `rbt_index`    | Build RBT‑backed inverted index | *WIP*  |
 | `query_<tree>` | Run boolean / ranked queries    | *WIP*  |
@@ -99,10 +101,13 @@ to be determined...
 
 ## Testing
 
-*Being worked on*
-
 ```bash
-to be determined...
+# Run tree utilities tests
+g++ Unity/src/unity.c src/tree_utils.cpp src/test_tree_utils.cpp; ./a.out
+
+# Run BST tests
+g++ Unity/src/unity.c src/tree_utils.cpp src/bst/bst.cpp src/bst/test_bst.cpp; ./a.out
+
 ```
 
 ---
@@ -143,9 +148,9 @@ See the [LICENSE](./LICENSE) file for details.
 ## Authors
 
 1. **[Arthur Rabello Oliveira](https://github.com/arthurabello)**
-2. **[Gabriel Caneiro](https://github.com/gabcarn)**
-3. **[Gabrielle MAscarello](https://github.com/g4briwlle)**
-4. **[Nícolas Spaniol](https://github.com/nicolasspaniol)**
-5. **[Eliane Moreira](https://github.com/ElianeMoreira)**
+2. **[Eliane Moreira](https://github.com/ElianeMoreira)**
+3. **[Gabriel Caneiro](https://github.com/gabcarn)**
+4. **[Gabrielle Mascarelo](https://github.com/g4briwlle)**
+5. **[Nícolas Spaniol](https://github.com/nicolasspaniol)**
 
 *This README is intentionally skeletal – we will flesh out each section as development progresses*

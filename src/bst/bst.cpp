@@ -1,5 +1,6 @@
 #include "bst.h"
 #include "../tree_utils.h"
+#include <vector>
 #include <chrono>
 #include <cstring>
 
@@ -59,7 +60,9 @@ namespace TREE::BST {
             } else {
                 parent->right = newNode;
             }
-		    }
+
+            updateHeightUp(newNode);
+        }
 
         auto end_time = std::chrono::high_resolution_clock::now();
         double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;

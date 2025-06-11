@@ -1,4 +1,5 @@
 *.txt
 .helix
 a.out
+.vscode
 makemagic
