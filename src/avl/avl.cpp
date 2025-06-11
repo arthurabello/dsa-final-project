@@ -4,96 +4,103 @@
 namespace TREE::AVL {
 
     int getHeight(Node* node) {
-        return node ? node->height : 0;
+        return node ? node->height : -1;
     }
     
     // Balance factor: H(left) - H(right)
     int bf(Node* node) {
-        return getHeight(node->left) - getHeight(node->right);
+        return getHeight(node->right) - getHeight(node->left);
     }
     
     void leftRotation(BinaryTree& tree, Node* pivot) {
-        Node* R = pivot->right;
-    	
-        // Starts changing pivot and R of places
-        R->parent = pivot->parent;
-        if (pivot->parent) {
-            if (pivot->parent->left == pivot)
-                pivot->parent->left = R;
-            else
-                pivot->parent->right = R;
-        }
+		Node* L = pivot->left;
+		Node* grandpa = pivot->parent->parent;
+        Node* papa = pivot->parent;
+		
+		if (L != nullptr) L->parent = papa;
+		papa->right = L;
+		
     	
     	// Guarantees that the tree is still a BST
-    	if (R->left) {
-        R->left->parent = pivot;
-    	}
+    	// if (R->left!=nullptr) R->left->parent = pivot;
     	
+		pivot->parent = grandpa;
+		if (grandpa != nullptr) {
+			if(grandpa->left == papa) grandpa->left = pivot;
+			else grandpa->right = pivot;
+		}
+		
     	// Finishes changing pivot and R of places
-    	pivot->right = R->left;
-    	pivot->parent = R;
-    	
-    	if (pivot == tree.root) tree.root = R;
+    	pivot->left = papa;
+		papa->parent = pivot;
+		
+    	if (tree.root == papa) tree.root = pivot;
     	
     	// Updates the heights of the nodes
+    	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
     	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
-    	R->height = 1 + std::max(getHeight(R->left), getHeight(R->right));
     	
     }
 	
     void rightRotation(BinaryTree& tree, Node* pivot) {
-        Node* L = pivot->left;
-        
-        // Starts changing pivot and L of places
-        L->parent = pivot->parent;
-        if (pivot->parent) {
-            if (pivot->parent->left == pivot)
-                pivot->parent->left = L;
-            else
-                pivot->parent->right = L;
-        }
-    
-        // Guarantees that the tree is still a BST
-        if (L->right) L->right->parent = pivot;
-        
-        // Finishes changing pivot and L of places
-        pivot->left = L->right;
-        pivot->parent = L;
-        
-        if (pivot == tree.root) tree.root = L;
-
-        // Updates the heights of the nodes    
-        pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
-        L->height = 1 + std::max(getHeight(L->left), getHeight(L->right));
+		Node* R = pivot->right;
+		Node* grandpa = pivot->parent->parent;
+        Node* papa = pivot->parent;
+		
+		if (R != nullptr) R->parent = papa;
+		papa->left = R;
+		
+    	// Guarantees that the tree is still a BST
+    	// if (R->left!=nullptr) R->left->parent = pivot;
+    	
+		pivot->parent = grandpa;
+		if (grandpa != nullptr) {
+			if(grandpa->left == papa) grandpa->left = pivot;
+			else grandpa->right = pivot;
+		}
+		
+    	// Finishes changing pivot and R of places
+    	pivot->right = papa;
+		papa->parent = pivot;
+		
+    	if (tree.root == papa) tree.root = pivot;
+    	
+    	// Updates the heights of the nodes
+    	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
+    	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
     }
 	
     void balanceTree(BinaryTree& tree, Node* unbalancedNode) {
         if(tree.root == nullptr) return;
-        
         // In this case, the tree still balanced
-        if (unbalancedNode) return;    
-        
+		if (unbalancedNode == nullptr)  return;
+		
         // Cases of RR or LR rotations
-        if(bf(unbalancedNode)>1) {
-            if (bf(unbalancedNode->left)>0)
-                rightRotation(tree, unbalancedNode);
+        if(bf(unbalancedNode)<-1) {
+        
+			if (bf(unbalancedNode->left)<0)
+                rightRotation(tree, unbalancedNode->left); return;
             
-            if (bf(unbalancedNode->left)<0) {
-                leftRotation(tree, unbalancedNode->left);
+            if (bf(unbalancedNode->left)>0){
+                leftRotation(tree, unbalancedNode->left->right);
                 rightRotation(tree, unbalancedNode->left);
+				return;
             }
         }
-
-        // Cases of LL or RL rotations
-        if(bf(unbalancedNode)<0) {
-            if (bf(unbalancedNode->right)<0) leftRotation(tree, unbalancedNode->right);
-        	
-            if (bf(unbalancedNode->right)>0) {
-                rightRotation(tree, unbalancedNode->right);
+		// Cases of LL or RL rotations
+        if(bf(unbalancedNode)>1) {
+            if (bf(unbalancedNode->right)>0){ 
+				leftRotation(tree, unbalancedNode->right);
+				return;
+        	}
+            if (bf(unbalancedNode->right)<0) {
+                rightRotation(tree, unbalancedNode->right->left);
                 leftRotation(tree, unbalancedNode->right);
+				return;
             }
         }
-    }
+    
+	}
     
     InsertResult insert(BinaryTree& binary_tree, const std::string& word, int documentId) {
         InsertResult result;
@@ -130,18 +137,10 @@ namespace TREE::AVL {
                             found = true;
                             break;
                         }
-                    }
-                    
+                    } 
                     if (found == false) {
                         current->documentIds.push_back(documentId);
                     }
-
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    double duration = std::chrono::duration_cast < std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-    
-                    result.numComparisons = comparisons;
-                    result.executionTime = duration;
-                    return result;
                 }
             }
             newNode->parent = parent;
@@ -157,12 +156,19 @@ namespace TREE::AVL {
 			//Balancing moment
 			Node* unbalancedNode = parent;
 			
-			while(unbalancedNode != nullptr && std::abs(bf(unbalancedNode)) < 1)
+			
+			
+			while(unbalancedNode->parent != nullptr && std::abs(bf(unbalancedNode)) < 2)
 				unbalancedNode = unbalancedNode->parent;
 			
 			balanceTree(binary_tree, unbalancedNode);
 		}
+		
+		auto end_time = std::chrono::high_resolution_clock::now();
+		double duration = std::chrono::duration_cast < std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
 
-        return result;
+		result.numComparisons = comparisons;
+		result.executionTime = duration;
+		return result;
     }
 }
