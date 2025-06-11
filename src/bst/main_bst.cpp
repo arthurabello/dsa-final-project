@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 
     const auto overall_indexing_start_time = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::string> all_filenames = DATA::list_files_txt_in_path(dir_path);
+    std::vector<std::string> all_filenames = DATA::list_txt_files_in_path(dir_path);
     if (all_filenames.empty()) {
         std::cerr << "Error: No .txt files found in '" << dir_path << "'.\n";
         return 1;

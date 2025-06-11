@@ -29,7 +29,7 @@ namespace DATA {
 
     std::vector<TREE::Node*> buildNodes(std::string filename);
 
-    std::vector<std::string> list_files_txt_in_path(const std::string &dir_path);
+    std::vector<std::string> list_txt_files_in_path(const std::string &dir_path);
 
 /**
  * @brief Reads the entire content of a specified file into a string.
