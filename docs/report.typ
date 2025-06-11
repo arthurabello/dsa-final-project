@@ -176,67 +176,53 @@
 == Arthur Rabello Oliveira
 <section_task_division_arthur>
 
-Implemented and documented the following functions:
+Contributed with:
 
-```cpp
-BinaryTree* createTree(); //bst.cpp
-static std::string normalise(const std::string& w); //data.cpp
-std::vector<std::string> list_files_txt_in_path(const std::string &dir_path);
-SearchResult search(BinaryTree* binary_tree, const std::string& word); //tree_utils.cpp
+- Keeping the repository civilized (main-protecting rules, enforcing code reviews)
 
-```
+- Writing and documenting the `Makefile` for building the project
+
+- Writing the `README.md` and `report.typ`
+
+- Writing and documenting functions for the classic BST in `bst.cpp`
 
 == Gabrielle Mascarelo
 <section_task_division_gabrielle>
 
-Implemented and documented the following functions:
+Contributed with:
 
-```cpp
-std::string read_file_content(const std::string& full_file_path); //data.cpp
-int main(int argc, char *argv[]); //main_bst.cpp
-```
+- Writing and documenting functions to read files in `data.cpp`
+
+- Structuring statistics in the CLI 
 
 == Eliane Moreira
 <section_task_division_eliane>
 
-Implemented and documented the following functions:
+Contributed with:
 
-```cpp
-InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId); //bst.cpp
-void updateHeightUp(Node* node); //tree_utils.cpp
+- Testing all function related to the BST
 
-void test_one_insertion(); //bst_test.cpp
-void test__left_tree_insertion(); //bst_test.cpp
-void test_right_tree_insertion(); //bst_test.cpp
-void test_generic_tree_insertion(); //bst_test.cpp
-void test_numbers_and_words_tree_insertion(); //bst_test.cpp
-void test_different_words_same_doc_tree_insertion(); //bst_test.cpp
-void test_same_word_same_doc_tree_insertion(); //bst_test.cpp
-void test_same_word_different_docs_insertion(); //bst_test.cpp
-void test_similar_words_insertion();
-int main(); //bst_test.cpp
-int main(); //test_tree_utils.cpp
+- Writing and documenting functions for `tree_utils.cpp`
 
-```
+- Fixing bugs in `data.h`
 
 == Nícolas Spaniol
 <section_task_division_nicolas>
 
+Contributed with:
+
+- Code reviews and suggestions for improvements in the codebase.
+
+- Built from scratch the JavaScript visualization of all trees
+
 == Gabriel Carneiro
 <section_task_division_gabriel>
 
-Implemented and documented the following functions:
+Contributed with:
 
-```cpp
-Node* createNode(std::string word, std::vector<int>documentIds, int color = 0); //tree_utils.cpp
-std::vector<std::string> tokenize(std::string filename); //data.cpp
-void destroy(BinaryTree* binary_tree); //tree_utils.cpp
-int calculateHeight(Node* root); //tree_utils.cpp
-void test_createNode(); //test_tree_utils.cpp
-void test_createTree(); //test_tree_utils.cpp
-void test_calculateHeight(); //test_tree_utils.cpp
-void test_updateHeightUp(); //test_tree_utils.cpp
+- Writing and documenting functions for the classic BST
 
-```
+- Writing and documenting functions for the AVL Tree
 
+- Testing functions for `tree_utils.cpp`
 
