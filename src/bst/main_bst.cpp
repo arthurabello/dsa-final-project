@@ -18,6 +18,7 @@ int main(int argc, char* argv[]) {
     const string directory   { argv[3] };
 
     int numFiles = CLI::validateNumFiles(numFilesStr);
+    if (numFiles < 0) return 1;
 
     cout << CLI::colorize(CLI::color::bold, "Command: ") << command << ", "
         << CLI::colorize(CLI::color::bold, "Documents: ") << numFiles << ", "
