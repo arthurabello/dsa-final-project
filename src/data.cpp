@@ -23,7 +23,8 @@ namespace DATA {
         return out;
     }
 
-    std::vector<std::string> tokenize(std::string filename){
+    // Breaks a text file into a vector of normalized "words"
+    std::vector<std::string> tokenize(std::string filename) {
         std::vector<std::string> words;
         
         std::ifstream archive(filename);
@@ -45,8 +46,9 @@ namespace DATA {
         return words;
     }
 
+    // Finds all files inside a directory and returns its names
     std::vector<std::string> list_txt_files_in_path(const std::string &dir_path) {
-        std::vector<std::string> txt_files;
+        std::vector<std::string> files;
 
         namespace fs = std::filesystem; // Shortcut
 
@@ -54,19 +56,19 @@ namespace DATA {
         fs::path path(dir_path);
         if (fs::exists(path) && fs::is_directory(path)) {
             // Iterates through the directory
-            for (const auto& directory_entry : fs::directory_iterator(path)) {
-                if (directory_entry.is_regular_file()) {
-                    auto filename = directory_entry.path().filename().string();
-                    auto ext = directory_entry.path().extension().string();
+            for (const auto& dir_entry : fs::directory_iterator(path)) {
+                if (dir_entry.is_regular_file()) {
+                    auto filename = dir_entry.path().filename().string();
+                    auto ext = dir_entry.path().extension().string();
 
                     if (ext == ".txt") {
-                        txt_files.push_back(filename);
+                        files.push_back(filename);
                     }
                 }
             }
 
         }
 
-        return txt_files;
+        return files;
     }
 }
