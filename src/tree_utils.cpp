@@ -129,7 +129,7 @@ namespace TREE {
         updateHeightUp(node->parent);
     }
 
-    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {//eliane
+    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {
         std::ofstream file(filename);
         
         if (!file.is_open()) {
@@ -170,7 +170,7 @@ namespace TREE {
         std::cout << "Statistics saved to: " << filename << std::endl;
     }
 
-    int calculateMinDepth(Node* root) {//eliane
+    int calculateMinDepth(Node* root) {
         if (root == nullptr) {
             return 0;
         }
@@ -197,7 +197,7 @@ namespace TREE {
         return 1 + std::min(leftDepth, rightDepth);
     }
 
-    int countNodes(Node* root) {//eliane
+    int countNodes(Node* root) {
         if (root == nullptr) {
             return 0;
         }
@@ -205,7 +205,7 @@ namespace TREE {
         return 1 + countNodes(root->left) + countNodes(root->right);
     }
 
-    double getAverageInsertionTime(const AggregateStats& stats) {//eliane
+    double getAverageInsertionTime(const AggregateStats& stats) {
         if (stats.total_words_processed == 0){
             return 0.0;
         } 
@@ -213,7 +213,7 @@ namespace TREE {
         return stats.sum_of_insertion_times_ms / stats.total_words_processed;
     }
 
-    double getAverageComparisonsPerInsertion(const AggregateStats& stats) {//eliane
+    double getAverageComparisonsPerInsertion(const AggregateStats& stats) {
         if (stats.total_words_processed == 0) {
             return 0.0;
         }
@@ -221,7 +221,7 @@ namespace TREE {
         return static_cast<double>(stats.total_comparisons_insertion) / stats.total_words_processed;
     }
 
-    double getAverageSearchTime(const AggregateStats& stats) {//eliane
+    double getAverageSearchTime(const AggregateStats& stats) {
         if (stats.total_searches == 0) {
             return 0.0;
         }
@@ -229,7 +229,7 @@ namespace TREE {
         return stats.total_search_time_ms / stats.total_searches;
     }
 
-    double getAverageComparisonsPerSearch(const AggregateStats& stats) {//eliane
+    double getAverageComparisonsPerSearch(const AggregateStats& stats) {
         if (stats.total_searches == 0){
             return 0.0;
         }
@@ -237,35 +237,35 @@ namespace TREE {
         return static_cast<double>(stats.total_comparisons_search) / stats.total_searches;
     }
 
-    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree) {//eliane
+    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree) {
         stats.final_node_count = countNodes(tree->root);
     }
 
-    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree) {//eliane
+    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree) {
         stats.final_tree_height = calculateHeight(tree->root);
     }
 
-    void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree) {//eliane
+    void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree) {
         stats.final_tree_min_depth = calculateMinDepth(tree->root);
     }
 
-    void updateAverageInsertionTime(AggregateStats& stats) {//eliane
+    void updateAverageInsertionTime(AggregateStats& stats) {
         stats.average_insertion_time_ms = getAverageInsertionTime(stats);
     }
 
-    void updateAverageComparisonsPerInsertion(AggregateStats& stats) {//eliane
+    void updateAverageComparisonsPerInsertion(AggregateStats& stats) {
         stats.average_comparisons_insertion = getAverageComparisonsPerInsertion(stats);
     }
 
-    void updateAverageSearchTime(AggregateStats& stats) {//eliane
+    void updateAverageSearchTime(AggregateStats& stats) {
         stats.average_search_time_ms = getAverageSearchTime(stats);
     }
 
-    void updateAverageComparisonsPerSearch(AggregateStats& stats) {//eliane
+    void updateAverageComparisonsPerSearch(AggregateStats& stats) {
         stats.average_comparisons_search = getAverageComparisonsPerSearch(stats);
     }
 
-    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree) {//eliane
+    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree) {
         updateFinalNodeCount(stats, tree);
         updateFinalTreeHeight(stats, tree);
         updateFinalTreeMinDepth(stats, tree);
