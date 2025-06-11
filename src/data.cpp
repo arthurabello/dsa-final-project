@@ -2,7 +2,7 @@
 #include <vector>
 #include "data.h"
 #include <string>
-#include <filesystem>
+#include <fstream>
 #include <cctype>
 
 namespace DATA {
@@ -29,7 +29,7 @@ namespace DATA {
         std::ifstream archive(filename);
         
         if (!archive.is_open()) {
-            std::cerr << "Erro ao abrir o arquivo!" << std::endl;
+            std::cerr << "Error: opening file: " << filename << std::endl;
             return std::vector<std::string>();
         }
         
@@ -52,26 +52,22 @@ namespace DATA {
     }
 
     // Finds all files inside a directory and returns its names
-    std::vector<std::string> list_txt_files_in_path(const std::string &dir_path) {
+    std::vector<std::string> list_txt_files_in_path(const std::string& filename) {
         std::vector<std::string> files;
+        int index = 1;
 
-        namespace fs = std::filesystem; // Shortcut
+        while(True){
+            std::string file_name = filename + std::to_string(index) + ".txt";
+            std::ifstream file(file_name);
 
-        // Checks if path exists and is a directory
-        fs::path path(dir_path);
-        if (fs::exists(path) && fs::is_directory(path)) {
-            // Iterates through the directory
-            for (const auto& dir_entry : fs::directory_iterator(path)) {
-                if (dir_entry.is_regular_file()) {
-                    auto filename = dir_entry.path().filename().string();
-                    auto ext = dir_entry.path().extension().string();
-
-                    if (ext == ".txt") {
-                        files.push_back(filename);
-                    }
-                }
+            if (!file.is_open()) {
+                std::cerr << "Error: unable to open file " << file_name << " for reading." << std::endl;
+                break;
             }
 
+            files.push_back(file_name);
+            file.close();
+            index++;
         }
 
         return files;
