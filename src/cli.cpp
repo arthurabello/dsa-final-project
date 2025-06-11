@@ -176,7 +176,7 @@ namespace CLI {
         }
 
         const int numFilesToProcess =
-            min(static_cast<int>(filenames.size()), numFiles);
+            min(filenames.size(), (unsigned long) numFiles);
 
         stats.num_docs_indexed = numFilesToProcess;
         cout << "Processing the first " << numFilesToProcess << " docs." << endl;
@@ -184,26 +184,21 @@ namespace CLI {
         for (int i = 0; i < numFilesToProcess; ++i) {
             const string& filename = filenames[i];
 
-            string fullFilePath = directory;
-            if (!directory.empty() && directory.back() != '/' && directory.back() != '\\')
-                fullFilePath += '/';
-            fullFilePath += filename;
-
             // Get the document ID from the filename
             int documentId = -1;
             try {
                 const size_t dotPos = filename.find('.');
-                if (dotPos != string::npos)
-                    documentId = stoi(filename.substr(0, dotPos));
+                const size_t slashPos = filename.find_last_of('/');
+                documentId = stoi(filename.substr(slashPos + 1, dotPos));
             } catch (...) {
                 cerr << "Warning: cannot parse doc-id for '" << filename
                     << "'. Using -1." << endl;
             }
 
-            const vector<string> words_in_doc = DATA::tokenize(fullFilePath);
+            const vector<string> words_in_doc = DATA::tokenize(filename);
 
             if (words_in_doc.empty()) {
-                cerr << "Warning: no tokens in file: " << fullFilePath << endl;
+                cerr << "Warning: no tokens in file: " << filename << endl;
                 continue;
             }
 

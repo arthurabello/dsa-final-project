@@ -52,22 +52,27 @@ namespace DATA {
     }
 
     // Finds all files inside a directory and returns its names
-    std::vector<std::string> list_txt_files_in_path(const std::string& filename) {
+    std::vector<std::string> list_txt_files_in_path(const std::string& path) {
+        std::string mutPath = path;
+
         std::vector<std::string> files;
         int index = 1;
 
-        while(true){
-            std::string file_name = filename + std::to_string(index) + ".txt";
-            std::ifstream file(file_name);
+        if (mutPath.back() != '/' && mutPath.back() != '\\')
+            mutPath += "/";
+
+        for (int index = 1; true; index++) {
+            std::string filename = mutPath + std::to_string(index) + ".txt";
+            std::ifstream file(filename);
 
             if (!file.is_open()) {
-                std::cerr << "Error: unable to open file " << file_name << " for reading." << std::endl;
+                std::cerr << "Unable to open file " << filename
+                    << " for reading. Stopping." << std::endl;
                 break;
             }
 
-            files.push_back(file_name);
+            files.push_back(filename);
             file.close();
-            index++;
         }
 
         return files;
