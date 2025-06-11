@@ -263,32 +263,6 @@ namespace TREE {
         stats.relative_balance = getRelativeBalance(stats);
         stats.balance_difference = getBalanceDifference(stats);
 
-    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree) {
-        stats.final_node_count = countNodes(tree->root);
-    }
-
-    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree) {
-        stats.final_tree_height = calculateHeight(tree->root);
-    }
-
-    void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree) {
-        stats.final_tree_min_depth = calculateMinDepth(tree->root);
-    }
-
-    void updateAverageInsertionTime(AggregateStats& stats) {
-        stats.average_insertion_time_ms = getAverageInsertionTime(stats);
-    }
-
-    void updateAverageComparisonsPerInsertion(AggregateStats& stats) {
-        stats.average_comparisons_insertion = getAverageComparisonsPerInsertion(stats);
-    }
-
-    void updateAverageSearchTime(AggregateStats& stats) {
-        stats.average_search_time_ms = getAverageSearchTime(stats);
-    }
-
-    void updateAverageComparisonsPerSearch(AggregateStats& stats) {
-        stats.average_comparisons_search = getAverageComparisonsPerSearch(stats);
     }
 }
 
