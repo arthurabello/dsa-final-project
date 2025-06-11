@@ -12,7 +12,7 @@ namespace TREE {
      * The BST will have substructs: The RBT and AVL tree
      */
     
-    struct Node { // spaniol: talk about inheritance
+    struct Node {
         std::string word;
         std::vector<int> documentIds;
         Node* parent;

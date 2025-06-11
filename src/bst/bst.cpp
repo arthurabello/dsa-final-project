@@ -13,7 +13,7 @@ namespace TREE::BST {
         Node* newNode = nullptr;
         
         if(binary_tree->root == nullptr){
-            newNode = createNode(word, {documentId});
+            *newNode = createNode(word, {documentId});
             binary_tree->root = newNode;
         } else {
             Node* current = binary_tree->root;
@@ -51,7 +51,7 @@ namespace TREE::BST {
                 }
             }
 
-            newNode = createNode(word, {documentId});
+            *newNode = createNode(word, {documentId});
             newNode->parent = parent;
 
             if(word < parent->word){
@@ -59,9 +59,7 @@ namespace TREE::BST {
             } else {
                 parent->right = newNode;
             }
-		}
-		
-		
+		    }
 
         auto end_time = std::chrono::high_resolution_clock::now();
         double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;

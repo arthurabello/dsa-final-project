@@ -4,7 +4,8 @@
 #include <cstring>          
 #include <algorithm>
 
-    Node* createNode(std::string word, std::vector<int>documentIds, int color = 0) { //sets for 0 if it the tree doesnt support red-black, gabriel carneiro
+namespace TREE {
+    Node& createNode(std::string word, std::vector<int>documentIds, int color) {
         
         Node* newNode = new Node;
         newNode->word = word;
@@ -14,7 +15,7 @@
         newNode->right = nullptr;
         newNode->height = 0; //height of a new node is 0
         newNode->isRed = color; //0 for red, 1 for black
-        return newNode;
+        return *newNode;
     }
 
     BinaryTree* createTree(){ //artu
@@ -100,7 +101,7 @@
         return height;
     }
 
-    void updateHeightUp(Node* node) {//eliane
+    void updateHeightUp(Node* node) {
         if (node == nullptr) {
             return;
         }
@@ -120,7 +121,7 @@
             rightHeight = node->right->height;
         }
 
-        int maxHeight = std::max(leftRight,rightHeight)
+        int maxHeight = std::max(leftHeight, rightHeight);
 
         int newHeight = 1+maxHeight;
 
@@ -133,5 +134,4 @@
         // Calculates the height of the father by a recursive call
         updateHeightUp(node->parent);
     }
-
 }
