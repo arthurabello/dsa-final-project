@@ -59,8 +59,8 @@ namespace DATA {
         int index = std::stoi(filename.substr(0, filename.find('.')));
 
         for (std::size_t i = 0; i < fileWords.size(); ++i){
-            TREE::Node node = TREE::createNode(fileWords[i],{index});
-            nodeList.push_back(&node);
+            TREE::Node* node = TREE::createNode(fileWords[i],{index});
+            nodeList.push_back(node);
         }
 
         return nodeList;

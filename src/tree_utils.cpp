@@ -16,7 +16,7 @@ namespace TREE{
         newNode->right = nullptr;
         newNode->height = 0; //height of a new node is 0
         newNode->isRed = color; //0 for red, 1 for black
-        return *newNode;
+        return newNode;
     }
 
     BinaryTree* createTree(){ 

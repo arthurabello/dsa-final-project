@@ -100,10 +100,10 @@ namespace TREE::AVL {
         int comparisons = 0;
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        Node newNode = createNode(word, {documentId});
+        Node* newNode = createNode(word, {documentId});
 
         if (binary_tree.root == nullptr) {
-            binary_tree.root = &newNode;
+            binary_tree.root = newNode;
         }
         else {
             // Adds the node to the tree as usual
@@ -144,15 +144,15 @@ namespace TREE::AVL {
                     return result;
                 }
             }
-            newNode.parent = parent;
+            newNode->parent = parent;
 
             if(word < parent->word){
-                parent->left = &newNode;
+                parent->left = newNode;
             } else {
-                parent->right = &newNode;
+                parent->right = newNode;
             }
 			
-			updateHeightUp(&newNode);
+			updateHeightUp(newNode);
 			
 			//Balancing moment
 			Node* unbalancedNode = parent;
