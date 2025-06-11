@@ -2,9 +2,8 @@
 #include <vector>
 #include "data.h"
 #include <string>
-#include <filesystem>
+#include <fstream>
 #include <cctype>
-#include <algorithm>
 
 namespace DATA {
     // Makes a string lowercase and removes non-alphanumeric characters
@@ -30,16 +29,22 @@ namespace DATA {
         std::ifstream archive(filename);
         
         if (!archive.is_open()) {
-            std::cerr << "Erro ao abrir o arquivo!" << std::endl;
+            std::cerr << "Error: opening file: " << filename << std::endl;
             return std::vector<std::string>();
         }
         
         std::string word;
         while(archive >> word) {
             // Verifies if the word isn't already in the vector
-            if(std::find(words.begin(), words.end(), word) == words.end()) {
-                words.push_back(normalise(word));
+            bool found = false;
+            for (auto it = words.begin(); it != words.end(); ++it) {
+                if (*it == word) {
+                    found = true;
+                    break;
+                }
             }
+
+            if (!found) words.push_back(normalise(word));
         }
 
         archive.close();
@@ -47,26 +52,27 @@ namespace DATA {
     }
 
     // Finds all files inside a directory and returns its names
-    std::vector<std::string> list_txt_files_in_path(const std::string &dir_path) {
+    std::vector<std::string> list_txt_files_in_path(const std::string& path) {
+        std::string mutPath = path;
+
         std::vector<std::string> files;
+        int index = 1;
 
-        namespace fs = std::filesystem; // Shortcut
+        if (mutPath.back() != '/' && mutPath.back() != '\\')
+            mutPath += "/";
 
-        // Checks if path exists and is a directory
-        fs::path path(dir_path);
-        if (fs::exists(path) && fs::is_directory(path)) {
-            // Iterates through the directory
-            for (const auto& dir_entry : fs::directory_iterator(path)) {
-                if (dir_entry.is_regular_file()) {
-                    auto filename = dir_entry.path().filename().string();
-                    auto ext = dir_entry.path().extension().string();
+        for (int index = 1; true; index++) {
+            std::string filename = mutPath + std::to_string(index) + ".txt";
+            std::ifstream file(filename);
 
-                    if (ext == ".txt") {
-                        files.push_back(filename);
-                    }
-                }
+            if (!file.is_open()) {
+                std::cerr << "Unable to open file " << filename
+                    << " for reading. Stopping." << std::endl;
+                break;
             }
 
+            files.push_back(filename);
+            file.close();
         }
 
         return files;

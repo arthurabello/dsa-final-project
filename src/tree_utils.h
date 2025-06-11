@@ -1,9 +1,10 @@
-#ifndef TREEUTILS_H
+#ifndef TREEUTILS_H  
 #define TREEUTILS_H
 
 #include <iostream>
 #include <vector>
-#include <fstream>
+#include <string>
+#include <fstream>  
 
 namespace TREE {
     /**

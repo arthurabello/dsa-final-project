@@ -33,10 +33,10 @@ namespace DATA {
      * extension. Returns an empty vector if the directory cannot be accessed or
      * no .txt files are found.
      *
-     * @param directory_path The path to the directory to scan
+     * @param path The path to the directory to scan
      * @returns A vector of .txt filenames
      */
-    std::vector<std::string> list_txt_files_in_path(const std::string &dir_path);
+    std::vector<std::string> list_txt_files_in_path(const std::string &path);
 }
 
 #endif
