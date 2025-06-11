@@ -79,8 +79,7 @@ namespace DATA {
                 if (directory_entry.is_regular_file()) {
                     auto filename = directory_entry.path().filename().string();
                     auto ext = directory_entry.path().extension().string();
-                    if (ext.size() == 4 && //case-insensitive check for ".txt"
-                        (ext == ".txt" || ext == ".TXT" || ext == ".Txt" || ext == ".tXt" || ext == ".txT" /* etc */)) {
+                    if (ext == ".txt") {
                         txt_files.push_back(filename);
                     }
                 }
