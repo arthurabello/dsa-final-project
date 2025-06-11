@@ -1,97 +1,110 @@
 #include "../tree_utils.cpp"
 #include <chrono>
 
-using namespace std::chrono;
 
 namespace TREE::AVL {
 	
+	int getHeight(Node* node) {
+		return node ? node->height:0;
+	}
+	
 	int bf(Node* node) {//gabriel carneiro
-		int lHeight,rHeight;
-		
-		lHeight = node->left == nullptr? 0 : node->left->height; 
-		rHeight = node->right == nullptr? 0 : node->right->height;		
-		
-		return lHeight - rHeight;
+		return getHeight(node->left)-getHeight(node->right);
 	}
 	
-	//I gotta calculate the heights missing here
-	void transplant(Node* A, Node* B) {//srry Mateus I stole your idea;  gabriel carneiro
-		if (B != A->left && B != A->right) return;
+	void leftRotation(BinaryTree& tree, Node* pivot) {//gabriel carneiro
 		
-		Node* grandpa = A->parent;
+		Node* R = pivot->right;
 		
-		if (grandpa == nullptr) {
-			if (B == A->left) A->left = nullptr;
-			else if (B == A->right) A->right = nullptr;
+		//Start changing pivot and R of places.
+		R->parent = pivot->parent;
+		if (pivot->parent) {
+			if (pivot->parent->left == pivot) pivot->parent->left = R;
+			else pivot->parent->right = R;
 		}
 		
-		if (A == grandpa->left) {
-			B = grandpa->left;
+		//Garantees that still a BST.
+		if(R->left){
+			R->left->parent = pivot;
 		}
-		else if (A == grandpa->right) {
-			B = grandpa->right;
-		}
+		
+		//Finishes changing pivot and R of places.
+		pivot->right = R->left;
+		pivot->parent = R;
+		
+		if (pivot == tree.root) tree.root = R;
+		
+		//Update the heights of the nodes.
+		pivot->height = 1+std::max(getHeight(pivot->left),getHeight(pivot->right));
+		R->height = 1+std::max(getHeight(R->left),getHeight(R->right));
+		
 	}
 	
-	void leftRotation(Node* pivot) {//gabriel carneiro
-		Node* papa = pivot->parent;
-		papa->right = pivot->left;
-		transplant(papa,pivot);
-		pivot->left = papa;
+	void rightRotation(BinaryTree& tree, Node* pivot) {//gabriel carneiro
+		Node* L = pivot->left;
+		
+		//Start changing pivot and L of places.
+		L->parent = pivot->parent;
+		if (pivot->parent) {
+			if (pivot->parent->left == pivot) pivot->parent->left = L;
+			else pivot->parent->right = L;
+		}
+		
+		//Garantees that still a BST.
+		if (L->right) L->right->parent = pivot;
+		
+		//Finishes changing pivot and L of places.
+		pivot->left = L->right;
+		pivot->parent = L;
+		
+		if (pivot == tree.root) tree.root = L;
+
+		//Update the heights of the nodes.		
+		pivot->height = 1+std::max(getHeight(pivot->left),getHeight(pivot->right));
+		L->height = 1+std::max(getHeight(L->left),getHeight(L->right));
 	}
 	
-	void rightRotation(Node* pivot) {//gabriel carneiro
-		Node* papa = pivot->parent;
-		papa->left = pivot->right;
-		transplant(papa,pivot);
-		pivot->right = papa;
-	}
-	void balanceTree(Node* desbalancedNode) {//gabriel carneiro
-		// I think I gotta fix the heights of the nodes bruh.
-		if(desbalancedNode == nullptr) return;
+	void balanceTree(BinaryTree& tree,Node* desbalancedNode) {//gabriel carneiro
+		if(tree.root == nullptr) return;
 		
-		if (std::abs(bf(desbalancedNode))<=1) return;		
+		//In this case, the tree still balanced.
+		if (desbalancedNode) return;		
 		
-		if(bf(desbalancedNode)>0) {
-			if (bf(desbalancedNode->left)>0) {
-				rightRotation(desbalancedNode->left);
-				
-			}
+		//Cases of RR or LR rotations.
+		if(bf(desbalancedNode)>1) {
+			if (bf(desbalancedNode->left)>0) rightRotation(tree,desbalancedNode);
+			
 			if (bf(desbalancedNode->left)<0) {
-				leftRotation(desbalancedNode->left->right);
-				rightRotation(desbalancedNode->left);
+				leftRotation(tree,desbalancedNode->left);
+				rightRotation(tree,desbalancedNode->left);
 			}
 		}
-		
-		if(bf(grandpa)<0) {
-			if (bf(grandpa->right)<0) leftRotation(grandpa->right);
+		//Cases of LL or RL rotations.
+		if(bf(desbalancedNode)<0) {
+			if (bf(desbalancedNode->right)<0) leftRotation(tree,desbalancedNode->right);
 			
-			if (bf(grandpa->right)>0) {
-				rightRotation(grandpa->right->left);
-				leftRotation(grandpa->right);
+			if (bf(desbalancedNode->right)>0) {
+				rightRotation(tree,desbalancedNode->right);
+				leftRotation(tree,desbalancedNode->right);
 			}
 			
 		}
-		
-		//else if (bf(grandpa)*bf(grandpa->left)>0) rightRotation(grandpa->left);
-		//else if (bf(grandpa)*bf(grandpa->right)>0) leftRotation(grandpa->right);
-		
 	}
-	
-	
+		
     InsertResult insert(BinaryTree& binary_tree, const std::string& word, int documentId) {
         InsertResult result;
         int comparisons = 0;
-        auto start_time = high_resolution_clock::now();
+        auto start_time = std::chrono::high_resolution_clock::now();
 
-        Node& newNode = createNode(word, {documentId});
+        Node* newNode = createNode(word, {documentId});
 
         if(binary_tree.root == nullptr) {
-            binary_tree.root = &newNode;
-        } else {
+            binary_tree.root = newNode;
+        } else {//Add normaly the node to the tree.
             Node* current = binary_tree.root;            
 			Node* parent = nullptr;
-            while (current != nullptr) {
+			
+            while (current != nullptr) {//search for the word.
 				comparisons++;
 				parent = current;
 				
@@ -101,7 +114,8 @@ namespace TREE::AVL {
                 }
 				else if(word > current->word) {
 					current = current->right;
-				} else {
+					continue;
+				} else {//if its already in the tree, updates the documentsId.
 					bool found = false;
                     for(size_t i = 0; i < current->documentIds.size(); i++){
                         if (current->documentIds[i] == documentId) {
@@ -124,7 +138,6 @@ namespace TREE::AVL {
 				}
 				
             }
-			newNode = createNode(word, {documentId});
             newNode->parent = parent;
 
             if(word < parent->word){
@@ -133,15 +146,15 @@ namespace TREE::AVL {
                 parent->right = newNode;
             }
 			
-			updateHeightUp(newNode); //idea: maybe i'll already balance the tree here?
+			updateHeightUp(newNode);
 			
-			Node* desbalance = newNode;
 			
-			while(std::abs(bf(desbalance))<=1) desbalance = desbalance ->parent;
+			//Balancing moment
+			Node* desbalancedNode = parent;
 			
-			balanceTree(desbalance); //implement this function, with all the rotation combinations possible
-		
-		
+			while(desbalancedNode != nullptr && std::abs(bf(desbalancedNode))<1) desbalancedNode = desbalancedNode->parent;
+			
+			balanceTree(binary_tree,desbalancedNode);	
 		}
 
         return result;
