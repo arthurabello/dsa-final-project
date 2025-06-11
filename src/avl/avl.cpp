@@ -151,18 +151,17 @@ namespace TREE::AVL {
             } else {
                 parent->right = &newNode;
             }
-
-            TREE:updateHeightUp(&newNode);
-    	
-            // Balancing moment
-            Node* unbalancedNode = parent;
-
-            while(unbalancedNode != nullptr && std::abs(bf(unbalancedNode)) < 1) {
-                unbalancedNode = unbalancedNode->parent;
-            }
-    	
-            balanceTree(binary_tree, unbalancedNode);	
-        }
+			
+			updateHeightUp(&newNode);
+			
+			//Balancing moment
+			Node* unbalancedNode = parent;
+			
+			while(unbalancedNode != nullptr && std::abs(bf(unbalancedNode)) < 1)
+				unbalancedNode = unbalancedNode->parent;
+			
+			balanceTree(binary_tree, unbalancedNode);
+		}
 
         return result;
     }

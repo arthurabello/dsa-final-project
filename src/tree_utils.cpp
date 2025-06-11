@@ -5,10 +5,9 @@
 #include <algorithm>
 #include <fstream>
 
-namespace TREE {
-
-    Node& createNode(std::string word, std::vector<int>documentIds, int color) { //sets for 0 if it the tree doesnt support red-black
-        
+namespace TREE{
+	// Sets for 0 if it the tree doesnt support red-black
+    Node* createNode(std::string word, std::vector<int>documentIds, int color) {
         Node* newNode = new Node;
         newNode->word = word;
         newNode->documentIds = documentIds;
@@ -67,7 +66,6 @@ namespace TREE {
             deletionPostOrder(n->right);
             delete n;
         }
-        delete n;
     }
 	
     void destroy(BinaryTree* binary_tree){
@@ -111,13 +109,8 @@ namespace TREE {
         } else {
             rightHeight = node->right->height;
         }
-
-        int maxHeight;
-        if (leftHeight > rightHeight) {
-            maxHeight = leftHeight;
-        } else {
-            maxHeight = rightHeight;
-        }
+		
+        int maxHeight = std::max(leftHeight,rightHeight);
 
         int newHeight = 1 + maxHeight;
 
