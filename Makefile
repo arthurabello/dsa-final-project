@@ -6,7 +6,7 @@ INC_DIRS  := -Isrc               # header search path
 #───────────── Layout ─────────────
 OBJ_DIR   := makemagic/obj
 BIN_DIR   := makemagic/bin
-COMMON_SRC:= src/data.cpp src/tree_utils.cpp
+COMMON_SRC:= src/data.cpp src/tree_utils.cpp src/cli.cpp
 
 #───────────── BST target ─────────────
 BST_SRC   := $(COMMON_SRC) \

@@ -4,7 +4,6 @@
 #include <string>
 #include <filesystem>
 #include <cctype>
-#include <algorithm>
 
 namespace DATA {
     // Makes a string lowercase and removes non-alphanumeric characters
@@ -37,9 +36,15 @@ namespace DATA {
         std::string word;
         while(archive >> word) {
             // Verifies if the word isn't already in the vector
-            if(std::find(words.begin(), words.end(), word) == words.end()) {
-                words.push_back(normalise(word));
+            bool found = false;
+            for (auto it = words.begin(); it != words.end(); ++it) {
+                if (*it == word) {
+                    found = true;
+                    break;
+                }
             }
+
+            if (!found) words.push_back(normalise(word));
         }
 
         archive.close();
