@@ -1,13 +1,14 @@
 #include "tree_utils.h"
 #include <vector>
 #include <chrono>
-#include <cstring>          
+#include <cstring>
 #include <algorithm>
 #include <fstream>
+
 namespace TREE {
 
     Node* createNode(std::string word, std::vector<int>documentIds, int color) { //sets for 0 if it the tree doesnt support red-black
-        
+
         Node* newNode = new Node;
         newNode->word = word;
         newNode->documentIds = documentIds;
@@ -19,28 +20,28 @@ namespace TREE {
         return newNode;
     }
 
-    BinaryTree* createTree(){ 
+    BinaryTree* createTree(){
         BinaryTree* newBinaryTree = new BinaryTree{nullptr};
         return newBinaryTree;
     }
 
     SearchResult search(BinaryTree* binary_tree, const std::string& word) {
         auto start_time = std::chrono::high_resolution_clock::now(); //start measuring time
-        
+
         if (binary_tree == nullptr || binary_tree->root == nullptr) {
             auto end_time = std::chrono::high_resolution_clock::now(); //done lol
             double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
             return {0, {}, duration, 0};
-            
+
         } else {
             Node* current_node = binary_tree->root;
             int number_of_comparisons = 0;
-            
+
             while (current_node != nullptr) {
                 number_of_comparisons++;
-                
+
                 int compareResult = strcmp(word.c_str(), current_node->word.c_str());
-                
+
                 if (compareResult == 0) { //found!
                     auto end_time = std::chrono::high_resolution_clock::now();
                     double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
@@ -52,7 +53,7 @@ namespace TREE {
                     current_node = current_node->right; //go right because word is bigger
                 }
             }
-            
+
             //if word not found
             auto end_time = std::chrono::high_resolution_clock::now();
             double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
@@ -68,7 +69,7 @@ namespace TREE {
 		}
 		delete n;
 	}
-	
+
     void destroy(BinaryTree* binary_tree){
         Node* root = binary_tree->root;
 		deletionPostOrder(root);
@@ -78,13 +79,13 @@ namespace TREE {
     int calculateHeight(Node* root){
         //Treats the case in which the root is empty.
         if(root == nullptr) return 0;
-        
+
         //Copies the left subtree.
         Node* leftNode = root->left;
-        
+
         //Copies the right subtree.
         Node* rightNode = root->right;
-        
+
         //Calculate the height of the tree by a recursive call.
         int height = 1 + std::max(calculateHeight(rightNode),calculateHeight(leftNode));
 
@@ -130,9 +131,9 @@ namespace TREE {
         updateHeightUp(node->parent);
     }
 
-    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {//eliane
+    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {
         std::ofstream file(filename);
-        
+
         if (!file.is_open()) {
             std::cerr << "Error: Unable to open file " << filename << " for writing.\n";
             return;
@@ -142,7 +143,7 @@ namespace TREE {
         file << "tree_type,num_docs_indexed,"
             << "total_indexing_time_ms,total_words_processed,total_comparisons_insertion,sum_of_insertion_times_ms,max_insertion_time_ms,"
             << "total_search_time_ms,total_searches,total_comparisons_search,sum_of_search_times_ms,max_search_time_ms,"
-            << "final_node_count,final_tree_height,final_tree_min_depth,"
+            << "final_node_count,final_tree_height,final_tree_min_depth,relative_balance,balance_difference"
             << "average_insertion_time_ms,average_comparisons_insertion,average_search_time_ms,average_comparisons_search\n";
 
         // Data
@@ -161,6 +162,8 @@ namespace TREE {
             << stats.final_node_count << ","
             << stats.final_tree_height << ","
             << stats.final_tree_min_depth << ","
+            << stats.relative_balance << ","
+            << stats.balance_difference << ","
             << stats.average_insertion_time_ms << ","
             << stats.average_comparisons_insertion << ","
             << stats.average_search_time_ms << ","
@@ -171,14 +174,14 @@ namespace TREE {
         std::cout << "Statistics saved to: " << filename << std::endl;
     }
 
-    int calculateMinDepth(Node* root) {//eliane
+    int calculateMinDepth(Node* root) {
         if (root == nullptr) {
             return 0;
         }
 
         // If is a leaf
         if (root->left == nullptr && root->right == nullptr) {
-            return 1;
+            return 0;
         }
 
         // Recurse only on the right subtree
@@ -198,7 +201,7 @@ namespace TREE {
         return 1 + std::min(leftDepth, rightDepth);
     }
 
-    int countNodes(Node* root) {//eliane
+    int countNodes(Node* root) {
         if (root == nullptr) {
             return 0;
         }
@@ -206,15 +209,15 @@ namespace TREE {
         return 1 + countNodes(root->left) + countNodes(root->right);
     }
 
-    double getAverageInsertionTime(const AggregateStats& stats) {//eliane
+    double getAverageInsertionTime(const AggregateStats& stats) {
         if (stats.total_words_processed == 0){
             return 0.0;
-        } 
-        
+        }
+
         return stats.sum_of_insertion_times_ms / stats.total_words_processed;
     }
 
-    double getAverageComparisonsPerInsertion(const AggregateStats& stats) {//eliane
+    double getAverageComparisonsPerInsertion(const AggregateStats& stats) {
         if (stats.total_words_processed == 0) {
             return 0.0;
         }
@@ -222,15 +225,15 @@ namespace TREE {
         return static_cast<double>(stats.total_comparisons_insertion) / stats.total_words_processed;
     }
 
-    double getAverageSearchTime(const AggregateStats& stats) {//eliane
+    double getAverageSearchTime(const AggregateStats& stats) {
         if (stats.total_searches == 0) {
             return 0.0;
         }
 
-        return stats.total_search_time_ms / stats.total_searches;
+        return stats.sum_of_search_times_ms / stats.total_searches;
     }
 
-    double getAverageComparisonsPerSearch(const AggregateStats& stats) {//eliane
+    double getAverageComparisonsPerSearch(const AggregateStats& stats) {
         if (stats.total_searches == 0){
             return 0.0;
         }
@@ -238,43 +241,30 @@ namespace TREE {
         return static_cast<double>(stats.total_comparisons_search) / stats.total_searches;
     }
 
-    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree) {//eliane
+    double getRelativeBalance(const AggregateStats& stats) {
+        if (stats.final_tree_min_depth == 0) {
+            return 0.0;
+        }
+
+        return static_cast<double>(stats.final_tree_height) / stats.final_tree_min_depth;
+    }
+
+    int getBalanceDifference(const AggregateStats& stats) {
+        return stats.final_tree_height - stats.final_tree_min_depth;
+    }
+
+    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree) {
         stats.final_node_count = countNodes(tree->root);
-    }
-
-    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree) {//eliane
         stats.final_tree_height = calculateHeight(tree->root);
-    }
-
-    void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree) {//eliane
         stats.final_tree_min_depth = calculateMinDepth(tree->root);
-    }
-
-    void updateAverageInsertionTime(AggregateStats& stats) {//eliane
         stats.average_insertion_time_ms = getAverageInsertionTime(stats);
-    }
-
-    void updateAverageComparisonsPerInsertion(AggregateStats& stats) {//eliane
         stats.average_comparisons_insertion = getAverageComparisonsPerInsertion(stats);
-    }
-
-    void updateAverageSearchTime(AggregateStats& stats) {//eliane
         stats.average_search_time_ms = getAverageSearchTime(stats);
-    }
-
-    void updateAverageComparisonsPerSearch(AggregateStats& stats) {//eliane
         stats.average_comparisons_search = getAverageComparisonsPerSearch(stats);
-    }
-
-    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree) {//eliane
-        updateFinalNodeCount(stats, tree);
-        updateFinalTreeHeight(stats, tree);
-        updateFinalTreeMinDepth(stats, tree);
-        updateAverageInsertionTime(stats);
-        updateAverageComparisonsPerInsertion(stats);
-        updateAverageSearchTime(stats);
-        updateAverageComparisonsPerSearch(stats);
+        stats.relative_balance = getRelativeBalance(stats);
+        stats.balance_difference = getBalanceDifference(stats);
     }
 
 
 }
+
