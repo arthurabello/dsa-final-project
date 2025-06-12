@@ -23,6 +23,8 @@ namespace TREE::BST {
     */
     InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId);
 
+    // See tree_utils.h
+    SearchResult search(BinaryTree* binary_tree, const std::string& word);
 }
 
 #endif
