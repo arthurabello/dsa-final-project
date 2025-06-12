@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
+#include <fstream>
 #include <string>
-#include <fstream>  
 
 namespace TREE {
     /**
@@ -113,7 +114,9 @@ namespace TREE {
      *  - number_of_comparisons (int): Total number of node comparisons performed.
      */
 
-     void destroy(BinaryTree* binary_tree);
+	void deletionPostOrder(Node* n);
+
+    void destroy(BinaryTree* binary_tree);
      /**
      * @brief Delete the passed binary tree
      *
@@ -254,7 +257,6 @@ namespace TREE {
      * @param stats Reference to the AggregateStats object to update.
      * @param tree Pointer to the BinaryTree whose statistics are being calculated.
      */
-
 }
 
 #endif
