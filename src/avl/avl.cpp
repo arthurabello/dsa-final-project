@@ -1,4 +1,4 @@
-#include "../tree_utils.cpp"
+#include "../tree_utils.h"
 #include <chrono>
 
 namespace TREE::AVL {
