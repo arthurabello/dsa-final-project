@@ -6,7 +6,7 @@ INC_DIRS   := -Isrc -IUnity/src          # project headers + Unity
 #───────────── Layout ───────────────────────
 OBJ_DIR    := makemagic/obj
 BIN_DIR    := makemagic/bin
-COMMON_SRC := src/data.cpp src/tree_utils.cpp src/cli.cpp
+COMMON_SRC := src/data.cpp src/tree_utils.cpp 
 
 #───────────── BST target ───────────────────
 BST_SRC    := $(COMMON_SRC) \
