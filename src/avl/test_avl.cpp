@@ -52,35 +52,35 @@ void testTwo(){
 	
 	printPreOrder(tree->root);
 	
-	// InsertResult seventh = AVL::insert(*tree,"K",15);
-	// InsertResult eighth = AVL::insert(*tree,"L",25);
-	// InsertResult nineth = AVL::insert(*tree,"Y",34);
+	InsertResult seventh = AVL::insert(*tree,"K",15);
+	InsertResult eighth = AVL::insert(*tree,"L",25);
+	InsertResult nineth = AVL::insert(*tree,"Y",34);
 	
-	// printPreOrder(tree->root);
+	printPreOrder(tree->root);
 	
-	// InsertResult tenth = AVL::insert(*tree,"X",15);
-	// InsertResult eleventh = AVL::insert(*tree,"D",23);
-	// InsertResult twelveth = AVL::insert(*tree,"F",312);
+	InsertResult tenth = AVL::insert(*tree,"X",15);
+	InsertResult eleventh = AVL::insert(*tree,"D",23);
+	InsertResult twelveth = AVL::insert(*tree,"F",312);
 
-	// printPreOrder(tree->root);
+	printPreOrder(tree->root);
 
-	// InsertResult thirtheenth= AVL::insert(*tree,"H",100);
-	// InsertResult fourteenth = AVL::insert(*tree,"I",20);
-	// InsertResult fifteenth = AVL::insert(*tree,"K",4);
+	InsertResult thirtheenth= AVL::insert(*tree,"H",100);
+	InsertResult fourteenth = AVL::insert(*tree,"I",20);
+	InsertResult fifteenth = AVL::insert(*tree,"K",4);
 
-	// printPreOrder(tree->root);
+	printPreOrder(tree->root);
 
-	// InsertResult sixteenth = AVL::insert(*tree,"G",1);
-	// InsertResult seventeenth = AVL::insert(*tree,"T",7);
-	// InsertResult eighteenth = AVL::insert(*tree,"X",9);
+	InsertResult sixteenth = AVL::insert(*tree,"G",1);
+	InsertResult seventeenth = AVL::insert(*tree,"T",7);
+	InsertResult eighteenth = AVL::insert(*tree,"X",9);
 
-	// printPreOrder(tree->root);
+	printPreOrder(tree->root);
 
-	// InsertResult nineteenth = AVL::insert(*tree,"B",12);
-	// InsertResult twentieth = AVL::insert(*tree,"B",21);
-	// InsertResult twentyFirst = AVL::insert(*tree,"C",33);	
+	InsertResult nineteenth = AVL::insert(*tree,"B",12);
+	InsertResult twentieth = AVL::insert(*tree,"B",21);
+	InsertResult twentyFirst = AVL::insert(*tree,"C",33);	
 	
-	// printPreOrder(tree->root);
+	printPreOrder(tree->root);
 	
 }
 
