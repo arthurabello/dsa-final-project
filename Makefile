@@ -6,7 +6,7 @@ INC_DIRS   := -Isrc -IUnity/src          # project headers + Unity
 #───────────── Layout ───────────────────────
 OBJ_DIR    := makemagic/obj
 BIN_DIR    := makemagic/bin
-COMMON_SRC := src/data.cpp src/tree_utils.cpp src/cli.cpp
+COMMON_SRC := src/data.cpp src/tree_utils.cpp 
 
 #───────────── BST target ───────────────────
 BST_SRC    := $(COMMON_SRC) \
@@ -33,7 +33,7 @@ UNITY_SRC           := Unity/src/unity.c
 
 BST_TEST_SRC        := $(COMMON_SRC) src/bst/bst.cpp src/bst/test_bst.cpp $(UNITY_SRC)
 AVL_TEST_SRC        := $(COMMON_SRC) src/avl/avl.cpp src/avl/test_avl.cpp $(UNITY_SRC)
-TREEUTILS_TEST_SRC  := $(COMMON_SRC) src/tree_utils/test_tree_utils.cpp $(UNITY_SRC)
+TREEUTILS_TEST_SRC  := $(COMMON_SRC) src/test_tree_utils.cpp $(UNITY_SRC)
 
 BST_TEST_BIN        := $(BIN_DIR)/bst_tests
 AVL_TEST_BIN        := $(BIN_DIR)/avl_tests
@@ -48,7 +48,7 @@ DEPS := $(BST_OBJ:.o=.d) $(AVL_OBJ:.o=.d)
 #───────────── Default target ───────────────
 all: $(BST_BIN)
 
-#───────────── Pattern rule (*.cpp → *.o) ───
+#───────────── Pattern rule (*.cpp → *.o) ─test_tree──
 $(OBJ_DIR)/%.o: src/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@

@@ -61,6 +61,17 @@ to be determined...
 
 ---
 
+## Cloning
+
+Due to submodules usage, this repository must be cloned with:
+
+```bash
+git clone https://github.com/arthurabello/dsa_final_project.git --recursive
+```
+
+Please note the `--recursive` at the very end.
+
+
 ## Installation
 
 ```bash
@@ -72,15 +83,19 @@ to be determined...
 ## Usage
 
 ```bash
-# For BST
-make
-./bst build-bst #building
-./bst test-bst #testing
+# BST CLI
+make build-bst
+./bst <search|stats|view> <n_docs> <directory>
 
-# For AVL
-make
-./avl build-avl #building
-./avl test-avl #testing
+# BST Tests
+make test-bst
+
+# AVL CLI
+make build-avl
+./avl <search|stats|view> <n_docs> <directory>
+
+# AVL Tests
+make test-avl
 ```
 
 
