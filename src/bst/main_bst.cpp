@@ -37,6 +37,10 @@ int main(int argc, char* argv[]) {
 
     stats.final_node_count  = TREE::countNodes(bst_tree->root);
     stats.final_tree_height = TREE::calculateHeight(bst_tree->root);
+    stats.final_tree_min_depth = TREE::calculateMinDepth(bst_tree->root);
+    stats.final_tree_min_depth = TREE::calculateMinDepth(bst_tree->root);
+    // stats.total_search_time_ms = 
+
     stats.tree_type = "BST";
 
     if (command == "stats") {

@@ -137,6 +137,7 @@ namespace CLI {
           << "Docs indexed : " << stats.num_docs_indexed            << endl
           << "Unique words : " << stats.final_node_count            << endl
           << "Tree height  : " << stats.final_tree_height           << endl
+          << "Min depth    : " << stats.final_tree_min_depth        << endl
           << "Words proc.  : " << stats.total_words_processed       << endl
           << "Comparisons  : " << stats.total_comparisons_insertion << endl;
 

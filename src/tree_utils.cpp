@@ -142,7 +142,7 @@ namespace TREE {
         file << "tree_type,num_docs_indexed,"
             << "total_indexing_time_ms,total_words_processed,total_comparisons_insertion,sum_of_insertion_times_ms,max_insertion_time_ms,"
             << "total_search_time_ms,total_searches,total_comparisons_search,sum_of_search_times_ms,max_search_time_ms,"
-            << "final_node_count,final_tree_height,final_tree_min_depth,relative_balance,balance_difference"
+            << "final_node_count,final_tree_height,final_tree_min_depth,relative_balance,balance_difference,"
             << "average_insertion_time_ms,average_comparisons_insertion,average_search_time_ms,average_comparisons_search\n";
 
         // Data
