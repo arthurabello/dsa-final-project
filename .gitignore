@@ -1,8 +1,7 @@
 *.txt
-.vscode
-a.out
 .helix
+a.out
+.vscode
 makemagic
-bst
-rbt
-avl
+vgcore.*
+results.csv

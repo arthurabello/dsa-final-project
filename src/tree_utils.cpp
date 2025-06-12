@@ -4,9 +4,9 @@
 #include <cstring>
 #include <fstream>
 
-namespace TREE {
-
-    Node* createNode(std::string word, std::vector<int>documentIds, int color) { //sets for 0 if it the tree doesnt support red-black
+namespace TREE{
+	// Sets for 0 if it the tree doesnt support red-black
+    Node* createNode(std::string word, std::vector<int>documentIds, int color) {
 
         Node* newNode = new Node;
         newNode->word = word;
@@ -14,7 +14,7 @@ namespace TREE {
         newNode->parent = nullptr;
         newNode->left = nullptr;
         newNode->right = nullptr;
-        newNode->height = 1; //height of a new node is 1
+        newNode->height = 0; //height of a new node is 0
         newNode->isRed = color; //0 for red, 1 for black
         return newNode;
     }
@@ -60,25 +60,24 @@ namespace TREE {
         }
     }
 
-	void deletionPostOrder(Node* n){
-		if(n != nullptr){
-			deletionPostOrder(n->left);
-			deletionPostOrder(n->right);
-			delete n;
-		}
-		delete n;
-	}
-
+    void deletionPostOrder(Node* n){
+        if(n != nullptr){
+            deletionPostOrder(n->left);
+            deletionPostOrder(n->right);
+            delete n;
+        }
+    }
+    
     void destroy(BinaryTree* binary_tree){
         Node* root = binary_tree->root;
-		deletionPostOrder(root);
-		delete binary_tree;
+		    deletionPostOrder(root);
+		    delete binary_tree;
     }
 
     int calculateHeight(Node* root){
         //Treats the case in which the root is empty.
-        if(root == nullptr) return 0;
-
+        if(root == nullptr) return -1; //I fixed this
+        
         //Copies the left subtree.
         Node* leftNode = root->left;
 
@@ -95,7 +94,9 @@ namespace TREE {
         if (node == nullptr) {
             return;
         }
-
+		
+		int originalHeight = node->height;
+		
         // Calculates the heights of the children and get the max
         int leftHeight;
         if (node->left == nullptr) {
@@ -110,24 +111,20 @@ namespace TREE {
         } else {
             rightHeight = node->right->height;
         }
-
-        int maxHeight;
-        if (leftHeight > rightHeight) {
-            maxHeight = leftHeight;
-        } else {
-            maxHeight = rightHeight;
-        }
+		
+        int maxHeight = std::max(leftHeight,rightHeight);
 
         int newHeight = 1 + maxHeight;
 
-        if (node->height == newHeight) {
+        node->height = newHeight;
+		
+        if (originalHeight == newHeight && (node->right != nullptr || node->left != nullptr)) {
             return;
         }
-
-        node->height = newHeight;
-
+		
         // Calculates the height of the father by a recursive call
         updateHeightUp(node->parent);
+
     }
 
     void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {
@@ -142,7 +139,7 @@ namespace TREE {
         file << "tree_type,num_docs_indexed,"
             << "total_indexing_time_ms,total_words_processed,total_comparisons_insertion,sum_of_insertion_times_ms,max_insertion_time_ms,"
             << "total_search_time_ms,total_searches,total_comparisons_search,sum_of_search_times_ms,max_search_time_ms,"
-            << "final_node_count,final_tree_height,final_tree_min_depth,relative_balance,balance_difference"
+            << "final_node_count,final_tree_height,final_tree_min_depth,relative_balance,balance_difference,"
             << "average_insertion_time_ms,average_comparisons_insertion,average_search_time_ms,average_comparisons_search\n";
 
         // Data
