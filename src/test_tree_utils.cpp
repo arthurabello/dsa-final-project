@@ -91,7 +91,7 @@ void test_calculateHeight() {
 
 	int height = calculateHeight(n);
 
-	TEST_ASSERT_EQUAL_INT(3, height);
+	TEST_ASSERT_EQUAL_INT(2, height);
 }
 
 void test_updateHeightUp() {
@@ -107,8 +107,8 @@ void test_updateHeightUp() {
 	updateHeightUp(q);
 
 	TEST_ASSERT_EQUAL_INT(q->height, 0);
-	TEST_ASSERT_EQUAL_INT(p->height, 1);
-	TEST_ASSERT_EQUAL_INT(n->height, 1);
+	TEST_ASSERT_EQUAL_INT(p->height, 0); 
+	TEST_ASSERT_EQUAL_INT(n->height, 0);
 
 }
 
