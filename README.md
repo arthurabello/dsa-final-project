@@ -73,8 +73,14 @@ to be determined...
 
 ```bash
 # For BST
-g++ src/tree_utils.cpp src/bst/main_bst.cpp -o bst
-./bst <search|stats> <n_docs> <diretorio>
+make
+./bst build-bst #building
+./bst test-bst #testing
+
+# For AVL
+make
+./avl build-avl #building
+./avl test-avl #testing
 ```
 
 

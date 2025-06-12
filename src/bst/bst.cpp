@@ -6,7 +6,7 @@
 
 namespace TREE::BST {
 
-    InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId){ //eliane
+    InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId){
         InsertResult result;
         int comparisons = 0;
         auto start_time = std::chrono::high_resolution_clock::now();
