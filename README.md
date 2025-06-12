@@ -61,6 +61,17 @@ to be determined...
 
 ---
 
+## Cloning
+
+Due to submodules usage, this repository must be cloned with:
+
+```bash
+git clone https://github.com/arthurabello/dsa_final_project.git --recursive
+```
+
+Please note the `--recursive` at the very end.
+
+
 ## Installation
 
 ```bash
