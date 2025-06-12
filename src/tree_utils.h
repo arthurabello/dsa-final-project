@@ -1,17 +1,18 @@
-#ifndef TREEUTILS_H
+#ifndef TREEUTILS_H  
 #define TREEUTILS_H
 
 #include <iostream>
 #include <vector>
-#include <fstream>
+#include <string>
+#include <fstream>  
 
 namespace TREE {
     /**
      * @brief Here we present the creation of a more general BST
-     * 
+     *
      * The BST will have substructs: The RBT and AVL tree
      */
-    
+
     struct Node {
         std::string word;
         std::vector<int> documentIds;
@@ -30,7 +31,7 @@ namespace TREE {
         int numComparisons;
         double executionTime;
     };
-    
+
     struct SearchResult {
         int found;
         std::vector<int> documentIds;
@@ -39,33 +40,35 @@ namespace TREE {
     };
 
     struct AggregateStats {
-    std::string tree_type;      
-    int num_docs_indexed = 0;    
+        std::string tree_type;
+        int num_docs_indexed = 0;
 
-    // Insertion data
-    long long total_indexing_time_ms = 0;         
-    long long total_words_processed = 0;         
-    long long total_comparisons_insertion = 0;   
-    double sum_of_insertion_times_ms = 0.0;      
-    double max_insertion_time_ms = 0.0; 
-    
-    // Search data
-    double total_search_time_ms = 0.0;
-    long long total_searches = 0;
-    long long total_comparisons_search = 0; 
-    double sum_of_search_times_ms = 0.0;                                
-    double max_search_time_ms = 0.0; 
+        // Insertion data
+        long long total_indexing_time_ms = 0;
+        long long total_words_processed = 0;
+        long long total_comparisons_insertion = 0;
+        double sum_of_insertion_times_ms = 0.0;
+        double max_insertion_time_ms = 0.0;
 
-    // Tree structure
-    int final_node_count = 0;       // Unique words
-    int final_tree_height = 0;      // max depth
-    int final_tree_min_depth = 0;   // min depth                   
+        // Search data
+        double total_search_time_ms = 0.0;
+        long long total_searches = 0;
+        long long total_comparisons_search = 0;
+        double sum_of_search_times_ms = 0.0;
+        double max_search_time_ms = 0.0;
 
-    // Averages
-    double average_insertion_time_ms = 0.0;   
-    double average_comparisons_insertion = 0.0;    
-    double average_search_time_ms = 0.0;          
-    double average_comparisons_search = 0.0;     
+        // Tree structure
+        int final_node_count = 0;       // Unique words
+        int final_tree_height = 0;      // max depth
+        int final_tree_min_depth = 0;   // min depth
+        double relative_balance = 0.0;  // max_depth / min_depth
+        int balance_difference = 0;     // max_depth - min_depth
+
+        // Averages
+        double average_insertion_time_ms = 0.0;
+        double average_comparisons_insertion = 0.0;
+        double average_search_time_ms = 0.0;
+        double average_comparisons_search = 0.0;
     };
 
     BinaryTree* createTree();
@@ -86,23 +89,23 @@ namespace TREE {
 
     * @returns Node*: Node with the passed word and documentIds
     */
-    
+
     SearchResult search(BinaryTree* binary_tree, const std::string& word);
 
     /**
      * @brief Searches for a given word in a binary search tree.
-     * 
-     * This function performs a search for the specified `word` within the provided 
-     * binary search tree. It traverses the tree starting from the root, comparing 
+     *
+     * This function performs a search for the specified `word` within the provided
+     * binary search tree. It traverses the tree starting from the root, comparing
      * the target word with the current node's word, moving left or right accordingly,
      * until the word is found or the tree is fully traversed.
-     * 
-     * The function also measures and returns the time taken to perform the search 
+     *
+     * The function also measures and returns the time taken to perform the search
      * (in milliseconds) as well as the number of comparisons made during the search.
-     * 
+     *
      * @param binary_tree Pointer to the binary search tree to search within.
      * @param word The target word to search for.
-     * 
+     *
      * @return SearchResult A struct containing:
      *  - found (int): 1 if the word was found, 0 otherwise.
      *  - documentIds (std::vector<int>): List of document IDs associated with the found word. Empty if not found.
@@ -112,29 +115,29 @@ namespace TREE {
 
      void destroy(BinaryTree* binary_tree);
      /**
-     * @brief Delete the passed binary tree    
+     * @brief Delete the passed binary tree
      *
-     * @param binary_tree: BinaryTree you want to delete.  
+     * @param binary_tree: BinaryTree you want to delete.
      */
 
 
     int calculateHeight(Node* root);
     /**
      * @brief Calculates the height of a binary tree.
-     * 
+     *
      * @param binary_tree: BinaryTree you wish to know the height.BinaryTree.
      * @return height of binary_tree.
-     * 
+     *
      */
 
-    void updateHeightUp(Node* node); 
+    void updateHeightUp(Node* node);
     /**
     * @brief Recursively updates the height of a node up to the root.
     *
     * This function walks the path from a node to the root of the tree,
     * recomputing the height of each node based on the heights of its
     * left and right children. If the height of the node does not change,
-    * the recursion ends early, since no further modifications are needed 
+    * the recursion ends early, since no further modifications are needed
     * to the ancestors.
     *
     * @param node Pointer to the node from which the update should start.
@@ -223,94 +226,35 @@ namespace TREE {
      * @return The average number of comparisons per search, or 0.0 if no searches were performed.
      */
 
-    void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree);
+    double getRelativeBalance(const AggregateStats& stats);
     /**
-     * @brief Updates the final node count in the AggregateStats.
+     * @brief Calculates the relative balance of the tree.
      *
-     * This function calculates the total number of nodes in the given
-     * binary tree and updates the 'final_node_count' field in the
-     * AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree.
+     * @param stats The AggregateStats object containing tree structure data.
+     * @return The relative balance of the tree, or 0.0 if the minimum depth is 0.
      */
 
-    void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree);
+    int getBalanceDifference(const AggregateStats& stats);
     /**
-     * @brief Updates the final tree height in the AggregateStats.
+     * @brief Calculates the difference between the height of the tree and minimum depth.
      *
-     * This function calculates the height of the given binary tree
-     * and updates the 'final_tree_height' field in the AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree.
-     */
-
-    void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree);
-    /**
-     * @brief Updates the minimum depth of the tree in the AggregateStats.
-     *
-     * This function calculates the minimum depth from the root to the nearest
-     * leaf node of the given binary tree and updates the 'final_tree_min_depth'
-     * field in the AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree.
-     */
-
-    void updateAverageInsertionTime(AggregateStats& stats);
-    /**
-     * @brief Updates the average insertion time in the AggregateStats.
-     *
-     * This function calculates the average insertion time using the current
-     * data stored in the AggregateStats and updates the 'average_insertion_time_ms'.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     */
-
-    void updateAverageComparisonsPerInsertion(AggregateStats& stats);
-    /**
-     * @brief Updates the average comparisons per insertion in the AggregateStats.
-     *
-     * This function calculates the average number of comparisons per insertion
-     * using the current data stored in the AggregateStats and updates the 'average_comparisons_insertion'.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     */
-
-    void updateAverageSearchTime(AggregateStats& stats);
-    /**
-     * @brief Updates the average search time in the AggregateStats.
-     *
-     * This function calculates the average search time using the current
-     * data stored in the AggregateStats and updates the 'average_search_time_ms'.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     */
-
-    void updateAverageComparisonsPerSearch(AggregateStats& stats);
-    /**
-     * @brief Updates the average comparisons per search in the AggregateStats.
-     *
-     * This function calculates the average number of comparisons per search
-     * using the current data stored in the AggregateStats and updates the 'average_comparisons_search'.
-     *
-     * @param stats Reference to the AggregateStats object to update.
+     * @param stats The AggregateStats object containing tree structure data.
+     * @return The difference between the height of the tree and minimum depth.
      */
 
     void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree);
     /**
      * @brief Updates all aggregate statistics for the given binary tree.
      *
-     * This function calls all individual update functions to compute the
-     * final node count, tree height, minimum depth, and all averages
+     * This function update functions to compute the final node count, tree height, minimum depth
+     * relative balance, difference balance, and all averages
      * (insertion times, comparisons per insertion, search times, and comparisons per search)
      * and stores them in the AggregateStats object.
      *
      * @param stats Reference to the AggregateStats object to update.
      * @param tree Pointer to the BinaryTree whose statistics are being calculated.
      */
-    
+
 }
 
 #endif
