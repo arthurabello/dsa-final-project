@@ -3,24 +3,24 @@ CXX        := g++
 CXXFLAGS   := -std=c++17 -Wall -Wextra -O2 -MMD -MP
 INC_DIRS   := -Isrc -IUnity/src    
 
-#───────────── Layout ───────────────────────
-OBJ_DIR    := makemagic/obj
-BIN_DIR    := makemagic/bin
-COMMON_SRC := src/data.cpp src/tree_utils.cpp
+#───────────── Layout ─────────────
+OBJ_DIR   := makemagic/obj
+BIN_DIR   := makemagic/bin
+COMMON_SRC:= src/data.cpp src/tree_utils.cpp src/cli.cpp
 
 #──────────── BST target ───────────────────
 BST_SRC    := $(COMMON_SRC) \
               src/bst/bst.cpp \
               src/bst/main_bst.cpp
 BST_OBJ    := $(patsubst src/%.cpp,$(OBJ_DIR)/%.o,$(BST_SRC))
-BST_BIN    := $(BIN_DIR)/bst
+BST_BIN    := bst
 
 #───────────── AVL target ───────────────────
 AVL_SRC    := $(COMMON_SRC) \
               src/avl/avl.cpp \
               src/avl/main_avl.cpp
 AVL_OBJ    := $(patsubst src/%.cpp,$(OBJ_DIR)/%.o,$(AVL_SRC))
-AVL_BIN    := $(BIN_DIR)/avl
+AVL_BIN    := avl
 
 #───────────── Unit-test targets ────────────
 UNITY_SRC      := Unity/src/unity.c

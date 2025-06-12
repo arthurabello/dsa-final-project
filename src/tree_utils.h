@@ -7,230 +7,254 @@
 #include <fstream>  
 
 namespace TREE {
+    /**
+     * @brief Here we present the creation of a more general BST
+     *
+     * The BST will have substructs: The RBT and AVL tree
+     */
 
-/**
- * @struct Node
- * @brief  A node of a *binary* search tree (plain BST, AVL or RBT).
- *
- * This is an intentionally minimal container; balancing metadata such
- * as colour (`isRed`) and height are included so that specialised trees
- * (e.g. Red-Black or AVL) do not need to extend the structure.
- */
-struct Node {
-    std::string      word;        //!< normalised term stored in the node
-    std::vector<int> documentIds; //!< IDs of documents containing @p word
+    struct Node {
+        std::string word;
+        std::vector<int> documentIds;
+        Node* parent;
+        Node* left;
+        Node* right;
+        int height;
+        int isRed;
+    };
 
-    Node* parent   = nullptr;     //!< up-link (for rotations & re-balancing)
-    Node* left     = nullptr;     //!< left  child
-    Node* right    = nullptr;     //!< right child
+    struct BinaryTree {
+        Node* root;
+    };
 
-    int   height   = 1;           //!< AVL convenience field (root=1, leaf=1)
-    int   isRed    = 0;           //!< Red-Black colour flag (0 = RED, 1 = BLACK)
-};
+    struct InsertResult {
+        int numComparisons;
+        double executionTime;
+    };
 
-/**
- * @struct BinaryTree
- * @brief  Thin wrapper around the root pointer so we can pass trees by
- *         pointer/reference and still mutate the root inside helpers.
- */
-struct BinaryTree {
-    Node* root = nullptr;         //!< root node (may be @c nullptr)
-};
+    struct SearchResult {
+        int found;
+        std::vector<int> documentIds;
+        double executionTime;
+        int numComparisons;
+    };
 
-/**
- * @struct InsertResult
- * @brief  Metrics returned by an **insertion** operation.
- */
-struct InsertResult {
-    int    numComparisons = 0;  //!< key comparisons performed
-    double executionTime  = 0;  //!< duration in **milliseconds**
-};
+    struct AggregateStats {
+        std::string tree_type;
+        int num_docs_indexed = 0;
 
-/**
- * @struct SearchResult
- * @brief  Return type of the **search** routine.
- */
-struct SearchResult {
-    int              found           = 0;  //!< 1 if key found, 0 otherwise
-    std::vector<int> documentIds;          //!< copy of posting list (may be empty)
-    double           executionTime   = 0;  //!< time in **milliseconds**
-    int              numComparisons  = 0;  //!< node comparisons performed
-};
+        // Insertion data
+        long long total_indexing_time_ms = 0;
+        long long total_words_processed = 0;
+        long long total_comparisons_insertion = 0;
+        double sum_of_insertion_times_ms = 0.0;
+        double max_insertion_time_ms = 0.0;
 
-/**
- * @struct AggregateStats
- * @brief  Aggregate performance profile collected during **batch** indexing
- *         and querying.  One instance corresponds to a *whole run* over a
- *         corpus using a single tree type.
- *
- */
-struct AggregateStats {
-    std::string tree_type;  //!< "BST", "AVL", "RBT", …
+        // Search data
+        double total_search_time_ms = 0.0;
+        long long total_searches = 0;
+        long long total_comparisons_search = 0;
+        double sum_of_search_times_ms = 0.0;
+        double max_search_time_ms = 0.0;
 
-    int         num_docs_indexed = 0;   //!< #documents parsed
+        // Tree structure
+        int final_node_count = 0;       // Unique words
+        int final_tree_height = 0;      // max depth
+        int final_tree_min_depth = 0;   // min depth
+        double relative_balance = 0.0;  // max_depth / min_depth
+        int balance_difference = 0;     // max_depth - min_depth
 
-    /* ───────────── Insertion phase ───────────── */
-    long long   total_indexing_time_ms    = 0;  //!< wall-clock time (ms)
-    long long   total_words_processed     = 0;  //!< sum(tokens)
-    long long   total_comparisons_insertion = 0;
-    double      sum_of_insertion_times_ms = 0.0;
-    double      max_insertion_time_ms     = 0.0;
+        // Averages
+        double average_insertion_time_ms = 0.0;
+        double average_comparisons_insertion = 0.0;
+        double average_search_time_ms = 0.0;
+        double average_comparisons_search = 0.0;
+    };
 
-    /* ───────────── Search phase ─────────────── */
-    double      total_search_time_ms      = 0.0;
-    long long   total_searches            = 0;
-    long long   total_comparisons_search  = 0;
-    double      sum_of_search_times_ms    = 0.0;
-    double      max_search_time_ms        = 0.0;
+    BinaryTree* createTree();
 
-    /* ───────────── Final tree shape ─────────── */
-    int         final_node_count   = 0;   //!< unique words (nodes)
-    int         final_tree_height  = 0;   //!< max depth
-    int         final_tree_min_depth = 0; //!< min depth
+    /**
+     * @brief Creates a new binary search tree.
+     *
+     * @returns the tree
+     */
 
-    /* ───────────── Derived averages ─────────── */
-    double      average_insertion_time_ms       = 0.0;
-    double      average_comparisons_insertion   = 0.0;
-    double      average_search_time_ms          = 0.0;
-    double      average_comparisons_search      = 0.0;
-};
+    Node* createNode(std::string word,std::vector<int>documentIds,int color = 0);
+    /**
+    * @brief Creates a new node of a tree.
+    *
+    * @param word: word to be put in the node.
+    * @param documentIds: ID of the document in which the word appears.
+    * @param color: color of the Node. 0 for black and 1 for red.
 
-// ───────────────────────────── Factory helpers ─────────────────────────── //
+    * @returns Node*: Node with the passed word and documentIds
+    */
 
-/**
- * @brief Allocate an *empty* tree (root = @c nullptr).
- * @return Pointer to the new @c BinaryTree.
- */
-BinaryTree* createTree();
+    SearchResult search(BinaryTree* binary_tree, const std::string& word);
 
-/**
- * @brief  Allocate and initialise a single @c Node.
- *
- * @param word         normalised key to store.
- * @param documentIds  list of documents where @p word appears.
- * @param color        colour flag for Red-Black trees (0 = RED, 1 = BLACK).
- *                     for AVL/BST variants this value is ignored.
- * @return pointer to the newly-created node.
- */
-Node* createNode(std::string word,
-                 std::vector<int> documentIds,
-                 int color = 0);
+    /**
+     * @brief Searches for a given word in a binary search tree.
+     *
+     * This function performs a search for the specified `word` within the provided
+     * binary search tree. It traverses the tree starting from the root, comparing
+     * the target word with the current node's word, moving left or right accordingly,
+     * until the word is found or the tree is fully traversed.
+     *
+     * The function also measures and returns the time taken to perform the search
+     * (in milliseconds) as well as the number of comparisons made during the search.
+     *
+     * @param binary_tree Pointer to the binary search tree to search within.
+     * @param word The target word to search for.
+     *
+     * @return SearchResult A struct containing:
+     *  - found (int): 1 if the word was found, 0 otherwise.
+     *  - documentIds (std::vector<int>): List of document IDs associated with the found word. Empty if not found.
+     *  - duration (double): Time taken for the search in milliseconds.
+     *  - number_of_comparisons (int): Total number of node comparisons performed.
+     */
 
-// ───────────────────────────── Core operations ─────────────────────────── //
+     void destroy(BinaryTree* binary_tree);
+     /**
+     * @brief Delete the passed binary tree
+     *
+     * @param binary_tree: BinaryTree you want to delete.
+     */
 
-/**
- * @brief search for @p word in @p binary_tree.
- *
- * runs an iterative tree traversal recording elapsed time and the number
- * of key comparisons.  Returns a populated #SearchResult struct.
- */
-SearchResult search(BinaryTree* binary_tree, const std::string& word);
 
-/**
- * @brief recursively free **all** nodes in @p binary_tree and the wrapper
- *        itself.  safe to call with an empty tree.
- *
- * @warning pointers returned by previous operations become invalid.
- */
-void destroy(BinaryTree* binary_tree);
+    int calculateHeight(Node* root);
+    /**
+     * @brief Calculates the height of a binary tree.
+     *
+     * @param binary_tree: BinaryTree you wish to know the height.BinaryTree.
+     * @return height of binary_tree.
+     *
+     */
 
-// ───────────────────────────── Structural queries ──────────────────────── //
+    void updateHeightUp(Node* node);
+    /**
+    * @brief Recursively updates the height of a node up to the root.
+    *
+    * This function walks the path from a node to the root of the tree,
+    * recomputing the height of each node based on the heights of its
+    * left and right children. If the height of the node does not change,
+    * the recursion ends early, since no further modifications are needed
+    * to the ancestors.
+    *
+    * @param node Pointer to the node from which the update should start.
+    * @note This function **does not recursively update the children**.
+    * It assumes that the heights of the children are already correct, which is the case
+    * after a simple insert.
+    */
 
-/**
- * @brief compute the **height** of the tree rooted at @p root.
- *
- * height is defined as *the number of nodes on the longest path from
- * @p root down to a leaf*.  an empty subtree has height 0.
- */
-int calculateHeight(Node* root);
+    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv");
+    /**
+     * @brief Saves the aggregate statistics to a CSV file.
+     *
+     * This function writes the statistical data contained in the AggregateStats
+     * object into a CSV file. The CSV will contain a header row followed by
+     * a single row with the corresponding values.
+     *
+     * @param stats The AggregateStats object containing the data to save.
+     * @param filename The name of the CSV file to write to "results.csv".
+     */
 
-/**
- * @brief walk upwards from @p node, updating the @c height field of each
- *        ancestor until it stabilises.
- *
- * assumes that children heights are already correct (i.e. call it right
- * after inserting a node without structural re-balancing).
- */
-void updateHeightUp(Node* node);
+    int calculateMinDepth(Node* root);
+    /**
+     * @brief Calculates the minimum depth of a binary tree.
+     *
+     * This function recursively calculates the minimum depth from the root
+     * to the nearest leaf node (node with no children).
+     *
+     * @param root Pointer to the root node of the tree.
+     * @return The minimum depth of the tree. Returns 0 if the tree is empty.
+     */
 
-/**
- * @brief persist @p stats to @p filename in **CSV** format (single row +
- *        header).  existing files are overwritten.
- */
-void save_stats_to_csv(const AggregateStats& stats,
-                       const std::string&   filename = "results.csv");
+    int countNodes(Node* root);
+    /**
+     * @brief Counts the total number of nodes in a binary tree.
+     *
+     * This function traverses the tree recursively and counts each node.
+     *
+     * @param root Pointer to the root node of the tree.
+     * @return The total number of nodes in the tree.
+     */
 
-// ───────────────────────────── Depth & count helpers ───────────────────── //
+    double getAverageInsertionTime(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average insertion time.
+     *
+     * This function computes the average time taken for insertions
+     * based on the total sum of insertion times and the total number
+     * of words processed.
+     *
+     * @param stats The AggregateStats object containing insertion time data.
+     * @return The average insertion time, or 0.0 if no words were processed.
+     */
 
-/**
- * @brief minimum depth (= shortest path root→leaf) of the subtree rooted at
- *        @p root.  empty tree ⇒ 0.
- */
-int calculateMinDepth(Node* root);
+    double getAverageComparisonsPerInsertion(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average number of comparisons per insertion.
+     *
+     * This function computes the average number of comparisons made during
+     * insertions based on the total number of comparisons and the total
+     * number of words processed.
+     *
+     * @param stats The AggregateStats object containing insertion comparison data.
+     * @return The average number of comparisons per insertion, or 0.0 if no words were processed.
+     */
 
-/**
- * @brief total number of nodes reachable from @p root (recursive count).
- */
-int countNodes(Node* root);
+    double getAverageSearchTime(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average search time.
+     *
+     * This function computes the average time taken for searches
+     * based on the total sum of search times and the total number of searches.
+     *
+     * @param stats The AggregateStats object containing search time data.
+     * @return The average search time, or 0.0 if no searches were performed.
+     */
 
-// ───────────────────────────── Averages (derived) ──────────────────────── //
+    double getAverageComparisonsPerSearch(const AggregateStats& stats);
+    /**
+     * @brief Calculates the average number of comparisons per search.
+     *
+     * This function computes the average number of comparisons made during
+     * searches based on the total number of comparisons and the total
+     * number of searches performed.
+     *
+     * @param stats The AggregateStats object containing search comparison data.
+     * @return The average number of comparisons per search, or 0.0 if no searches were performed.
+     */
 
-/** @name average helpers  
- *  convenience wrappers around raw totals collected inside #AggregateStats. */
-/**@{*/
-double getAverageInsertionTime        (const AggregateStats& stats);
-double getAverageComparisonsPerInsertion(const AggregateStats& stats);
-double getAverageSearchTime           (const AggregateStats& stats);
-double getAverageComparisonsPerSearch (const AggregateStats& stats);
-/**@}*/
+    double getRelativeBalance(const AggregateStats& stats);
+    /**
+     * @brief Calculates the relative balance of the tree.
+     *
+     * @param stats The AggregateStats object containing tree structure data.
+     * @return The relative balance of the tree, or 0.0 if the minimum depth is 0.
+     */
 
-// ───────────────────────────── Aggregate updaters ─────────────────────── //
+    int getBalanceDifference(const AggregateStats& stats);
+    /**
+     * @brief Calculates the difference between the height of the tree and minimum depth.
+     *
+     * @param stats The AggregateStats object containing tree structure data.
+     * @return The difference between the height of the tree and minimum depth.
+     */
 
-/**
- * @brief refresh the *final* node count field of @p stats using @p tree.
- */
-void updateFinalNodeCount(AggregateStats& stats, BinaryTree* tree);
+    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree);
+    /**
+     * @brief Updates all aggregate statistics for the given binary tree.
+     *
+     * This function update functions to compute the final node count, tree height, minimum depth
+     * relative balance, difference balance, and all averages
+     * (insertion times, comparisons per insertion, search times, and comparisons per search)
+     * and stores them in the AggregateStats object.
+     *
+     * @param stats Reference to the AggregateStats object to update.
+     * @param tree Pointer to the BinaryTree whose statistics are being calculated.
+     */
 
-/**
- * @brief refresh the *final* height field of @p stats using @p tree.
- */
-void updateFinalTreeHeight(AggregateStats& stats, BinaryTree* tree);
+}
 
-/**
- * @brief refresh the *final* minimum depth field of @p stats using @p tree.
- */
-void updateFinalTreeMinDepth(AggregateStats& stats, BinaryTree* tree);
-
-/**
- * @brief compute the average insertion time (ms) and store in
- *        @c stats.average_insertion_time_ms.
- */
-void updateAverageInsertionTime(AggregateStats& stats);
-
-/**
- * @brief compute the average number of comparisons per insertion and store
- *        in @c stats.average_comparisons_insertion.
- */
-void updateAverageComparisonsPerInsertion(AggregateStats& stats);
-
-/**
- * @brief compute the average search time (ms) and store in
- *        @c stats.average_search_time_ms.
- */
-void updateAverageSearchTime(AggregateStats& stats);
-
-/**
- * @brief compute the average number of comparisons per search and store
- *        in @c stats.average_comparisons_search.
- */
-void updateAverageComparisonsPerSearch(AggregateStats& stats);
-
-/**
- * @brief convenience wrapper that calls **all** individual updater
- *        functions above so that @p stats holds a complete, coherent
- *        snapshot of the current state of @p tree.
- */
-void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree);
-
-} 
-#endif 
+#endif

@@ -48,7 +48,7 @@ int main(int argc, char *argv[]){
     auto overall_indexing_start_time = std::chrono::high_resolution_clock::now() // this auto identifies this super specific type 
 
     // Get List of .txt files
-    std::vector<std::string> all_filenames = DATA::list_files_txt_in_path(dir_path);
+    std::vector<std::string> all_filenames = DATA::list_txt_files_in_path(dir_path);
     if (all_filenames.empty()) { 
         /* ... handle empty or error ... */ 
     }
