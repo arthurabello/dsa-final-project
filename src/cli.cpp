@@ -7,7 +7,7 @@
 
 #include "cli.h"
 #include "tree_utils.h"
-#include "../tinyhttp/http.cpp"
+#include "../tinyhttp/http.hpp"
 #include "data.h"
 
 using namespace std;

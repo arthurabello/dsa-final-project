@@ -11,15 +11,21 @@ COMMON_SRC := src/data.cpp src/tree_utils.cpp src/cli.cpp
 #───────────── BST target ───────────────────
 BST_SRC    := $(COMMON_SRC) \
               src/bst/bst.cpp \
-              src/bst/main_bst.cpp
-BST_OBJ    := $(patsubst src/%.cpp,$(OBJ_DIR)/%.o,$(BST_SRC))
+              src/bst/main_bst.cpp \
+              src/cli.cpp \
+              tinyhttp/http.cpp
+BST_OBJ := $(patsubst src/%.cpp,$(OBJ_DIR)/%.o,$(filter src/%.cpp,$(BST_SRC))) \
+           $(OBJ_DIR)/tinyhttp/http.o
 BST_BIN    := bst                              # final executable lives at repo root
 
 #───────────── AVL target ───────────────────
 AVL_SRC    := $(COMMON_SRC) \
               src/avl/avl.cpp \
-              src/avl/main_avl.cpp
-AVL_OBJ    := $(patsubst src/%.cpp,$(OBJ_DIR)/%.o,$(AVL_SRC))
+              src/avl/main_avl.cpp \
+              src/cli.cpp \
+              tinyhttp/http.cpp
+AVL_OBJ := $(patsubst src/%.cpp,$(OBJ_DIR)/%.o,$(filter src/%.cpp,$(AVL_SRC))) \
+           $(OBJ_DIR)/tinyhttp/http.o
 AVL_BIN    := avl
 
 #───────────── Unit-test targets ────────────
@@ -44,6 +50,10 @@ all: $(BST_BIN)
 
 #───────────── Pattern rule (*.cpp → *.o) ───
 $(OBJ_DIR)/%.o: src/%.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@
+
+$(OBJ_DIR)/tinyhttp/%.o: tinyhttp/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INC_DIRS) -c $< -o $@
 

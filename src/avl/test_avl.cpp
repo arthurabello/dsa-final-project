@@ -1,5 +1,9 @@
 #include "avl.h"
-#include <vector>
+#include "../../Unity/src/unity.h"
+
+void setUp(void) {}
+
+void tearDown(void) {}
 
 using namespace TREE;
 
@@ -84,13 +88,9 @@ void testTwo(){
 	
 }
 
-
-
-
 int main() {
 
-	
-// testOne();
+testOne();
 testTwo();
 
 }
