@@ -76,7 +76,7 @@ namespace TREE{
 
     int calculateHeight(Node* root){
         //Treats the case in which the root is empty.
-        if(root == nullptr) return 0;
+        if(root == nullptr) return -1; //I fixed this
         
         //Copies the left subtree.
         Node* leftNode = root->left;
@@ -94,7 +94,9 @@ namespace TREE{
         if (node == nullptr) {
             return;
         }
-
+		
+		int originalHeight = node->height;
+		
         // Calculates the heights of the children and get the max
         int leftHeight;
         if (node->left == nullptr) {
@@ -114,14 +116,15 @@ namespace TREE{
 
         int newHeight = 1 + maxHeight;
 
-        if (node->height == newHeight) {
+        node->height = newHeight;
+		
+        if (originalHeight == newHeight && (node->right != nullptr || node->left != nullptr)) {
             return;
         }
-
-        node->height = newHeight;
-
+		
         // Calculates the height of the father by a recursive call
         updateHeightUp(node->parent);
+
     }
 
     void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {//eliane

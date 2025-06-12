@@ -107,10 +107,9 @@ namespace TREE::AVL {
         int comparisons = 0;
         auto start_time = std::chrono::high_resolution_clock::now();
 
-        Node* newNode = createNode(word, {documentId});
 
         if (binary_tree.root == nullptr) {
-            binary_tree.root = newNode;
+            binary_tree.root = createNode(word, {documentId});
         }
         else {
             // Adds the node to the tree as usual
@@ -121,15 +120,7 @@ namespace TREE::AVL {
                 comparisons++;
                 parent = current;
 
-                if (word < current->word) {
-                    current = current->left;
-                    continue;
-                }
-                else if(word > current->word) {
-                    current = current->right;
-                    continue;
-                }
-                else {
+                if (word == current->word) {
                     // If it's already in the tree, updates the documentsId
                     bool found = false;
                     for(size_t i = 0; i < current->documentIds.size(); i++){
@@ -140,14 +131,25 @@ namespace TREE::AVL {
                     } 
                     if (found == false) {
                         current->documentIds.push_back(documentId);
+						break;
                     }
                 }
+                else if (word < current->word) {
+                    current = current->left;
+                    continue;
+                }
+                else if(word > current->word) {
+                    current = current->right;
+                    continue;
+                }
             }
+			
+			Node* newNode = createNode(word, {documentId});
             newNode->parent = parent;
 
             if(word < parent->word){
                 parent->left = newNode;
-            } else {
+            } else if(word>parent->word) {
                 parent->right = newNode;
             }
 			
