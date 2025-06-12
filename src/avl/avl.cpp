@@ -173,4 +173,8 @@ namespace TREE::AVL {
 		result.executionTime = duration;
 		return result;
     }
+
+    SearchResult search(BinaryTree* binary_tree, const std::string& word) {
+        return TREE::search(binary_tree, word);
+    }
 }

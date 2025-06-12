@@ -65,6 +65,9 @@ namespace TREE::AVL{
     * @return InsertResult Struct containing the number of comparisons and the insertion time.
     */
 	InsertResult insert(BinaryTree& binary_tree, const std::string& word, int documentId);
+	
+	// See tree_utils.h
+    SearchResult search(BinaryTree* binary_tree, const std::string& word);
 }
 
 #endif
