@@ -31,7 +31,52 @@ void test_createTree(){
 }
 
 void test_SearchResult(){
-	//TBI
+    // Search in a empty tree
+    BinaryTree* empty = createTree();
+    empty->root = nullptr;
+    TEST_ASSERT_EQUAL_INT(0, search(empty, "Root").found);
+
+    // Search in a tree with a single node
+    BinaryTree* single = createTree();
+    single->root = createNode("Root", {1}, 0);
+    TEST_ASSERT_EQUAL_INT(1, search(single, "Root").found);
+
+    // Search left child
+    BinaryTree* rootLeft = createTree();
+    rootLeft->root = createNode("M", {1}, 0);
+    rootLeft->root->left = createNode("Left", {1}, 0);
+    TEST_ASSERT_EQUAL_INT(1, search(rootLeft, "Left").found);
+
+    // Search right child
+    BinaryTree* rootRight = createTree();
+    rootRight->root = createNode("M", {1}, 0);
+    rootRight->root->right = createNode("Right", {1}, 0);
+    TEST_ASSERT_EQUAL_INT(1, search(rootRight, "Right").found);
+
+    // Search one word that is not in the tree
+    BinaryTree* notFound = createTree();
+    notFound->root = createNode("M", {1}, 0);
+    notFound->root->left = createNode("Left", {1}, 0);
+    notFound->root->right = createNode("Right", {1}, 0);
+    TEST_ASSERT_EQUAL_INT(0, search(notFound, "NotFound").found);
+    
+    // Search a imcomplete word in the tree
+    BinaryTree* incomplete = createTree();
+    incomplete->root = createNode("M", {1}, 0);
+    incomplete->root->left = createNode("Left", {1}, 0);
+    TEST_ASSERT_EQUAL_INT(0, search(incomplete, "Lef").found);
+
+    // Search in a tree with multiple words
+    BinaryTree* multiple = createTree();
+    multiple->root = createNode("M", {1}, 0);
+    multiple->root->left = createNode("Left", {1}, 0);
+    multiple->root->right = createNode("Right", {1}, 0);
+    multiple->root->left->left = createNode("LeftLeft", {1}, 0);
+    multiple->root->left->right = createNode("LeftRight", {1}, 0);
+    multiple->root->right->left = createNode("RightLeft", {1}, 0);
+    multiple->root->right->right = createNode("RightRight", {1}, 0);
+    TEST_ASSERT_EQUAL_INT(1, search(multiple, "RightRight").found);
+                         
 }
 
 void test_calculateHeight() {
