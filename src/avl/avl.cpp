@@ -7,7 +7,7 @@ namespace TREE::AVL {
         return node ? node->height : -1;
     }
     
-    // Balance factor: H(left) - H(right)
+    // Balance factor: H(right) - H(left)
     int bf(Node* node) {
         return getHeight(node->right) - getHeight(node->left);
     }
@@ -78,9 +78,10 @@ namespace TREE::AVL {
         // Cases of RR or LR rotations
         if(bf(unbalancedNode)<-1) {
         
-			if (bf(unbalancedNode->left)<0)
-                rightRotation(tree, unbalancedNode->left); return;
-            
+			if (bf(unbalancedNode->left)<0){
+                rightRotation(tree, unbalancedNode->left);
+				return;
+            }
             if (bf(unbalancedNode->left)>0){
                 leftRotation(tree, unbalancedNode->left->right);
                 rightRotation(tree, unbalancedNode->left);
@@ -157,8 +158,6 @@ namespace TREE::AVL {
 			
 			//Balancing moment
 			Node* unbalancedNode = parent;
-			
-			
 			
 			while(unbalancedNode->parent != nullptr && std::abs(bf(unbalancedNode)) < 2)
 				unbalancedNode = unbalancedNode->parent;

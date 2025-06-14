@@ -261,5 +261,15 @@ namespace TREE{
         stats.balance_difference = getBalanceDifference(stats);
 
     }
+	
+	
+	// void isBalanced(Node* root) {
+		// if (std::abs(AVL::bf(root))<2) {
+			// isBalanced(root->left);
+			// isBalanced(root->right);
+		// }
+		// std::cout << "Árvore desbalanceada na palavra: "<< root->word<<"\n";
+	// }
+	
 }
 
