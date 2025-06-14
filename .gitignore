@@ -1,9 +1,15 @@
+# Development
 *.txt
-.helix
-a.out
-.vscode
-makemagic
+.helix/
+.vscode/
 vgcore.*
-results.csv
+
+# Compilation artifacts
+bin/
+obj/
 avl
 bst
+rbt
+
+# Statistics results
+results.csv
