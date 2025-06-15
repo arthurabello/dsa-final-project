@@ -9,7 +9,7 @@ bin/
 obj/
 avl
 bst
-rbt
+# rbt
 
 # Statistics results
 results.csv
