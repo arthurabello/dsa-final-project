@@ -78,11 +78,11 @@ namespace TREE::AVL {
         // Cases of RR or LR rotations
         if(bf(unbalancedNode)<-1) {
         
-			if (bf(unbalancedNode->left)<0){
+			if (bf(unbalancedNode->left)<0) {
                 rightRotation(tree, unbalancedNode->left);
 				return;
             }
-            if (bf(unbalancedNode->left)>0){
+            if (bf(unbalancedNode->left)>0) {
                 leftRotation(tree, unbalancedNode->left->right);
                 rightRotation(tree, unbalancedNode->left);
 				return;
@@ -90,7 +90,7 @@ namespace TREE::AVL {
         }
 		// Cases of LL or RL rotations
         if(bf(unbalancedNode)>1) {
-            if (bf(unbalancedNode->right)>0){ 
+            if (bf(unbalancedNode->right)>0) { 
 				leftRotation(tree, unbalancedNode->right);
 				return;
         	}
