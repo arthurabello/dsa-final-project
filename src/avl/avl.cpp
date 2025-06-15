@@ -132,8 +132,15 @@ namespace TREE::AVL {
                     } 
                     if (found == false) {
                         current->documentIds.push_back(documentId);
-						break;
                     }
+					
+					auto end_time = std::chrono::high_resolution_clock::now();
+					double duration = std::chrono::duration_cast < std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
+
+					result.numComparisons = comparisons;
+					result.executionTime = duration;
+					return result;
+					
                 }
                 else if (word < current->word) {
                     current = current->left;
