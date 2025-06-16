@@ -261,5 +261,41 @@ namespace TREE{
         stats.balance_difference = getBalanceDifference(stats);
 
     }
+
+    void rotateLeft(Node** root, Node* x) {
+        Node* y = x->right;
+        x->right = y->left;
+        if (y->left != nullptr) {
+            y->left->parent = x;
+        }
+        y->parent = x->parent;
+        if (x->parent == nullptr) {
+            *root = y;
+        } else if (x == x->parent->left) {
+            x->parent->left = y;
+        } else {
+            x->parent->right = y;
+        }
+        y->left = x;
+        x->parent = y;
+    }
+
+    void rotateRight(Node** root, Node* y) {
+        Node* x = y->left;
+        y->left = x->right;
+        if (x->right != nullptr) {
+            x->right->parent = y;
+        }
+        x->parent = y->parent;
+        if (y->parent == nullptr) {
+            *root = x;
+        } else if (y == y->parent->left) {
+            y->parent->left = x;
+        } else {
+            y->parent->right = x;
+        }
+        x->right = y;
+        y->parent = x;
+    }
 }
 

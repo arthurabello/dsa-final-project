@@ -257,6 +257,10 @@ namespace TREE {
      * @param stats Reference to the AggregateStats object to update.
      * @param tree Pointer to the BinaryTree whose statistics are being calculated.
      */
+
+
+    void rotateLeft(Node** root, Node* x);
+    void rotateRight(Node** root, Node* y);
 }
 
 #endif
