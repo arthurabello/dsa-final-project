@@ -1,5 +1,9 @@
-export default function(json, debounce) {
+import { debounce } from "/static/common.js"
+
+export default function(json) {
     const r = 800 / 2
+
+    json = json["nodes"]
     
     const tree = d3.tree()
         .size([360, r - 50])
@@ -9,7 +13,7 @@ export default function(json, debounce) {
         .angle(d => d.x / 180 * Math.PI)
         .radius(d => d.y)
            
-    const svg = d3.select("#tree").append("svg")
+    const svg = d3.select("#graph").append("svg")
         .attr("width", r * 2)
         .attr("height", r * 2 - 100)
     

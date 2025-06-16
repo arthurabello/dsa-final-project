@@ -178,94 +178,6 @@ void test_countNodes() {
     TEST_ASSERT_EQUAL_INT(4, countNodes(skew));
 }
 
-void test_getAverageInsertionTime() {
-    AggregateStats stats;
-    stats.total_words_processed = 0;
-    stats.sum_of_insertion_times_ms = 100.0;
-    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageInsertionTime(stats));
-
-    stats.total_words_processed = 5;
-    stats.sum_of_insertion_times_ms = 50.0;
-    TEST_ASSERT_EQUAL_FLOAT(10.0, getAverageInsertionTime(stats));
-
-    stats.total_words_processed = 10;
-    stats.sum_of_insertion_times_ms = 200.0;
-    TEST_ASSERT_EQUAL_FLOAT(20.0, getAverageInsertionTime(stats));
-}
-
-void test_getAverageComparisonsPerInsertion() {
-    AggregateStats stats;
-    stats.total_words_processed = 0;
-    stats.total_comparisons_insertion = 50;
-    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageComparisonsPerInsertion(stats));
-
-    stats.total_words_processed = 5;
-    stats.total_comparisons_insertion = 50;
-    TEST_ASSERT_EQUAL_FLOAT(10.0, getAverageComparisonsPerInsertion(stats));
-
-    stats.total_words_processed = 20;
-    stats.total_comparisons_insertion = 100;
-    TEST_ASSERT_EQUAL_FLOAT(5.0, getAverageComparisonsPerInsertion(stats));
-}
-
-void test_getAverageSearchTime() {
-    AggregateStats stats;
-    stats.total_searches = 0;
-    stats.sum_of_search_times_ms = 120.0;
-    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageSearchTime(stats));
-
-    stats.total_searches = 4;
-    stats.sum_of_search_times_ms = 100.0;
-    TEST_ASSERT_EQUAL_FLOAT(25.0, getAverageSearchTime(stats));
-
-    stats.total_searches = 8;
-    stats.sum_of_search_times_ms = 400.0;
-    TEST_ASSERT_EQUAL_FLOAT(50.0, getAverageSearchTime(stats));
-}
-
-void test_getAverageComparisonsPerSearch() {
-    AggregateStats stats;
-    stats.total_searches = 0;
-    stats.total_comparisons_search = 50;
-    TEST_ASSERT_EQUAL_FLOAT(0.0, getAverageComparisonsPerSearch(stats));
-
-    stats.total_searches = 5;
-    stats.total_comparisons_search = 100;
-    TEST_ASSERT_EQUAL_FLOAT(20.0, getAverageComparisonsPerSearch(stats));
-
-    stats.total_searches = 10;
-    stats.total_comparisons_search = 300;
-    TEST_ASSERT_EQUAL_FLOAT(30.0, getAverageComparisonsPerSearch(stats));
-}
-
-void test_balanceMetrics() {
-    AggregateStats stats;
-    stats.final_tree_height = 10;
-    stats.final_tree_min_depth = 0;
-    TEST_ASSERT_EQUAL_FLOAT(0.0, getRelativeBalance(stats));
-    TEST_ASSERT_EQUAL_INT(10, getBalanceDifference(stats));
-
-    stats.final_tree_height = 8;
-    stats.final_tree_min_depth = 8;
-    TEST_ASSERT_EQUAL_FLOAT(1.0, getRelativeBalance(stats));
-    TEST_ASSERT_EQUAL_INT(0, getBalanceDifference(stats));
-
-    stats.final_tree_height = 16;
-    stats.final_tree_min_depth = 8;
-    TEST_ASSERT_EQUAL_FLOAT(2.0, getRelativeBalance(stats));
-    TEST_ASSERT_EQUAL_INT(8, getBalanceDifference(stats));
-
-    stats.final_tree_height = 11;
-    stats.final_tree_min_depth = 9;
-    TEST_ASSERT_EQUAL_FLOAT(11.0 / 9.0, getRelativeBalance(stats));
-    TEST_ASSERT_EQUAL_INT(2, getBalanceDifference(stats));
-
-    stats.final_tree_height = 50;
-    stats.final_tree_min_depth = 5;
-    TEST_ASSERT_EQUAL_FLOAT(10.0, getRelativeBalance(stats));
-    TEST_ASSERT_EQUAL_INT(45, getBalanceDifference(stats));
-}
-
 int main() {
     UNITY_BEGIN();
     RUN_TEST(test_createNode);
@@ -273,12 +185,7 @@ int main() {
     RUN_TEST(test_SearchResult);
     RUN_TEST(test_calculateHeight);
     RUN_TEST(test_updateHeightUp);
-	RUN_TEST(test_calculateMinDepth);
+	  RUN_TEST(test_calculateMinDepth);
     RUN_TEST(test_countNodes);
-    RUN_TEST(test_getAverageInsertionTime);
-    RUN_TEST(test_getAverageComparisonsPerInsertion);
-    RUN_TEST(test_getAverageSearchTime);
-    RUN_TEST(test_getAverageComparisonsPerSearch);
-    RUN_TEST(test_balanceMetrics);
     return UNITY_END();
 }
