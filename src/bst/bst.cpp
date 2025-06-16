@@ -1,7 +1,6 @@
 #include "bst.h"
 #include "../tree_utils.h"
 #include <vector>
-#include <chrono>
 #include <cstring>
 
 namespace TREE::BST {
@@ -9,7 +8,6 @@ namespace TREE::BST {
     InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId){
         InsertResult result;
         int comparisons = 0;
-        auto start_time = std::chrono::high_resolution_clock::now();
 
         Node* newNode = nullptr;
         
@@ -38,11 +36,7 @@ namespace TREE::BST {
                         current->documentIds.push_back(documentId);
                     }
 
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-    
                     result.numComparisons = comparisons;
-                    result.executionTime = duration;
                     return result;
 
                 } else if(word < current->word){
@@ -64,11 +58,7 @@ namespace TREE::BST {
             updateHeightUp(newNode);
         }
 
-        auto end_time = std::chrono::high_resolution_clock::now();
-        double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-
         result.numComparisons = comparisons;
-        result.executionTime = duration;
         return result; 
     }
 

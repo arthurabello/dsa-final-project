@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="module">
+        const json = await d3.json("/data")
+        import stats from "/static/stats.js"
+
+        stats(json["numComparisons"], "Number of comparisons", "", 2 * d3.deviation(json["numComparisons"]))
+    </script>
+</head>
+
+<body>
+    <div id="graph">
+        <h2>Search & indexing results</h2>
+    </div>
+    <div id="toc">
+        <h2>Table of contents</h2>
+        <ul>
+            <li><a href="/tree">Tree view</a></li>
+            <li><a href="/freq">Word frequency chart</a></li>
+            <li><a href="/search">Search times</a></li>
+            <li><a href="/comparisons">Number of comparisons</a></li>
+            <li><a href="/insert">Insertion times</a></li>
+        </ul>
+    </div>
+</body>
+
+</html>
