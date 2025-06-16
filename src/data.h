@@ -36,7 +36,7 @@ namespace DATA {
      * @param path The path to the directory to scan
      * @returns A vector of .txt filenames
      */
-    std::vector<std::string> list_txt_files_in_path(const std::string &path);
+    std::vector<std::string> listTxtFilesInDirectory(const std::string &dir, int max);
 }
 
 #endif

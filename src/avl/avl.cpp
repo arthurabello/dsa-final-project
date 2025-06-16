@@ -1,5 +1,4 @@
 #include "../tree_utils.h"
-#include <chrono>
 
 namespace TREE::AVL {
 
@@ -106,8 +105,6 @@ namespace TREE::AVL {
     InsertResult insert(BinaryTree& binary_tree, const std::string& word, int documentId) {
         InsertResult result;
         int comparisons = 0;
-        auto start_time = std::chrono::high_resolution_clock::now();
-
 
         if (binary_tree.root == nullptr) {
             binary_tree.root = createNode(word, {documentId});
@@ -134,11 +131,7 @@ namespace TREE::AVL {
                         current->documentIds.push_back(documentId);
                     }
 					
-					auto end_time = std::chrono::high_resolution_clock::now();
-					double duration = std::chrono::duration_cast < std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-
 					result.numComparisons = comparisons;
-					result.executionTime = duration;
 					return result;
 					
                 }
@@ -172,11 +165,7 @@ namespace TREE::AVL {
 			balanceTree(binary_tree, unbalancedNode);
 		}
 		
-		auto end_time = std::chrono::high_resolution_clock::now();
-		double duration = std::chrono::duration_cast < std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-
 		result.numComparisons = comparisons;
-		result.executionTime = duration;
 		return result;
     }
 

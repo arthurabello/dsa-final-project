@@ -41,35 +41,34 @@ namespace TREE {
     };
 
     struct AggregateStats {
-        std::string tree_type;
-        int num_docs_indexed = 0;
+        // Indexing info
+        int docsIndexed;
+        int wordsIndexed;
 
-        // Insertion data
-        long long total_indexing_time_ms = 0;
-        long long total_words_processed = 0;
-        long long total_comparisons_insertion = 0;
-        double sum_of_insertion_times_ms = 0.0;
-        double max_insertion_time_ms = 0.0;
+        // Insertion/indexing time
+        int64_t totalInsertionTimeNs;
+        int64_t avgInsertionTimeNs;
+        int64_t maxInsertionTimeNs;
+        int64_t minInsertionTimeNs;
 
-        // Search data
-        double total_search_time_ms = 0.0;
-        long long total_searches = 0;
-        long long total_comparisons_search = 0;
-        double sum_of_search_times_ms = 0.0;
-        double max_search_time_ms = 0.0;
+        // Search time
+        int64_t totalSearchTimeNs;
+        int64_t avgSearchTimeNs;
+        int64_t maxSearchTimeNs;
+        int64_t minSearchTimeNs;
+
+        // Search comparisons
+        int totalComparisonsSearch;
+        int avgComparisonsSearch;
+        int maxComparisonsSearch;
+        int minComparisonsSearch;
 
         // Tree structure
-        int final_node_count = 0;       // Unique words
-        int final_tree_height = 0;      // max depth
-        int final_tree_min_depth = 0;   // min depth
-        double relative_balance = 0.0;  // max_depth / min_depth
-        int balance_difference = 0;     // max_depth - min_depth
-
-        // Averages
-        double average_insertion_time_ms = 0.0;
-        double average_comparisons_insertion = 0.0;
-        double average_search_time_ms = 0.0;
-        double average_comparisons_search = 0.0;
+        int nodeCount;          // unique words
+        int treeHeight;         // Max depth
+        int treeMinDepth;       // Min depth
+        int balanceDiff;        // Max depth - min depth
+        double relativeBalance; // Max depth / min depth
     };
 
     BinaryTree* createTree();
@@ -148,18 +147,6 @@ namespace TREE {
     * It assumes that the heights of the children are already correct, which is the case
     * after a simple insert.
     */
-
-    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename = "results.csv");
-    /**
-     * @brief Saves the aggregate statistics to a CSV file.
-     *
-     * This function writes the statistical data contained in the AggregateStats
-     * object into a CSV file. The CSV will contain a header row followed by
-     * a single row with the corresponding values.
-     *
-     * @param stats The AggregateStats object containing the data to save.
-     * @param filename The name of the CSV file to write to "results.csv".
-     */
 
     int calculateMinDepth(Node* root);
     /**
@@ -243,19 +230,6 @@ namespace TREE {
      *
      * @param stats The AggregateStats object containing tree structure data.
      * @return The difference between the height of the tree and minimum depth.
-     */
-
-    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree);
-    /**
-     * @brief Updates all aggregate statistics for the given binary tree.
-     *
-     * This function update functions to compute the final node count, tree height, minimum depth
-     * relative balance, difference balance, and all averages
-     * (insertion times, comparisons per insertion, search times, and comparisons per search)
-     * and stores them in the AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree whose statistics are being calculated.
      */
 }
 

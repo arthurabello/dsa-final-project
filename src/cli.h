@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "tree_utils.h"
 
@@ -18,6 +19,14 @@ namespace CLI {
         constexpr const char* magenta = "\033[35m";
         constexpr const char* cyan    = "\033[36m";
     }
+
+    struct VisualizationStats {
+        std::vector<float> searchTimes;
+        std::vector<float> insertTimes;
+        std::vector<int> numComparisons;
+        int docsIndexed;
+        int wordsIndexed;
+    };
 
     /**
      * @brief Converts a double into a string given a number of decimal places.
@@ -42,7 +51,7 @@ namespace CLI {
      *
      * @param tree Binary tree to be visualized
      */
-    void startViewServer(TREE::BinaryTree* tree);
+    void startViewServer(TREE::BinaryTree* tree, VisualizationStats stats);
 
     /**
      * @brief Starts an interactive file search in the given binary search tree.
@@ -77,14 +86,42 @@ namespace CLI {
      * @param numFiles How many files should be indexed, at maximum
      * @param error Will be set to 1 if there occurs an error in the indexing
      * @param callback Function to be called for every word in every file
-     * @returns Indexing statistics
+     * @returns 0 if successful, a positive integer otherwise
      */
-    TREE::AggregateStats indexFilesInDir(
+    int indexFilesInDir(
         const std::string& directory,
         int numFiles,
-        int *error,
+        int *docsIndexed,
         std::function<TREE::InsertResult(std::string, int)> callback
     );
+
+    /**
+     * Searches the tree for words from the last documents in a directory as a
+     * way to approximate search times and number of comparisons during search.
+     *
+     * @param tree Tree to be searched
+     * @param stats Statistics used for visualization, where the times and
+     * number of comparisons will be stored
+     * @param directory Where to look for the words to search for
+     */
+    void testSearch(TREE::BinaryTree *tree, VisualizationStats *stats, std::string directory);
+
+    /**
+     * @brief Stores an AggregateStats object in a csv
+     *
+     * @param stats Statistics to be stored
+     * @param filename Name of the file to store the data at
+     */
+    void saveAsCsv(TREE::AggregateStats stats, std::string filename);
+
+    /**
+     * @brief Collects aggregate statistics for a tree from visualization data
+     *
+     * @param tree Tree from which the statistics are being collected
+     * @param stats Statistics used for visualization, from which the aggregate
+     * stats object will be constructed
+     */
+    TREE::AggregateStats collectAggStats(TREE::BinaryTree *tree, VisualizationStats *stats);
 }
 
 #endif
