@@ -58,8 +58,8 @@ namespace TREE::RBT {
      */
     Node* getSibling(Node* node);
 
-    // See tree_utils.h
-    SearchResult search(BinaryTree* binary_tree, const std::string& word);
+    // // See tree_utils.h
+    // SearchResult search(BinaryTree* binary_tree, const std::string& word);
 }
 
 #endif
