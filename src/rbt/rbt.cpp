@@ -7,7 +7,7 @@
 namespace TREE::RBT {
 
     InsertResult insert(BinaryTree* binary_tree, const std::string& word, int documentId){
-        insertResult result;
+        InsertResult result;
         auto start_time = std::chrono::high_resolution_clock::now();
         int num_comparisons = 0;
         
@@ -31,7 +31,7 @@ namespace TREE::RBT {
                 auto end_time = std::chrono::high_resolution_clock::now();
                 double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
 
-                result.numComparisons = comparisons;
+                result.numComparisons = num_comparisons;
                 result.executionTime = duration;
                 return result; 
             }
@@ -105,7 +105,7 @@ namespace TREE::RBT {
             }
 
         }
-        root->isRed = 0;
+        (*root)->isRed = 0;
     }
 
     Node* getUncle(Node* node) {
@@ -133,7 +133,7 @@ namespace TREE::RBT {
         }
     }
 
-    SearchResult search(BinaryTree* binary_tree, const std::string& word) {
-        return TREE::search(binary_tree, word);
-    }
+    // SearchResult search(BinaryTree* binary_tree, const std::string& word) {
+    //     return TREE::search(binary_tree, word);
+    // }
 }
