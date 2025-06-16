@@ -1,5 +1,5 @@
 #include "rbt.h"          
-#include "tree_utils.h"   
+#include "../tree_utils.h" 
 #include "../../Unity/src/unity.h"
 
 void setUp(void) {}
