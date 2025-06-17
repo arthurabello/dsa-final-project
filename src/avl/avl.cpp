@@ -12,63 +12,63 @@ namespace TREE::AVL {
         return getHeight(node->right) - getHeight(node->left);
     }
     
-    void leftRotation(BinaryTree& tree, Node* pivot) {
-		Node* L = pivot->left;
-		Node* grandpa = pivot->parent->parent;
-        Node* papa = pivot->parent;
+    // void leftRotation(BinaryTree& tree, Node* pivot) {
+	// 	Node* L = pivot->left;
+	// 	Node* grandpa = pivot->parent->parent;
+    //     Node* papa = pivot->parent;
 		
-		if (L != nullptr) L->parent = papa;
-		papa->right = L;
+	// 	if (L != nullptr) L->parent = papa;
+	// 	papa->right = L;
 		
     	
-    	// Guarantees that the tree is still a BST
-    	// if (R->left!=nullptr) R->left->parent = pivot;
+    // 	// Guarantees that the tree is still a BST
+    // 	// if (R->left!=nullptr) R->left->parent = pivot;
     	
-		pivot->parent = grandpa;
-		if (grandpa != nullptr) {
-			if(grandpa->left == papa) grandpa->left = pivot;
-			else grandpa->right = pivot;
-		}
+	// 	pivot->parent = grandpa;
+	// 	if (grandpa != nullptr) {
+	// 		if(grandpa->left == papa) grandpa->left = pivot;
+	// 		else grandpa->right = pivot;
+	// 	}
 		
-    	// Finishes changing pivot and R of places
-    	pivot->left = papa;
-		papa->parent = pivot;
+    // 	// Finishes changing pivot and R of places
+    // 	pivot->left = papa;
+	// 	papa->parent = pivot;
 		
-    	if (tree.root == papa) tree.root = pivot;
+    // 	if (tree.root == papa) tree.root = pivot;
     	
-    	// Updates the heights of the nodes
-    	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
-    	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
+    // 	// Updates the heights of the nodes
+    // 	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
+    // 	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
     	
-    }
+    // }
 	
-    void rightRotation(BinaryTree& tree, Node* pivot) {
-		Node* R = pivot->right;
-		Node* grandpa = pivot->parent->parent;
-        Node* papa = pivot->parent;
+    // void rightRotation(BinaryTree& tree, Node* pivot) {
+	// 	Node* R = pivot->right;
+	// 	Node* grandpa = pivot->parent->parent;
+    //     Node* papa = pivot->parent;
 		
-		if (R != nullptr) R->parent = papa;
-		papa->left = R;
+	// 	if (R != nullptr) R->parent = papa;
+	// 	papa->left = R;
 		
-    	// Guarantees that the tree is still a BST
-    	// if (R->left!=nullptr) R->left->parent = pivot;
+    // 	// Guarantees that the tree is still a BST
+    // 	// if (R->left!=nullptr) R->left->parent = pivot;
     	
-		pivot->parent = grandpa;
-		if (grandpa != nullptr) {
-			if(grandpa->left == papa) grandpa->left = pivot;
-			else grandpa->right = pivot;
-		}
+	// 	pivot->parent = grandpa;
+	// 	if (grandpa != nullptr) {
+	// 		if(grandpa->left == papa) grandpa->left = pivot;
+	// 		else grandpa->right = pivot;
+	// 	}
 		
-    	// Finishes changing pivot and R of places
-    	pivot->right = papa;
-		papa->parent = pivot;
+    // 	// Finishes changing pivot and R of places
+    // 	pivot->right = papa;
+	// 	papa->parent = pivot;
 		
-    	if (tree.root == papa) tree.root = pivot;
+    // 	if (tree.root == papa) tree.root = pivot;
     	
-    	// Updates the heights of the nodes
-    	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
-    	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
-    }
+    // 	// Updates the heights of the nodes
+    // 	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
+    // 	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
+    // }
 	
     void balanceTree(BinaryTree& tree, Node* unbalancedNode) {
         if(tree.root == nullptr) return;
