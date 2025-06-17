@@ -1,7 +1,11 @@
-export default function(json, debounce) {
+import { debounce } from "/static/common.js"
+
+export default function(json) {
     const width = 800
     const height = width - 100
     const margin = 1
+
+    json = json["nodes"]
 
     json = json.map(e => ({
         name: e[0],
@@ -14,7 +18,7 @@ export default function(json, debounce) {
         maxWeight = Math.max(maxWeight, e.weight)
     }
 
-    const tooltip = d3.select("#bubble")
+    const tooltip = d3.select("#graph")
         .append("div")
         .attr("id", "tooltip")
         .style("opacity", 0)
@@ -40,7 +44,7 @@ export default function(json, debounce) {
         .domain([0, maxWeight])
         .range(["lightskyblue", "tomato"])
     
-    const svg = d3.select("#bubble").append("svg")
+    const svg = d3.select("#graph").append("svg")
         .attr("width", width)
         .attr("height", height)
 

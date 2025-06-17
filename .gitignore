@@ -7,10 +7,6 @@ vgcore.*
 # Compilation artifacts
 bin/
 obj/
-avl
-bst
-# rbt
-data_backup/
 
 # Statistics results
 results.csv

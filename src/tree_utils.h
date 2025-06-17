@@ -42,35 +42,34 @@ namespace TREE {
     };
 
     struct AggregateStats {
-        std::string tree_type;
-        int num_docs_indexed = 0;
+        // Indexing info
+        int docsIndexed;
+        int wordsIndexed;
 
-        // Insertion data
-        long long total_indexing_time_ms = 0;
-        long long total_words_processed = 0;
-        long long total_comparisons_insertion = 0;
-        double sum_of_insertion_times_ms = 0.0;
-        double max_insertion_time_ms = 0.0;
+        // Insertion/indexing time
+        int64_t totalInsertionTimeNs;
+        int64_t avgInsertionTimeNs;
+        int64_t maxInsertionTimeNs;
+        int64_t minInsertionTimeNs;
 
-        // Search data
-        double total_search_time_ms = 0.0;
-        long long total_searches = 0;
-        long long total_comparisons_search = 0;
-        double sum_of_search_times_ms = 0.0;
-        double max_search_time_ms = 0.0;
+        // Search time
+        int64_t totalSearchTimeNs;
+        int64_t avgSearchTimeNs;
+        int64_t maxSearchTimeNs;
+        int64_t minSearchTimeNs;
+
+        // Search comparisons
+        int totalComparisonsSearch;
+        int avgComparisonsSearch;
+        int maxComparisonsSearch;
+        int minComparisonsSearch;
 
         // Tree structure
-        int final_node_count = 0;       // Unique words
-        int final_tree_height = 0;      // max depth
-        int final_tree_min_depth = 0;   // min depth
-        double relative_balance = 0.0;  // max_depth / min_depth
-        int balance_difference = 0;     // max_depth - min_depth
-
-        // Averages
-        double average_insertion_time_ms = 0.0;
-        double average_comparisons_insertion = 0.0;
-        double average_search_time_ms = 0.0;
-        double average_comparisons_search = 0.0;
+        int nodeCount;          // unique words
+        int treeHeight;         // Max depth
+        int treeMinDepth;       // Min depth
+        int balanceDiff;        // Max depth - min depth
+        double relativeBalance; // Max depth / min depth
     };
 
     
@@ -183,83 +182,6 @@ namespace TREE {
      * @return The total number of nodes in the tree.
      */
     int countNodes(Node* root);
-
-    /**
-     * @brief Calculates the average insertion time.
-     *
-     * This function computes the average time taken for insertions
-     * based on the total sum of insertion times and the total number
-     * of words processed.
-     *
-     * @param stats The AggregateStats object containing insertion time data.
-     * @return The average insertion time, or 0.0 if no words were processed.
-     */
-    double getAverageInsertionTime(const AggregateStats& stats);
-
-    /**
-     * @brief Calculates the average number of comparisons per insertion.
-     *
-     * This function computes the average number of comparisons made during
-     * insertions based on the total number of comparisons and the total
-     * number of words processed.
-     *
-     * @param stats The AggregateStats object containing insertion comparison data.
-     * @return The average number of comparisons per insertion, or 0.0 if no words were processed.
-     */
-    double getAverageComparisonsPerInsertion(const AggregateStats& stats);
-    
-    /**
-     * @brief Calculates the average search time.
-     *
-     * This function computes the average time taken for searches
-     * based on the total sum of search times and the total number of searches.
-     *
-     * @param stats The AggregateStats object containing search time data.
-     * @return The average search time, or 0.0 if no searches were performed.
-     */
-    double getAverageSearchTime(const AggregateStats& stats);
-
-    /**
-     * @brief Calculates the average number of comparisons per search.
-     *
-     * This function computes the average number of comparisons made during
-     * searches based on the total number of comparisons and the total
-     * number of searches performed.
-     *
-     * @param stats The AggregateStats object containing search comparison data.
-     * @return The average number of comparisons per search, or 0.0 if no searches were performed.
-     */
-    double getAverageComparisonsPerSearch(const AggregateStats& stats);
-
-    /**
-     * @brief Calculates the relative balance of the tree.
-     *
-     * @param stats The AggregateStats object containing tree structure data.
-     * @return The relative balance of the tree, or 0.0 if the minimum depth is 0.
-     */
-    double getRelativeBalance(const AggregateStats& stats);
-    
-    /**
-     * @brief Calculates the difference between the height of the tree and minimum depth.
-     *
-     * @param stats The AggregateStats object containing tree structure data.
-     * @return The difference between the height of the tree and minimum depth.
-     */
-    int getBalanceDifference(const AggregateStats& stats);
-
-    /**
-     * @brief Updates all aggregate statistics for the given binary tree.
-     *
-     * This function update functions to compute the final node count, tree height, minimum depth
-     * relative balance, difference balance, and all averages
-     * (insertion times, comparisons per insertion, search times, and comparisons per search)
-     * and stores them in the AggregateStats object.
-     *
-     * @param stats Reference to the AggregateStats object to update.
-     * @param tree Pointer to the BinaryTree whose statistics are being calculated.
-     */
-    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree);
-
 
     /**
      * @brief Performs a standard left rotation on the subtree rooted at node x.

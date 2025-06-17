@@ -44,7 +44,7 @@ namespace DATA {
                 }
             }
 
-            if (!found) words.push_back(normalise(word));
+            if (!found and !word.empty()) words.push_back(normalise(word));
         }
 
         archive.close();
@@ -52,16 +52,15 @@ namespace DATA {
     }
 
     // Finds all files inside a directory and returns its names
-    std::vector<std::string> list_txt_files_in_path(const std::string& path) {
+    std::vector<std::string> listTxtFilesInDirectory(const std::string& path, int max) {
         std::string mutPath = path;
 
         std::vector<std::string> files;
-        int index = 1;
 
         if (mutPath.back() != '/' && mutPath.back() != '\\')
             mutPath += "/";
 
-        for (int index = 1; true; index++) {
+        for (int index = 1; index <= max; index++) {
             std::string filename = mutPath + std::to_string(index) + ".txt";
             std::ifstream file(filename);
 

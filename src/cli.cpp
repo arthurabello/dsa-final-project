@@ -1,9 +1,14 @@
 // This module generalizes common functionality between main_bst, main_avl and
 // main_rbt
 
-#include <functional> // Used for additional functionality
+#include <chrono>
+#include <climits>
+#include <cstdint>
+#include <functional>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <chrono>
 
 #include "cli.h"
 #include "tree_utils.h"
@@ -11,6 +16,7 @@
 #include "data.h"
 
 using namespace std;
+using namespace chrono;
 
 namespace CLI {
     string formatDouble(double num, int decimalPlaces) {
@@ -23,9 +29,9 @@ namespace CLI {
         return c + str + color::reset;
     }
     
-    void startViewServer(TREE::BinaryTree* tree) {
+    void startViewServer(TREE::BinaryTree* tree, VisualizationStats stats) {
         // 'static' is necessary to access the variable from inside 'requested'
-        static string json = "[";
+        static string json = "{\"nodes\": [";
     
         // The block below creates a JSON string with all of the tree nodes
         // represented as [word, ID, parent ID, number of file occurrences] to be
@@ -49,13 +55,44 @@ namespace CLI {
         
         // Removes the last ','
         json.pop_back();
-        json += "]";
+        json += "],";
+
+        // Insertion times
+        json += "\"insertTimes\": [";
+        for (float time : stats.insertTimes) {
+            json += to_string((int) time) + ",";
+        }
+        json.pop_back();
+        json += "],";
+
+        // Search times
+        json += "\"searchTimes\": [";
+        for (float time : stats.searchTimes) {
+            json += to_string((int) time) + ",";
+        }
+        json.pop_back();
+        json += "],";
+
+        // Number of comparisons
+        json += "\"numComparisons\": [";
+        for (int num : stats.numComparisons) {
+            json += to_string(num) + ",";
+        }
+        json.pop_back();
+        json += "]}";
     
         HttpServer server;
+
+        // '/'            => returns 'tree.html'
+        server.when("/")->serveFile("view/tree.html");
     
-        // '/'            => returns 'index.html'
-        server.when("/")->serveFile("view/index.html");
-    
+        // '/page'        => returns 'page.html'
+        server.when("/tree")->serveFile("view/tree.html");
+        server.when("/freq")->serveFile("view/freq.html");
+        server.when("/search")->serveFile("view/search.html");
+        server.when("/insert")->serveFile("view/insert.html");
+        server.when("/comparisons")->serveFile("view/comparisons.html");
+
         // '/static/file' => returns the files' content
         server.whenMatching("/static/[^/]+")->serveFromFolder("view");
     
@@ -132,18 +169,6 @@ namespace CLI {
         }
     }
 
-    void printAndExportStats(TREE::AggregateStats stats) {
-        cout << endl << colorize(color::bold, "■ Index statistics") << endl
-          << "Docs indexed : " << stats.num_docs_indexed            << endl
-          << "Unique words : " << stats.final_node_count            << endl
-          << "Tree height  : " << stats.final_tree_height           << endl
-          << "Min depth    : " << stats.final_tree_min_depth        << endl
-          << "Words proc.  : " << stats.total_words_processed       << endl
-          << "Comparisons  : " << stats.total_comparisons_insertion << endl;
-
-        TREE::save_stats_to_csv(stats);
-    }
-
     int validateNumFiles(string arg) {
         int n = -1;
         try {
@@ -157,78 +182,206 @@ namespace CLI {
         return n;
     }
 
-    TREE::AggregateStats indexFilesInDir(
+    int indexFilesInDir(
         const string& directory,
         int numFiles,
-        int *error,
+        int *docsIndexed,
         function<TREE::InsertResult(string, int)> callback
     ) {
-        *error = 0;
+        auto startTime = chrono::high_resolution_clock::now();
 
-        TREE::AggregateStats stats;
-
-        const auto indexingStart = chrono::high_resolution_clock::now();
-
-        vector<string> filenames = DATA::list_txt_files_in_path(directory);
+        vector<string> filenames = DATA::listTxtFilesInDirectory(directory, numFiles);
         if (filenames.empty()) {
             cerr << "Error: No .txt files found in '" << directory << "'." << endl;
-            *error = 1;
-            return stats;
+            return 1;
         }
 
-        const int numFilesToProcess =
-            min(filenames.size(), (unsigned long) numFiles);
+        const int numFilesToProcess = min(filenames.size(), (unsigned long) numFiles);
+        *docsIndexed = numFilesToProcess;
 
-        stats.num_docs_indexed = numFilesToProcess;
-        cout << "Processing the first " << numFilesToProcess << " docs." << endl;
+        cout << "Indexing the first " << numFilesToProcess << " docs..." << endl;
 
-        for (int i = 0; i < numFilesToProcess; ++i) {
+        for (int i = 0; i < numFilesToProcess; i++) {
             const string& filename = filenames[i];
 
-            // Get the document ID from the filename
-            int documentId = -1;
-            try {
-                const size_t dotPos = filename.find('.');
-                const size_t slashPos = filename.find_last_of('/');
-                documentId = stoi(filename.substr(slashPos + 1, dotPos));
-            } catch (...) {
-                cerr << "Warning: cannot parse doc-id for '" << filename
-                    << "'. Using -1." << endl;
-            }
+            // Guaranteed from the implementation
+            int documentId = i + 1;
 
-            const vector<string> words_in_doc = DATA::tokenize(filename);
+            vector<string> words = DATA::tokenize(filename);
 
-            if (words_in_doc.empty()) {
+            if (words.empty()) {
                 cerr << "Warning: no tokens in file: " << filename << endl;
                 continue;
             }
 
-            for (const string& word : words_in_doc) {
-                if (word.empty()) continue;
-                stats.total_words_processed++;
-
+            for (const string& word : words) {
                 // Calls a tree specific (BST/AVL/RBT) function to deal with
                 // the words found
-                TREE::InsertResult res = callback(word, documentId);
-
-                stats.sum_of_insertion_times_ms   += res.executionTime;
-                stats.total_comparisons_insertion += res.numComparisons;
-                stats.max_insertion_time_ms = max(
-                    stats.max_insertion_time_ms,
-                    res.executionTime
-                );
+                callback(word, documentId);
             }
         }
 
-        const auto overall_indexing_end_time = chrono::high_resolution_clock::now();
-        stats.total_indexing_time_ms =
-            chrono::duration_cast<chrono::milliseconds>(
-                overall_indexing_end_time - indexingStart
-            ).count();
+        auto endTime = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(endTime - startTime);
 
         cout << "Indexing completed in "
-            << stats.total_indexing_time_ms << " ms." << endl;
+            << duration.count() << " ms." << endl;
 
-        return stats;
+        return 0;
+    }
+
+    void testSearch(TREE::BinaryTree *tree, VisualizationStats *stats, string directory) {
+        cout << "Collecting search statistics..." << endl;
+
+        // For now, let's use the words from one of the last files to be the
+        // least biased we can
+        vector<string> words = DATA::tokenize(directory + "/" + "10000.txt");
+
+        TREE::SearchResult res;   // Used to get "numComparisons"
+        const int numTries = 100; // How many times to search for each word
+
+        for (string word : words) {
+            auto startTime = high_resolution_clock().now();
+
+            for (int i = 0; i < numTries; i++) {
+                res = TREE::search(tree, word);
+            }
+
+            auto endTime = high_resolution_clock().now();
+            auto duration = duration_cast<nanoseconds>(endTime - startTime);
+            auto placeholder = (endTime - startTime);
+            stats->searchTimes.push_back(((float) placeholder.count()) / numTries);
+            stats->numComparisons.push_back(res.numComparisons);
+        }
+
+        cout << "Done." << endl;
+    }
+
+    TREE::AggregateStats collectAggStats(TREE::BinaryTree *tree, VisualizationStats *stats) {
+        TREE::AggregateStats aggStats;
+
+        aggStats.maxComparisonsSearch = 0;
+        aggStats.minComparisonsSearch = INT_MAX;
+        aggStats.totalComparisonsSearch = 0;
+
+        for (auto &e : stats->numComparisons) {
+            aggStats.totalComparisonsSearch += e;
+
+            if (e > aggStats.maxComparisonsSearch) {
+                aggStats.maxComparisonsSearch = e;
+            }
+            if (e < aggStats.minComparisonsSearch) {
+                aggStats.minComparisonsSearch = e;
+            }
+        }
+        aggStats.avgComparisonsSearch = aggStats.totalComparisonsSearch / stats->numComparisons.size();
+
+        aggStats.maxSearchTimeNs = 0;
+        aggStats.minSearchTimeNs = INT64_MAX;
+        aggStats.totalSearchTimeNs = 0;
+
+        for (auto &e : stats->searchTimes) {
+            aggStats.totalSearchTimeNs += e;
+
+            if (e > aggStats.maxSearchTimeNs) {
+                aggStats.maxSearchTimeNs = e;
+            }
+            if (e < aggStats.minSearchTimeNs) {
+                aggStats.minSearchTimeNs = e;
+            }
+        }
+        aggStats.avgSearchTimeNs = aggStats.totalSearchTimeNs / stats->searchTimes.size();
+
+        aggStats.maxInsertionTimeNs = 0;
+        aggStats.minInsertionTimeNs = INT64_MAX;
+        aggStats.totalInsertionTimeNs = 0;
+
+        for (auto &e : stats->insertTimes) {
+            aggStats.totalInsertionTimeNs += e;
+
+            if (e > aggStats.maxInsertionTimeNs) {
+                aggStats.maxInsertionTimeNs = e;
+            }
+            if (e < aggStats.minInsertionTimeNs) {
+                aggStats.minInsertionTimeNs = e;
+            }
+        }
+        aggStats.avgInsertionTimeNs = aggStats.totalInsertionTimeNs / stats->insertTimes.size();
+
+        aggStats.treeHeight = TREE::calculateHeight(tree->root);
+        aggStats.treeMinDepth = TREE::calculateMinDepth(tree->root);
+        aggStats.relativeBalance = (float) aggStats.treeHeight / aggStats.treeMinDepth;
+        aggStats.balanceDiff = aggStats.treeHeight - aggStats.treeMinDepth;
+        aggStats.nodeCount = TREE::countNodes(tree->root);
+        aggStats.docsIndexed = stats->docsIndexed;
+        aggStats.wordsIndexed = stats->wordsIndexed;
+
+        return aggStats;
+    }
+
+    void saveAsCsv(TREE::AggregateStats stats, string filename) {
+        ofstream file(filename);
+
+        if (!file.is_open()) {
+            cerr << "Error: Unable to open file '"
+                << filename << "' for writing." << endl;
+
+            return;
+        }
+
+        // Header
+        file
+            << "docsIndexed,"
+            << "wordsIndexed,"
+
+            << "totalInsertionTimeNs,"
+            << "avgInsertionTimeNs,"
+            << "maxInsertionTimeNs,"
+            << "minInsertionTimeNs,"
+
+            << "totalSearchTimeNs,"
+            << "avgSearchTimeNs,"
+            << "maxSearchTimeNs,"
+            << "minSearchTimeNs,"
+
+            << "totalComparisonsSearch,"
+            << "avgComparisonsSearch,"
+            << "maxComparisonsSearch,"
+            << "minComparisonsSearch,"
+
+            << "nodeCount,"
+            << "treeHeight,"
+            << "treeMinDepth,"
+            << "balanceDiff,"
+            << "relativeBalance";
+
+        file << endl;
+
+        // Data
+        file
+            << stats.docsIndexed << ","
+            << stats.wordsIndexed << ","
+            << stats.totalInsertionTimeNs << ","
+            << stats.avgInsertionTimeNs << ","
+            << stats.maxInsertionTimeNs << ","
+            << stats.minInsertionTimeNs << ","
+            << stats.totalSearchTimeNs << ","
+            << stats.avgSearchTimeNs << ","
+            << stats.maxSearchTimeNs << ","
+            << stats.minSearchTimeNs << ","
+            << stats.totalComparisonsSearch << ","
+            << stats.avgComparisonsSearch << ","
+            << stats.maxComparisonsSearch << ","
+            << stats.minComparisonsSearch << ","
+            << stats.nodeCount << ","
+            << stats.treeHeight << ","
+            << stats.treeMinDepth << ","
+            << stats.balanceDiff << ","
+            << stats.relativeBalance;
+
+        file << endl;
+
+        file.close();
+        std::cout << "Statistics saved to: " << filename << std::endl;
     }
 }

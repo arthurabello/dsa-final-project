@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <string>
 
@@ -6,10 +7,13 @@
 #include "../tree_utils.h"
 
 using namespace std;
+using namespace chrono;
+
+static const string usage = "./bst <search|stats> <n_docs> <directory>";
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
-        cerr << "Usage: ./bst <search|stats|view> <n_docs> <directory>" << endl;
+        cerr << "Usage: " << usage << endl;
         return 1;
     }
 
@@ -24,44 +28,49 @@ int main(int argc, char* argv[]) {
         << CLI::colorize(CLI::color::bold, "Documents: ") << numFiles << ", "
         << CLI::colorize(CLI::color::bold, "Directory: ") << directory << endl;
 
-    TREE::BinaryTree* bst_tree = TREE::createTree();
+    TREE::BinaryTree* bst = TREE::createTree();
 
-    int error;
-    auto stats = CLI::indexFilesInDir(
-        directory, numFiles, &error,
+    CLI::VisualizationStats stats;
+    stats.wordsIndexed = 0;
+    int error = CLI::indexFilesInDir(
+        directory, numFiles, &stats.docsIndexed,
         [&](string word, int documentId) {
-            return TREE::BST::insert(bst_tree, word, documentId);
+            stats.wordsIndexed++;
+
+            auto startTime = high_resolution_clock().now();
+
+            auto ins = TREE::BST::insert(bst, word, documentId);
+
+            auto endTime = high_resolution_clock().now();
+            auto duration = duration_cast<nanoseconds>(endTime - startTime);
+            stats.insertTimes.push_back((endTime - startTime).count());
+
+            return ins;
         }
     );
-    if (error) return 1;
-
-    stats.final_node_count  = TREE::countNodes(bst_tree->root);
-    stats.final_tree_height = TREE::calculateHeight(bst_tree->root);
-    stats.final_tree_min_depth = TREE::calculateMinDepth(bst_tree->root);
-    stats.final_tree_min_depth = TREE::calculateMinDepth(bst_tree->root);
-    // stats.total_search_time_ms = 
-
-    stats.tree_type = "BST";
+    if (error != 0) return error;
 
     if (command == "stats") {
-        CLI::printAndExportStats(stats);
+        CLI::testSearch(bst, &stats, directory);
+
+        TREE::AggregateStats aggStats = CLI::collectAggStats(bst, &stats);
+        CLI::saveAsCsv(aggStats, "bst.csv");
+        
+        CLI::startViewServer(bst, stats);
     }
     else if (command == "search") {
-        CLI::searchFiles(bst_tree);
-    }
-    else if (command == "view") {
-        CLI::startViewServer(bst_tree);
+        CLI::searchFiles(bst);
     }
     else {
         cerr << "Error: Unkowned command: " << command << "."
-                  << "Use 'search', 'view' or 'stats'." << endl;
+            << "Use " << usage << endl;
 
-        TREE::destroy(bst_tree);
+        TREE::destroy(bst);
         return 1;
     }
 
-    cout << endl << "Deallocating tree…" << endl;
+    cout << endl << "Deallocating tree..." << endl;
 
-    TREE::destroy(bst_tree);
+    TREE::destroy(bst);
     return 0;
 }
