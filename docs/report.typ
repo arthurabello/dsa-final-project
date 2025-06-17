@@ -289,6 +289,11 @@ All trees were equivalently tested under the same principles blablabla
 
 The testing module can be found here blablabla
 
+= Visualization with JavaScript
+<section_visualization>
+
+espanio faz teu nome
+
 
 = Comparative Analysis
 <section_comparative_analysis>
@@ -484,8 +489,29 @@ Field counts are identical, therefore heap consumption is $O(n)$ for the AVL and
 
 No additional global buffers are required; rotations operate with $O(1)$ local variables.
 
+= Challenges and Difficulties (Required by the professor)
+<section_challenges_difficulties>
 
+== Arthur Rabello Oliveira
+<section_challenges_difficulties_arthur>
 
+The hardest challenge i faced was to keep the GitHub repository organized, reviewing pull requests from my fellow collaborators. Writing this report and the `README.md` have not been trivial tasks too. 
+
+Another very big difficulty was to write the `Makefile` for compiling the project, as the syntax is rather counterintuitive. One could scroll through the commit history and get a glance at how ugly the first version of this file was.
+
+Reviewing the work of my fellow collaborators was also a challenge, as I had to understand their code and suggest improvements. This was a very good learning experience, though.
+
+== Eliane Moreira
+<section_challenges_difficulties_eliane>
+
+== Gabrielle Mascarelo
+<section_challenges_difficulties_gabrielle>
+
+== Nícolas Spaniol
+<section_challenges_difficulties_nicolas>
+
+== Gabriel Carneiro
+<section_challenges_difficulties_gabriel>
 
 = Source code
 <section_source_code_repository>
