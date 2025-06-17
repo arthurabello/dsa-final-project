@@ -18,8 +18,8 @@ namespace TREE::AVL {
 			return nullptr;
 		}
 		
-		// node->height = calculateHeight(node);
 		int originalHeight = node->height;
+		
 		// Calculates the heights of the children and get the max
 		int leftHeight;
 		if (node->left == nullptr) {
@@ -41,18 +41,18 @@ namespace TREE::AVL {
 
 		node->height = newHeight;
 		
-		if (originalHeight == newHeight && (node->right != nullptr || node->left != nullptr)) {
-			return nullptr;
-		}
+		// Deal with the cases of immediate return.
+		if (originalHeight == newHeight &&
+		   (node->right != nullptr ||
+			node->left != nullptr)) return nullptr;
 		
-		// Calculates the height of the father by a recursive call
 		if(std::abs(bf(node))>=2) return node;
 		
+		// If not returned, analyzes the father.
 		return AVL::updateHeightUp(node->parent);
 		
 	}
-    
-	
+
     void leftRotation(BinaryTree& tree, Node* pivot) {
 		Node* L = pivot->left;
 		Node* grandpa = pivot->parent->parent;
@@ -60,39 +60,34 @@ namespace TREE::AVL {
 		
 		if (L != nullptr) L->parent = papa;
 		papa->right = L;
-		
     	
-    	// Guarantees that the tree is still a BST
-    	// if (R->left!=nullptr) R->left->parent = pivot;
-    	
+		// Begin changing pivot and papa of place. 
 		pivot->parent = grandpa;
 		if (grandpa != nullptr) {
 			if(grandpa->left == papa) grandpa->left = pivot;
 			else grandpa->right = pivot;
 		}
 		
-    	// Finishes changing pivot and R of places
+    	// Finishes changing pivot and papa of places.
     	pivot->left = papa;
 		papa->parent = pivot;
 		
     	if (tree.root == papa) tree.root = pivot;
     	
-    	// Updates the heights of the nodes
+    	// Updates the heights of the nodes.
     	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
     	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
     	
     }
 	
     void rightRotation(BinaryTree& tree, Node* pivot) {
+		// Analogous to previous function.
 		Node* R = pivot->right;
 		Node* grandpa = pivot->parent->parent;
         Node* papa = pivot->parent;
 		
 		if (R != nullptr) R->parent = papa;
 		papa->left = R;
-		
-    	// Guarantees that the tree is still a BST
-    	// if (R->left!=nullptr) R->left->parent = pivot;
     	
 		pivot->parent = grandpa;
 		if (grandpa != nullptr) {
@@ -100,13 +95,11 @@ namespace TREE::AVL {
 			else grandpa->right = pivot;
 		}
 		
-    	// Finishes changing pivot and R of places
     	pivot->right = papa;
 		papa->parent = pivot;
 		
     	if (tree.root == papa) tree.root = pivot;
     	
-    	// Updates the heights of the nodes
     	papa->height = 1 + std::max(getHeight(papa->left), getHeight(papa->right));
     	pivot->height = 1 + std::max(getHeight(pivot->left), getHeight(pivot->right));
     }
@@ -160,10 +153,11 @@ namespace TREE::AVL {
     	
             while (current != nullptr) { // Searches for the word
                 comparisons++;
+				// Saves the parent of the inserted node.
                 parent = current;
 
                 if (word == current->word) {
-                    // If it's already in the tree, updates the documentsId
+                    // If it's already in the tree, just updates the documentIds. 
                     bool found = false;
                     for(size_t i = 0; i < current->documentIds.size(); i++){
                         if (current->documentIds[i] == documentId) {
@@ -192,7 +186,7 @@ namespace TREE::AVL {
                     continue;
                 }
             }
-			
+			// Insertion of the node.
 			Node* newNode = createNode(word, {documentId});
             newNode->parent = parent;
 
@@ -202,7 +196,7 @@ namespace TREE::AVL {
                 parent->right = newNode;
             }
 			
-			//Balancing moment
+			// Balancing the tree.
 			Node* unbalancedNode = AVL::updateHeightUp(newNode); 
 			
 			balanceTree(binary_tree, unbalancedNode);

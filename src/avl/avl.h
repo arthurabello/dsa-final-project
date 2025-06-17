@@ -27,7 +27,7 @@ namespace TREE::AVL{
 	/**
 	* @brief Updates the heights of the nodes 
 	* above the node added, returning the first
-	* unbalanced node.
+	* unbalanced node bottom-top.
 	*
 	* @param node: new node added to the tree.
 	*
