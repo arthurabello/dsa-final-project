@@ -66,7 +66,7 @@ namespace TREE::RBT{
 
         verify_no_consecutive_red_nodes(tree->root);
 
-        TEST_ASSERT_TRUE_MESSAGE(get_black_height(tree->root) != 0, "Black height property failed.");
+        TEST_ASSERT_TRUE_MESSAGE(verify_black_height(tree->root) != -1, "Black height property failed.");
     }
 
 
@@ -83,7 +83,7 @@ namespace TREE::RBT{
         TEST_ASSERT_EQUAL_STRING("banana", tree->root->word.c_str());
         verify_rbt_properties(tree);
         
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
     // insertion of the same word in different docs
@@ -99,7 +99,7 @@ namespace TREE::RBT{
         TEST_ASSERT_NULL(tree->root->right);
         verify_rbt_properties(tree);
         
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
 
@@ -127,7 +127,7 @@ namespace TREE::RBT{
         TEST_ASSERT_EQUAL_INT(1, tree->root->left->left->isRed); // damasco (red)
         verify_rbt_properties(tree);
 
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
     void test_case_right_right_causes_left_rotation() {
@@ -142,52 +142,52 @@ namespace TREE::RBT{
         TEST_ASSERT_EQUAL_STRING("manga", tree->root->right->word.c_str());
         verify_rbt_properties(tree);
         
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
     void test_case_left_left_causes_right_rotation() {
         BinaryTree* tree = createTree();
-        insert(tree, "cadeira", 1);
-        insert(tree, "urso", 2);
-        insert(tree, "damasco", 3); // This causes a right rotation at the root "cadeira"
+        insert(tree, "zebra", 1);
+        insert(tree, "macaco", 2);
+        insert(tree, "baleia", 3); // This causes a right rotation at the root "zebra"
         
-        // Expected structure: urso(B) is the new root, with damasco(R) and cadeira(R) as children.
-        TEST_ASSERT_EQUAL_STRING("urso", tree->root->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("damasco", tree->root->left->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("cadeira", tree->root->right->word.c_str());
+        // Expected structure: macaco(B) is the new root, with zebra(R) and baleia(R) as children.
+        TEST_ASSERT_EQUAL_STRING("macaco", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("baleia", tree->root->left->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("zebra", tree->root->right->word.c_str());
         verify_rbt_properties(tree);
 
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
     void test_case_left_right_causes_double_rotation() {
         BinaryTree* tree = createTree();
-        insert(tree, "luminaria", 1);
-        insert(tree, "perna", 2);
-        insert(tree, "incenso", 3); // This causes a double rotation: left on "perna", then right on "luminaria"
+        insert(tree, "xicara", 1);
+        insert(tree, "colher", 2);
+        insert(tree, "garfo", 3); // This causes a double rotation: left on "colher", then right on "xicara"
 
-        // Expected structure: incenso(B) is the new root, with perna(R) and luminaria(R) as children.
-        TEST_ASSERT_EQUAL_STRING("incenso", tree->root->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("perna", tree->root->left->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("luminaria", tree->root->right->word.c_str());
+        // Expected structure: garfo(B) is the new root, with colher(R) and xicara(R) as children.
+        TEST_ASSERT_EQUAL_STRING("garfo", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("colher", tree->root->left->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("xicara", tree->root->right->word.c_str());
         verify_rbt_properties(tree);
 
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
     void test_case_right_left_causes_double_rotation() {
         BinaryTree* tree = createTree();
-        insert(tree, "rosa", 1);
-        insert(tree, "unha", 2);
-        insert(tree, "nitrogenio", 3); // This causes a double rotation: right on "unha", then left on "rosa"
+        insert(tree, "razao", 1);
+        insert(tree, "zenite", 2);
+        insert(tree, "sonho", 3); // This causes a double rotation: right on "zenite", then left on "razao"
 
-        // Expected structure: nitrogenio(B) is the new root, with rosa(R) and unha(R) as children.
-        TEST_ASSERT_EQUAL_STRING("nitrogenio", tree->root->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("rosa", tree->root->left->word.c_str());
-        TEST_ASSERT_EQUAL_STRING("unha", tree->root->right->word.c_str());
+        // Expected structure: sonho(B) is the new root, with razao(R) and zenite(R) as children.
+        TEST_ASSERT_EQUAL_STRING("sonho", tree->root->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("razao", tree->root->left->word.c_str());
+        TEST_ASSERT_EQUAL_STRING("zenite", tree->root->right->word.c_str());
         verify_rbt_properties(tree);
 
-        deleteBinaryTree(tree);
+        TREE::destroy(tree);
     }
 
     // Search Function =====
@@ -228,44 +228,8 @@ namespace TREE::RBT{
         SearchResult r5 = search(empty_tree, "qualquercoisa");
         TEST_ASSERT_FALSE(r5.found);
         
-        deleteBinaryTree(tree);
-        deleteBinaryTree(empty_tree);
-    }
-
-    // test insertion of a single node. root must be always black
-    void test_single_node_insertion_is_black() {
-        BinaryTree* tree = createTree();
-        
-        deleteBinaryTree(tree);
-    }
-
-    // inserts that cause simple recoloring
-    void test_recoloring_case() {
-        BinaryTree* tree = createTree();
-        //
-        deleteBinaryTree(tree);
-    }
-
-    // simple rotation to the right (Left-Left Case)
-    void test_right_rotation_case() {
-        //
-        deleteBinaryTree(tree);
-    }
-
-    // simple rotation to the left (Right-Right Case)
-    void test_left_rotation_case() {
-        BinaryTree* tree = createTree();
-        //
-        deleteBinaryTree(tree);
-    }
-
-
-    void test_complex_insertion_and_search() {
-        BinaryTree* tree = createTree();
-
-        // multiple rotations and inserts
-
-        deleteBinaryTree(tree);
+        destroy(tree);
+        destroy(empty_tree);
     }
 }
 
