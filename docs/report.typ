@@ -119,6 +119,106 @@ Choosing the proper data structure is therefore a trade-off between build-time c
 
 These examples shows the ubiquity of inverted indexes in modern era. From web search engines to bioinformatics, inverted indexes are the backbone of efficient information retrieval systems.
 
+
+= Definitions
+<section_definitions>
+
+== BST
+<section_bst_definition>
+
+In graph theory, a tree is a connected acyclic graph. A Binary Search Tree (BST) is a tree with the following properties:
+
++ Each node has at most two children, referred to as the left and right child.
+
++ The left child of a node contains only nodes with keys less than the node's key.
+
++ The right child of a node contains only nodes with keys greater than the node's key.
+
+
+These properties are true $forall "node" in T = (V, E)$.
+
+Here are some examples of BSTs:
+
+#figure(
+  image("images/example1_bst.png", width: 70%),
+  caption: [
+    Example of a Binary Search Tree
+  ]
+) <figure_example1_bst>
+
+#figure(
+  image("images/example2_bst.png", width: 50%),
+  caption: [
+    Another example of a Binary Search Tree
+  ]
+) <figure_example2_bst>
+
+#figure(
+  image("images/example3_bst.png", width: 50%),
+  caption: [
+    Degenerated Binary Search Tree
+  ]
+) <figure_example3_bst>
+
+
+@figure_example1_bst and @figure_example2_bst are ordinary BST's, while @figure_example3_bst is a _degenerated_ BST. Which is a tree in which every node has at most one child, making it a linear chain of nodes. This is the worst case for a BST, due to computational complexity of some operations.
+
+== AVL Tree
+<section_avl_tree_definition>
+
+The AVL tree can be seen as a solution to the degenerated BST problem. It is a self-balancing binary search tree, built so the heights of the two child subtrees of any node differ by at most one. This balance condition ensures that the tree remains approximately balanced, preventing the worst-case linear chain structure.
+
+In order to maintain this balance rule, we define the balance factor of a node $n in V$ as:
+
+$
+  B_F (n) = abs(h(n_"left") - h(n_"right"))
+$
+
+If $B_F (n) > 1$, the tree is unbalanced at node $n$ and requires a _rotation_ to restore balance.
+
+Rotations are local tree restructuring operations that change the structure of the tree without violating the binary search tree property. There are $3$ types of rotations:
+
++ Left Rotation: Applied when a right-heavy subtree needs balancing.
+
++ Right Rotation: Applied when a left-heavy subtree needs balancing.
+
++ Permutations of Left and Right Rotations: Used to balance more complex imbalances.
+
+#link("https://portaldoprofessor.fct.unesp.br/projetos/cadilag/apps/structs/arv_avl.php")[This] is a very good website to better visualize the creation of a tree. We recommend the user to play with it, inserting and deleting nodes, to see how the tree is balanced.
+
+The AVL Tree was created by Georgy Adelson-Velsky and Evgenii Landis in 1962, and it was the first self-balancing binary search tree. The name "AVL" comes from the initials of their last names. More information can be found #link("https://en.wikipedia.org/wiki/AVL_tree")[here]. Below is an example of the creation of an AVL tree:
+
+#figure(
+  image("images/example_avl.gif", width: 70%),
+  caption: [
+    Creation of an AVL Tree
+  ]
+) <figure_example_avl_gif>
+
+
+== RBT Tree
+<section_rbt_tree_definition>
+
+The RBT is another self-balancing BST, which uses a different balancing strategy than the AVL. RBT stands for Red-Black Tree. The Red-Black stands for the additional propery that each node is colored either red or black, and the tree satisfies the following properties:
+
++ The root node is always black.
+
++ Every leaf node is black.
+
++ If a node is red, then both of its children must be black (no two red nodes can be adjacent).
+
++ Every path from a node to its descendant leaf nodes must have the same number of black nodes (black-height).
+
+Properties $3$ and $4$ forces long paths to pick up extra black nodes, capping the tree's height. Here is an example:
+
+#figure(
+  image("images/example_rbt.png", width: 70%),
+  caption: [
+    Example of a Red-Black Tree
+  ]
+) <figure_example_rbt>
+
+
 = Implementations
 <section_implementations>
 == Binary Search Tree (BST)
