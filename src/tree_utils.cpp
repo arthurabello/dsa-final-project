@@ -263,37 +263,55 @@ namespace TREE{
     }
 
     void rotateLeft(Node** root, Node* x) {
+        // y becomes the new root of the subtree.
         Node* y = x->right;
+
+        // Turn y's left subtree into x's right subtree.
         x->right = y->left;
         if (y->left != nullptr) {
             y->left->parent = x;
         }
+
+        // Link x's original parent to y.
         y->parent = x->parent;
         if (x->parent == nullptr) {
+            // If x was the root, y is now the new root of the entire tree.
             *root = y;
         } else if (x == x->parent->left) {
+            // If x was a left child, y becomes the new left child.
             x->parent->left = y;
         } else {
+            // If x was a right child, y becomes the new right child.
             x->parent->right = y;
         }
+        // Put x on y's left.
         y->left = x;
         x->parent = y;
     }
 
     void rotateRight(Node** root, Node* y) {
+        // x becomes the new root of the subtree.
         Node* x = y->left;
+
+        // Turn x's right subtree into y's left subtree.
         y->left = x->right;
         if (x->right != nullptr) {
             x->right->parent = y;
+
         }
+        // Link y's original parent to x.
         x->parent = y->parent;
         if (y->parent == nullptr) {
+            // If y was the root, x is now the new root of the entire tree.
             *root = x;
         } else if (y == y->parent->left) {
+            // If y was a left child, x becomes the new left child
             y->parent->left = x;
         } else {
+            // If y was a right child, x becomes the new right child.
             y->parent->right = x;
         }
+        // Put y on x's right.
         x->right = y;
         y->parent = x;
     }

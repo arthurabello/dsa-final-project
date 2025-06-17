@@ -260,7 +260,39 @@ namespace TREE {
      */
 
 
+    /**
+     * @brief Performs a standard left rotation on the subtree rooted at node x.
+     *
+     * The right child `y` of a node becomes the new root of this subtree, and the original pivot `x`
+     * becomes the left child of `y`. The Binary Search Tree property is maintained.
+     *
+     * @param root A double pointer to the root of the entire tree. This is used to
+     * update the tree's root if the rotation occurs at the top level.
+     * @param x A pointer to the node that will be the pivot of the rotation. This
+     * node moves down to become the left child of its original right child.
+     *
+     * @note This function only manipulates pointers (`left`, `right`, `parent`).
+     * It does NOT update node properties like height or color. The calling
+     * function (e.g., in `avl.cpp` or `rbt.cpp`) is responsible for that.
+     */
     void rotateLeft(Node** root, Node* x);
+
+    /**
+     * @brief Performs a standard right rotation on the subtree rooted at node y.
+     *
+     * A right rotation is the mirror operation of a left rotation.
+     * The left child `x` of a node becomes the new root of this subtree, and the original pivot `y`
+     * becomes the right child of `x`. The Binary Search Tree property is maintained.
+     *
+     * @param root A double pointer to the root of the entire tree. This is used to
+     * update the tree's root if the rotation occurs at the top level.
+     * @param y A pointer to the node that will be the pivot of the rotation. This
+     * node moves down to become the right child of its original left child.
+     *
+     * @note This function only manipulates pointers (`left`, `right`, `parent`).
+     * It does NOT update node properties like height or color. The calling
+     * function (e.g., in `avl.cpp` or `rbt.cpp`) is responsible for that.
+     */
     void rotateRight(Node** root, Node* y);
 }
 
