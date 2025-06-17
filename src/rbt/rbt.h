@@ -33,8 +33,10 @@ namespace TREE::RBT {
      *
      * @param root Double pointer to the root of the tree.
      * @param z Pointer to the newly inserted node.
+     * 
+     * @return int indicating how many rotations were done
      */
-    void fixInsert(Node** root, Node* z);
+    int fixInsert(Node** root, Node* z);
 
     /**
      * @brief Returns the uncle of a given node in the Red-Black Tree.

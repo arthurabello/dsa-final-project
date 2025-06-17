@@ -31,6 +31,7 @@ namespace TREE {
     struct InsertResult {
         int numComparisons;
         double executionTime;
+        int rotations = 0; // for rbt
     };
 
     struct SearchResult {

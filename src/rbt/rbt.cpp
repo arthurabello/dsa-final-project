@@ -49,8 +49,8 @@ namespace TREE::RBT {
                 parent->right = newNode;
             }
         }
-
-        fixInsert(&binary_tree->root, newNode);
+        
+        result.rotations = fixInsert(&binary_tree->root, newNode);
 
         auto end_time = std::chrono::high_resolution_clock::now();
         double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
@@ -60,7 +60,8 @@ namespace TREE::RBT {
         return result; 
     }
 
-    void fixInsert(Node** root, Node* z) {
+    int fixInsert(Node** root, Node* z) {
+        int rotation_count = 0; // rotations counter
         Node* parent = nullptr;
         Node* grandparent = nullptr;
         Node* uncle = nullptr;
@@ -82,11 +83,13 @@ namespace TREE::RBT {
                 if (z == parent->right && parent == grandparent->left) { 
                     // Case 2.1: Right-left 
                     rotateLeft(root, parent);
+                    rotation_count++;
                     z = parent;
                     parent = z->parent;
                 } else if (z == parent->left && parent == grandparent->right) { 
                     // Case 2.2: Left-right
                     rotateRight(root, parent);
+                    rotation_count++;
                     z = parent;
                     parent = z->parent;
                 } else {
@@ -94,9 +97,11 @@ namespace TREE::RBT {
                     if (z == parent->left) {
                         // Case 2.3.1: Left-left
                         rotateRight(root, grandparent);
+                        rotation_count++;
                     } else {
                         // Case 2.3.2: Right-right
                         rotateLeft(root, grandparent);
+                        rotation_count++;
                     }
                     parent->isRed = 0;
                     grandparent->isRed = 1;
@@ -106,6 +111,7 @@ namespace TREE::RBT {
 
         }
         (*root)->isRed = 0;
+        return rotation_count;
     }
 
     Node* getUncle(Node* node) {
