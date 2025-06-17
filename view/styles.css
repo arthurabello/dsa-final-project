@@ -8,10 +8,15 @@ body {
     margin: 0;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     font-family: monospace;
+    flex-direction: row;
     background-color: #f2f0e5;
     color: #212123;
+}
+
+body > div {
+    display: flex;
+    flex-direction: column;
 }
 
 svg {
@@ -30,11 +35,6 @@ svg text {
     stroke: #ccc;
 }
 
-#container {
-    display: flex;
-    gap: 0 15px;
-}
-
 #tooltip {
     position: absolute;
     background-color: #f2f0e5;
@@ -45,6 +45,16 @@ svg text {
     border: 2px solid #ccc;
 }
 
+#toc {
+    width: 300px;
+
+    li {
+        margin-top: 10px;
+        font-size: 15px;
+    }
+}
+
 h2 {
+    text-align: center;
     margin: 3px;
 }
