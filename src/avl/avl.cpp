@@ -11,7 +11,48 @@ namespace TREE::AVL {
     int bf(Node* node) {
         return getHeight(node->right) - getHeight(node->left);
     }
+	
+	Node* updateHeightUp(Node* node) {
+	
+		if (node == nullptr) {
+			return nullptr;
+		}
+		
+		// node->height = calculateHeight(node);
+		int originalHeight = node->height;
+		// Calculates the heights of the children and get the max
+		int leftHeight;
+		if (node->left == nullptr) {
+			leftHeight = -1;
+		} else {
+			leftHeight = node->left->height;
+		}
+
+		int rightHeight;
+		if (node->right == nullptr) {
+			rightHeight = -1;
+		} else {
+			rightHeight = node->right->height;
+		}
+		
+		int maxHeight = std::max(leftHeight,rightHeight);
+
+		int newHeight = 1 + maxHeight;
+
+		node->height = newHeight;
+		
+		if (originalHeight == newHeight && (node->right != nullptr || node->left != nullptr)) {
+			return nullptr;
+		}
+		
+		// Calculates the height of the father by a recursive call
+		if(std::abs(bf(node))>=2) return node;
+		
+		return AVL::updateHeightUp(node->parent);
+		
+	}
     
+	
     void leftRotation(BinaryTree& tree, Node* pivot) {
 		Node* L = pivot->left;
 		Node* grandpa = pivot->parent->parent;
@@ -161,13 +202,8 @@ namespace TREE::AVL {
                 parent->right = newNode;
             }
 			
-			updateHeightUp(newNode);
-			
 			//Balancing moment
-			Node* unbalancedNode = parent;
-			
-			while(unbalancedNode->parent != nullptr && std::abs(bf(unbalancedNode)) < 2)
-				unbalancedNode = unbalancedNode->parent;
+			Node* unbalancedNode = AVL::updateHeightUp(newNode); 
 			
 			balanceTree(binary_tree, unbalancedNode);
 		}

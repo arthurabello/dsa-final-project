@@ -25,6 +25,17 @@ namespace TREE::AVL{
 	int bf(Node* node);
 	
 	/**
+	* @brief Updates the heights of the nodes 
+	* above the node added, returning the first
+	* unbalanced node.
+	*
+	* @param node: new node added to the tree.
+	*
+	* @return The unbalanced node.
+	*/
+	Node* updateHeightUp(Node* node);
+
+	/**
 	* @brief Realizes a left rotation on the tree given a certain
 	* pivot to realize it.
 	*
