@@ -39,6 +39,9 @@ test-avl: obj/avl/avl.o obj/avl/test_avl.o obj/unity.o obj/tree_utils.o | bin
 test-rbt: obj/rbt/rbt.o obj/rbt/test_rbt.o obj/unity.o obj/tree_utils.o | bin
 	g++ $^ -o bin/$@
 	./bin/$@
+test-treeutils: obj/test_tree_utils.o obj/unity.o obj/tree_utils.o | bin
+	g++ $^ -o bin/$@
+	./bin/$@
 
 # Clean up directory
 clean:

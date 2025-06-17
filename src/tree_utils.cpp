@@ -1,8 +1,6 @@
 #include "tree_utils.h"
 #include <vector>
-#include <chrono>
 #include <cstring>
-#include <fstream>
 
 namespace TREE{
 	// Sets for 0 if it the tree doesnt support red-black
@@ -25,12 +23,8 @@ namespace TREE{
     }
 
     SearchResult search(BinaryTree* binary_tree, const std::string& word) {
-        auto start_time = std::chrono::high_resolution_clock::now(); //start measuring time
-
         if (binary_tree == nullptr || binary_tree->root == nullptr) {
-            auto end_time = std::chrono::high_resolution_clock::now(); //done lol
-            double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-            return {0, {}, duration, 0};
+            return {0, {}, 0, 0};
 
         } else {
             Node* current_node = binary_tree->root;
@@ -42,9 +36,7 @@ namespace TREE{
                 int compareResult = strcmp(word.c_str(), current_node->word.c_str());
 
                 if (compareResult == 0) { //found!
-                    auto end_time = std::chrono::high_resolution_clock::now();
-                    double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-                    return {1, current_node->documentIds, duration, number_of_comparisons};
+                    return {1, current_node->documentIds, 0, number_of_comparisons};
 
                 } else if (compareResult < 0) {
                     current_node = current_node->left; //go left because word is smaller
@@ -54,9 +46,7 @@ namespace TREE{
             }
 
             //if word not found
-            auto end_time = std::chrono::high_resolution_clock::now();
-            double duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000.0;
-            return {0, {}, duration, number_of_comparisons};
+            return {0, {}, 0, number_of_comparisons};
         }
     }
 
@@ -124,50 +114,6 @@ namespace TREE{
 		
         // Calculates the height of the father by a recursive call
         updateHeightUp(node->parent);
-
-    }
-
-    void save_stats_to_csv(const AggregateStats& stats, const std::string& filename) {
-        std::ofstream file(filename);
-
-        if (!file.is_open()) {
-            std::cerr << "Error: Unable to open file " << filename << " for writing.\n";
-            return;
-        }
-
-        // Header
-        file << "tree_type,num_docs_indexed,"
-            << "total_indexing_time_ms,total_words_processed,total_comparisons_insertion,sum_of_insertion_times_ms,max_insertion_time_ms,"
-            << "total_search_time_ms,total_searches,total_comparisons_search,sum_of_search_times_ms,max_search_time_ms,"
-            << "final_node_count,final_tree_height,final_tree_min_depth,relative_balance,balance_difference,"
-            << "average_insertion_time_ms,average_comparisons_insertion,average_search_time_ms,average_comparisons_search\n";
-
-        // Data
-        file << stats.tree_type << ","
-            << stats.num_docs_indexed << ","
-            << stats.total_indexing_time_ms << ","
-            << stats.total_words_processed << ","
-            << stats.total_comparisons_insertion << ","
-            << stats.sum_of_insertion_times_ms << ","
-            << stats.max_insertion_time_ms << ","
-            << stats.total_search_time_ms << ","
-            << stats.total_searches << ","
-            << stats.total_comparisons_search << ","
-            << stats.sum_of_search_times_ms << ","
-            << stats.max_search_time_ms << ","
-            << stats.final_node_count << ","
-            << stats.final_tree_height << ","
-            << stats.final_tree_min_depth << ","
-            << stats.relative_balance << ","
-            << stats.balance_difference << ","
-            << stats.average_insertion_time_ms << ","
-            << stats.average_comparisons_insertion << ","
-            << stats.average_search_time_ms << ","
-            << stats.average_comparisons_search
-            << "\n";
-
-        file.close();
-        std::cout << "Statistics saved to: " << filename << std::endl;
     }
 
     int calculateMinDepth(Node* root) {
@@ -205,71 +151,58 @@ namespace TREE{
         return 1 + countNodes(root->left) + countNodes(root->right);
     }
 
-    double getAverageInsertionTime(const AggregateStats& stats) {
-        if (stats.total_words_processed == 0){
-            return 0.0;
+    void rotateLeft(Node** root, Node* x) {
+        // y becomes the new root of the subtree.
+        Node* y = x->right;
+
+        // Turn y's left subtree into x's right subtree.
+        x->right = y->left;
+        if (y->left != nullptr) {
+            y->left->parent = x;
         }
 
-        return stats.sum_of_insertion_times_ms / stats.total_words_processed;
-    }
-
-    double getAverageComparisonsPerInsertion(const AggregateStats& stats) {
-        if (stats.total_words_processed == 0) {
-            return 0.0;
+        // Link x's original parent to y.
+        y->parent = x->parent;
+        if (x->parent == nullptr) {
+            // If x was the root, y is now the new root of the entire tree.
+            *root = y;
+        } else if (x == x->parent->left) {
+            // If x was a left child, y becomes the new left child.
+            x->parent->left = y;
+        } else {
+            // If x was a right child, y becomes the new right child.
+            x->parent->right = y;
         }
-
-        return static_cast<double>(stats.total_comparisons_insertion) / stats.total_words_processed;
+        // Put x on y's left.
+        y->left = x;
+        x->parent = y;
     }
 
-    double getAverageSearchTime(const AggregateStats& stats) {
-        if (stats.total_searches == 0) {
-            return 0.0;
+    void rotateRight(Node** root, Node* y) {
+        // x becomes the new root of the subtree.
+        Node* x = y->left;
+
+        // Turn x's right subtree into y's left subtree.
+        y->left = x->right;
+        if (x->right != nullptr) {
+            x->right->parent = y;
+
         }
-
-        return stats.sum_of_search_times_ms / stats.total_searches;
-    }
-
-    double getAverageComparisonsPerSearch(const AggregateStats& stats) {
-        if (stats.total_searches == 0){
-            return 0.0;
+        // Link y's original parent to x.
+        x->parent = y->parent;
+        if (y->parent == nullptr) {
+            // If y was the root, x is now the new root of the entire tree.
+            *root = x;
+        } else if (y == y->parent->left) {
+            // If y was a left child, x becomes the new left child
+            y->parent->left = x;
+        } else {
+            // If y was a right child, x becomes the new right child.
+            y->parent->right = x;
         }
-
-        return static_cast<double>(stats.total_comparisons_search) / stats.total_searches;
+        // Put y on x's right.
+        x->right = y;
+        y->parent = x;
     }
-
-    double getRelativeBalance(const AggregateStats& stats) {
-        if (stats.final_tree_min_depth == 0) {
-            return 0.0;
-        }
-
-        return static_cast<double>(stats.final_tree_height) / stats.final_tree_min_depth;
-    }
-
-    int getBalanceDifference(const AggregateStats& stats) {
-        return stats.final_tree_height - stats.final_tree_min_depth;
-    }
-
-    void updateAllAggregateStats(AggregateStats& stats, BinaryTree* tree) {
-        stats.final_node_count = countNodes(tree->root);
-        stats.final_tree_height = calculateHeight(tree->root);
-        stats.final_tree_min_depth = calculateMinDepth(tree->root);
-        stats.average_insertion_time_ms = getAverageInsertionTime(stats);
-        stats.average_comparisons_insertion = getAverageComparisonsPerInsertion(stats);
-        stats.average_search_time_ms = getAverageSearchTime(stats);
-        stats.average_comparisons_search = getAverageComparisonsPerSearch(stats);
-        stats.relative_balance = getRelativeBalance(stats);
-        stats.balance_difference = getBalanceDifference(stats);
-
-    }
-	
-	
-	// void isBalanced(Node* root) {
-		// if (std::abs(AVL::bf(root))<2) {
-			// isBalanced(root->left);
-			// isBalanced(root->right);
-		// }
-		// std::cout << "Árvore desbalanceada na palavra: "<< root->word<<"\n";
-	// }
-	
 }
 

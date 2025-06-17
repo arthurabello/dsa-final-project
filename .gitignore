@@ -7,9 +7,8 @@ vgcore.*
 # Compilation artifacts
 bin/
 obj/
-avl
-bst
-rbt
 
 # Statistics results
 results.csv
+
+test_rbt

@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <string>
 
@@ -6,10 +7,13 @@
 #include "../tree_utils.h"
 
 using namespace std;
+using namespace chrono;
+
+static const string usage = "./avl <search|stats> <n_docs> <directory>";
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
-        cerr << "Usage: ./avl <search|stats|view> <n_docs> <directory>" << endl;
+        cerr << "Usage: " << usage << endl;
         return 1;
     }
 
@@ -24,44 +28,49 @@ int main(int argc, char* argv[]) {
         << CLI::colorize(CLI::color::bold, "Documents: ") << numFiles << ", "
         << CLI::colorize(CLI::color::bold, "Directory: ") << directory << endl;
 
-    TREE::BinaryTree* avl_tree = TREE::createTree();
+    TREE::BinaryTree* avl = TREE::createTree();
 
-    int error;
-    auto stats = CLI::indexFilesInDir(
-        directory, numFiles, &error,
+    CLI::VisualizationStats stats;
+    stats.wordsIndexed = 0;
+    int error = CLI::indexFilesInDir(
+        directory, numFiles, &stats.docsIndexed,
         [&](string word, int documentId) {
-            return TREE::AVL::insert(*avl_tree, word, documentId);
+            stats.wordsIndexed++;
+
+            auto startTime = high_resolution_clock().now();
+
+            auto ins = TREE::AVL::insert(*avl, word, documentId);
+
+            auto endTime = high_resolution_clock().now();
+            auto duration = duration_cast<nanoseconds>(endTime - startTime);
+            stats.insertTimes.push_back((endTime - startTime).count());
+
+            return ins;
         }
     );
-    if (error) return 1;
-
-    stats.final_node_count  = TREE::countNodes(avl_tree->root);
-    stats.final_tree_height = TREE::calculateHeight(avl_tree->root);
-    stats.final_tree_min_depth = TREE::calculateMinDepth(avl_tree->root);
-    stats.final_tree_min_depth = TREE::calculateMinDepth(avl_tree->root);
-    // stats.total_search_time_ms = 
-
-    stats.tree_type = "AVL";
+    if (error != 0) return error;
 
     if (command == "stats") {
-        CLI::printAndExportStats(stats);
+        CLI::testSearch(avl, &stats, directory);
+
+        TREE::AggregateStats aggStats = CLI::collectAggStats(avl, &stats);
+        CLI::saveAsCsv(aggStats, "avl.csv");
+        
+        CLI::startViewServer(avl, stats);
     }
     else if (command == "search") {
-        CLI::searchFiles(avl_tree);
-    }
-    else if (command == "view") {
-        CLI::startViewServer(avl_tree);
+        CLI::searchFiles(avl);
     }
     else {
         cerr << "Error: Unkowned command: " << command << "."
-                  << "Use 'search', 'view' or 'stats'." << endl;
+            << "Use " << usage << endl;
 
-        TREE::destroy(avl_tree);
+        TREE::destroy(avl);
         return 1;
     }
 
-    cout << endl << "Deallocating tree…" << endl;
+    cout << endl << "Deallocating tree..." << endl;
 
-    TREE::destroy(avl_tree);
+    TREE::destroy(avl);
     return 0;
 }
