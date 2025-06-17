@@ -24,14 +24,34 @@ namespace TREE::AVL{
 	*/
 	int bf(Node* node);
 	
-	// /**
-	// * @brief Realizes a left rotation on the tree given a certain
-	// * pivot to realize it.
-	// *
-	// * @param tree: Reference to the tree.
-	// * @param pivot: Node that we will realize the left rotation.
-	// */
-	// void rightRotation(BinaryTree& tree, Node* pivot);
+	/**
+	* @brief Updates the heights of the nodes 
+	* above the node added, returning the first
+	* unbalanced node bottom-top.
+	*
+	* @param node: new node added to the tree.
+	*
+	* @return The unbalanced node.
+	*/
+	Node* updateHeightUp(Node* node);
+
+	/**
+	* @brief Realizes a left rotation on the tree given a certain
+	* pivot to realize it.
+	*
+	* @param tree: Reference to the tree.
+	* @param pivot: Node that we will realize the left rotation.
+	*/
+	void leftRotation(BinaryTree& tree, Node* pivot);
+	
+	/**
+	* @brief Realizes a left rotation on the tree given a certain
+	* pivot to realize it.
+	*
+	* @param tree: Reference to the tree.
+	* @param pivot: Node that we will realize the left rotation.
+	*/
+	void rightRotation(BinaryTree& tree, Node* pivot);
 	
 	/**
 	* @brief Balances the tree, given the first unbalanced node.
