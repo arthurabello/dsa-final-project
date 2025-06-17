@@ -501,6 +501,8 @@ Another very big difficulty was to write the `Makefile` for compiling the projec
 
 Reviewing the work of my fellow collaborators was also a challenge, as I had to understand their code and suggest improvements. This was a very good learning experience, though.
 
+I must say that with other 4 courses, time management was a *very big challenge* too. Not only 4 other courses, but 4 other *hard* courses, with many assignments and deadly exams and tests, but unfortunately my days have not more than 24 hours, so I had to manage my time very carefully to be able to finish this project on time. And i am very happy with the result.
+
 == Eliane Moreira
 <section_challenges_difficulties_eliane>
 
