@@ -39,13 +39,13 @@ int main(int argc, char *argv[]){
     // Printing infos
     std::cout << "Command: " << command << ", Number of documents: " << n_docs_int << ", Directory: " << std::endl;
 
-    // Initializing bst tree and stats struct
+    // Initializing rbt tree and stats struct
     TREE::BinaryTree* rbt_tree = TREE::createTree();
     TREE::AggregateStats rbt_stats;
     rbt_stats.tree_type = "RBT";
 
     // Starting overall total time
-    auto overall_indexing_start_time = std::chrono::high_resolution_clock::now() // this auto identifies this super specific type 
+    auto overall_indexing_start_time = std::chrono::high_resolution_clock::now(); // this auto identifies this super specific type 
 
     // Get List of .txt files
     std::vector<std::string> all_filenames = DATA::list_txt_files_in_path(dir_path);
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
     }
 
     // Updating the count of files to process in stats
-    bst_stats.num_docs_indexed = files_to_process_count;
+    rbt_stats.num_docs_indexed = files_to_process_count;
 
     // Loop through selected files for indexing
     for (int i = 0; i < files_to_process_count; ++i) {
@@ -126,25 +126,22 @@ int main(int argc, char *argv[]){
     }
 
     // getting final indexing time for stats
-    auto overal_indexing_end_time = std::chrono::high_resolution_clock::now();
-    rbt_stats.total_indexing_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(overal_indexing_end_time - overall_indexing_start_time).count()
+    auto overall_indexing_end_time = std::chrono::high_resolution_clock::now();
+    rbt_stats.total_indexing_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(overall_indexing_end_time - overall_indexing_start_time).count();
     std::cout << "Indexing completed in " << rbt_stats.total_indexing_time_ms << " ms." << std::endl;
 
     // updating stats nodes and height
-    rbt_stats.final_node_count = TREE::countNodes(rbt_tree);
-    rbt_stats.final_tree_height = TREE::calculateHeight(rbt_tree);
+    rbt_stats.final_node_count = TREE::countNodes(rbt_tree->root);
+    rbt_stats.final_tree_height = TREE::calculateHeight(rbt_tree->root);
 
     // Running search in stats or search only
     if(command == "stats"){
         std::cout << "Documents indexed: " << rbt_stats.num_docs_indexed << std::endl;
-        std::cout << "etc: " << rbt_stats. << std::endl;
-        std::cout << "etc: " << rbt_stats. << std::endl;
 
         // TODO
-        save_stats_to_csv();
+        //TREE::save_stats_to_csv();
 
     } else if (command == "search"){
-
         std::string query_from_term;
         while(true){
             std::cout << "Insert word to search or 'exit_search' to quit: ";
