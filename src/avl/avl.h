@@ -3,7 +3,6 @@
 
 #include "../tree_utils.h"
 
-
 namespace TREE::AVL{
 	
 	/**
