@@ -11,4 +11,7 @@ obj/
 # Statistics results
 results.csv
 
-test_rbt
+/bst
+/rbt
+/avl
+*.csv
