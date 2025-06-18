@@ -612,6 +612,14 @@ I must say that with other 4 courses, time management was a *very big challenge*
 == Nícolas Spaniol
 <section_challenges_difficulties_nicolas>
 
+Time management was, by far, my biggest difficulty while doing this assignment. In this semester we had way more work to do than in any of the previous ones, and some of the hardest courses. The timing of this project was also unfortunate, overlapping other large assigments in our schedule.
+
+After that, dealing with different coding styles and commit and branch name standards were also a problem we faced, more so because we had different schedules and couldn't do all of the work together. This lead to a great amount of hotfixes and snippets of code being changed later as we discussed our work in the group.
+
+For me personally, using C++, a language I've had little experience with, lead to a smaller productivity if compared to something like Python or pure C, but not so much as to cause me a problem. The same can't be said about Make, a piece of tech I had to learn in order to simplify the compiling process of our repo.
+
+The choice of using _git submodules_ for including libraries also lead to some problems with the _tinyhttp_ module, that I fixed later by creating a fork of the repo and adding minor changes to its header file.
+
 == Gabriel Carneiro
 <section_challenges_difficulties_gabriel>
 
