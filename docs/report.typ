@@ -13,7 +13,7 @@
 #set page(numbering: "1")
 #set heading(numbering: "1.")
 #set math.equation(
-  numbering: "1",
+  numbering: "(1)",
   supplement: none,
 )
 #show ref: it => {
@@ -171,10 +171,10 @@ The AVL tree can be seen as a solution to the degenerated BST problem. It is a s
 In order to maintain this balance rule, we define the balance factor of a node $n in V$ as:
 
 $
-  B_F (n) = abs(h(n_"left") - h(n_"right"))
+  B_F (n) = h("RightSubtree"(n)) - h("LeftSubtree"(n))
 $
 
-If $B_F (n) > 1$, the tree is unbalanced at node $n$ and requires a _rotation_ to restore balance.
+If $B_F (n) < 0$, the tree is categorized as "left-heavy", if $B_F (n) > 0$, the tree is "right-heavy", and if $B_F (n) = 0$, the tree is "balanced". For the event $B_F (n) != 0$, _rotations_ are applied to restore balance.
 
 Rotations are local tree restructuring operations that change the structure of the tree without violating the binary search tree property. There are $3$ types of rotations:
 
