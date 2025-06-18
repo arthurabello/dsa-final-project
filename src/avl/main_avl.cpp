@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
         CLI::searchFiles(avl);
     }
     else if (command == "view") {
+        CLI::testSearch(avl, &stats, directory);
         CLI::startViewServer(avl, stats);
     }
     else {
