@@ -11,17 +11,12 @@ A **work‑in‑progress** codebase that will implement and compare three classi
 ## 📋 Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Repository Structure](#repository-structure)
-3. [Prerequisites](#prerequisites)
-4. [Installation](#installation)
-5. [Usage](#usage)
-6. [CLI Reference](#cli-reference)
-7. [Running the Experiments](#running-the-experiments)
-8. [Testing](#testing)
-9. [Benchmarking](#benchmarking)
-10. [Branching & Workflow](#branching--workflow)
-11. [Documentation & Report](#documentation--report)
-12. [License](#license)
+2. [Prerequisites](#prerequisites)
+3. [Usage](#usage)
+4. [Branching & Workflow](#branching--workflow)
+5. [Documentation & Report](#documentation--report)
+6. [License](#license)
+7. [Authors](#authors)
 
 ---
 
@@ -43,21 +38,11 @@ See [`report.pdf`](./report.pdf) for the full problem statement and planned meth
 
 ---
 
-## Repository Structure
-
-```
-to be determined...
-```
-
----
-
 ## Prerequisites
-
-*Being worked on*
 
 * **[C++](https://cpp-lang.net/)** compiler (we used g++ 15.1.1 20250425)
 
-* **[Python](https://www.python.org/)** ≥ 3.10 (optional, for analysis notebooks)          *being worked on*
+* **[Python](https://www.python.org/)** ≥ 3.10 (optional, for analysis)
 
 ---
 
@@ -70,13 +55,6 @@ git clone https://github.com/arthurabello/dsa_final_project.git --recursive
 ```
 
 Please note the `--recursive` at the very end.
-
-
-## Installation
-
-```bash
-to be determined...
-```
 
 ---
 
@@ -96,48 +74,14 @@ make build-avl
 
 # AVL Tests
 make test-avl
+
+# RBT CLI
+make build-avl
+./rbt <search|stats|view> <n_docs> <directory>
+
+# RBT Tests
+make test-rbt
 ```
-
-
----
-
-## CLI Reference
-
-*Being worked on*
-
-| Command        | Description                     | Status |
-| -------------- | ------------------------------- | ------ |
-| `bst_index`    | Build BST‑backed inverted index | done  |
-| `avl_index`    | Build AVL‑backed inverted index | *WIP*  |
-| `rbt_index`    | Build RBT‑backed inverted index | *WIP*  |
-| `query_<tree>` | Run boolean / ranked queries    | *WIP*  |
-
----
-
-## Running the Experiments
-
-*Being worked on*
-
----
-
-## Testing
-
-```bash
-# Run tree utilities tests
-g++ Unity/src/unity.c src/tree_utils.cpp src/test_tree_utils.cpp; ./a.out
-
-# Run BST tests
-g++ Unity/src/unity.c src/tree_utils.cpp src/bst/bst.cpp src/bst/test_bst.cpp; ./a.out
-
-```
-
----
-
-## Benchmarking
-
-*Being worked on*
-
-Performance harness powered by **matplotlib** plots.
 
 ---
 
@@ -149,8 +93,6 @@ We follow a **trunk‑based with topics** strategy:
 * `feature/<scope>` – atomic features
 * `test/<scope>` – dedicated test suites
 * `documentation/<scope>` – documentation & report tweaks.
-
-> Pull requests must pass *all* checks before merging.  *Being worked on*
 
 ---
 
@@ -173,5 +115,3 @@ See the [LICENSE](./LICENSE) file for details.
 3. **[Gabriel Caneiro](https://github.com/gabcarn)**
 4. **[Gabrielle Mascarelo](https://github.com/g4briwlle)**
 5. **[Nícolas Spaniol](https://github.com/nicolasspaniol)**
-
-*This README is intentionally skeletal – we will flesh out each section as development progresses*
