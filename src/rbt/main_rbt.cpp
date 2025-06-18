@@ -51,6 +51,8 @@ int main(int argc, char* argv[]) {
     if (error != 0) return error;
 
     if (command == "stats") {
+        CLI::testSearch(rbt, &stats, directory);
+
         TREE::AggregateStats aggStats = CLI::collectAggStats(rbt, &stats);
         CLI::saveAsCsv(aggStats, "rbt.csv");
     }
