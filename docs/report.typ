@@ -356,22 +356,44 @@ This is a classic traversal visiting every node once, so it is $O(n)$.
 
 Same as above, $O(n)$.
 
-
-
-
-
 == Red-Black Tree (RBT)
 <section_rbt_impementation>
-
 === Algorithms
 <section_rbt_algorithms>
+
+The functions implemented _strictly_ for the RBT can be found #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.cpp")[here], and the header file with the corresponding documentation #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.h")[here]. We have used many of the BST functions, as previously stated. The list of RBT-functions is:
+
+- `insert(BinaryTree& binary_tree, const std::string& word, int documentId)`
+
+- `int fixInsert(Node** root, Node* z)`
+
+- `Node* getUncle(Node* node)`
+
+- `Node* getSibling(Node* node)`
 
 === Complexity Analysis
 <section_rbt_complexity_analysis>
 
+Below is a full complexity analysis of the RBT functions:
+
+*`int fixInsert(Node** root, Node* z)`*:
+
+The while loop climbs the tree one level per iteration, recolouring and performig $<= 2$ rotations per level. Since the maximum height of an RBT is $O(log n)$@uwi_website, this is $O(log n)$.
+
+*`insert(BinaryTree& t, const std::string& word, int documentId)`*:
+
+This is a standard descent to find the leaf position, and $"height" <= O(log n)$, then it calls `fixInsert`, so the total complexity is also $O(log n)$.
+
+*`Node* getUncle(Node* node)`*:
+
+There is no loop or recursion, just a few pointer dereferences, so this is $O(1)$.
+
+*`getSibling(Node* node)`*:
+
+Same reasoning as above, $O(1)$.
+
 == Inverted Index
 <section_inverted_index_implementation>
-
 === Algorithms
 <section_inverted_index_algorithms>
 
