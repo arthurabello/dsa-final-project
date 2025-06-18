@@ -13,7 +13,7 @@
 #set page(numbering: "1")
 #set heading(numbering: "1.")
 #set math.equation(
-  numbering: "1",
+  numbering: "(1)",
   supplement: none,
 )
 #show ref: it => {
@@ -171,10 +171,10 @@ The AVL tree can be seen as a solution to the degenerated BST problem. It is a s
 In order to maintain this balance rule, we define the balance factor of a node $n in V$ as:
 
 $
-  B_F (n) = abs(h(n_"left") - h(n_"right"))
+  B_F (n) = h("RightSubtree"(n)) - h("LeftSubtree"(n))
 $
 
-If $B_F (n) > 1$, the tree is unbalanced at node $n$ and requires a _rotation_ to restore balance.
+If $B_F (n) < 0$, the tree is categorized as "left-heavy", if $B_F (n) > 0$, the tree is "right-heavy", and if $B_F (n) = 0$, the tree is "balanced". For the event $B_F (n) != 0$, _rotations_ are applied to restore balance.
 
 Rotations are local tree restructuring operations that change the structure of the tree without violating the binary search tree property. There are $3$ types of rotations:
 
@@ -356,22 +356,44 @@ This is a classic traversal visiting every node once, so it is $O(n)$.
 
 Same as above, $O(n)$.
 
-
-
-
-
 == Red-Black Tree (RBT)
 <section_rbt_impementation>
-
 === Algorithms
 <section_rbt_algorithms>
+
+The functions implemented _strictly_ for the RBT can be found #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.cpp")[here], and the header file with the corresponding documentation #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.h")[here]. We have used many of the BST functions, as previously stated. The list of RBT-functions is:
+
+- `insert(BinaryTree& binary_tree, const std::string& word, int documentId)`
+
+- `int fixInsert(Node** root, Node* z)`
+
+- `Node* getUncle(Node* node)`
+
+- `Node* getSibling(Node* node)`
 
 === Complexity Analysis
 <section_rbt_complexity_analysis>
 
+Below is a full complexity analysis of the RBT functions:
+
+*`int fixInsert(Node** root, Node* z)`*:
+
+The while loop climbs the tree one level per iteration, recolouring and performig $<= 2$ rotations per level. Since the maximum height of an RBT is $O(log n)$@uwi_website, this is $O(log n)$.
+
+*`insert(BinaryTree& t, const std::string& word, int documentId)`*:
+
+This is a standard descent to find the leaf position, and $"height" <= O(log n)$, then it calls `fixInsert`, so the total complexity is also $O(log n)$.
+
+*`Node* getUncle(Node* node)`*:
+
+There is no loop or recursion, just a few pointer dereferences, so this is $O(1)$.
+
+*`getSibling(Node* node)`*:
+
+Same reasoning as above, $O(1)$.
+
 == Inverted Index
 <section_inverted_index_implementation>
-
 === Algorithms
 <section_inverted_index_algorithms>
 
