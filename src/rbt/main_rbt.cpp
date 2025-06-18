@@ -55,11 +55,12 @@ int main(int argc, char* argv[]) {
 
         TREE::AggregateStats aggStats = CLI::collectAggStats(rbt, &stats);
         CLI::saveAsCsv(aggStats, "rbt.csv");
-        
-        CLI::startViewServer(rbt, stats);
     }
     else if (command == "search") {
         CLI::searchFiles(rbt);
+    }
+    else if (command == "view") {
+        CLI::startViewServer(rbt, stats);
     }
     else {
         cerr << "Error: Unkowned command: " << command << "."
