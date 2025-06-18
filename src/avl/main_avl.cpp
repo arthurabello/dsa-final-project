@@ -9,7 +9,7 @@
 using namespace std;
 using namespace chrono;
 
-static const string usage = "./avl <search|stats> <n_docs> <directory>";
+static const string usage = "./avl <search|stats|view> <n_docs> <directory>";
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
