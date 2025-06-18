@@ -274,7 +274,7 @@ namespace CLI {
                 aggStats.minComparisonsSearch = e;
             }
         }
-        aggStats.avgComparisonsSearch = aggStats.totalComparisonsSearch / stats->numComparisons.size();
+        aggStats.avgComparisonsSearch = ((float) aggStats.totalComparisonsSearch) / stats->numComparisons.size();
 
         aggStats.maxSearchTimeNs = 0;
         aggStats.minSearchTimeNs = INT64_MAX;

@@ -9,7 +9,7 @@
 using namespace std;
 using namespace chrono;
 
-static const string usage = "./avl <search|stats> <n_docs> <directory>";
+static const string usage = "./avl <search|stats|view> <n_docs> <directory>";
 
 int main(int argc, char* argv[]) {
     if (argc != 4) {
@@ -55,11 +55,12 @@ int main(int argc, char* argv[]) {
 
         TREE::AggregateStats aggStats = CLI::collectAggStats(avl, &stats);
         CLI::saveAsCsv(aggStats, "avl.csv");
-        
-        CLI::startViewServer(avl, stats);
     }
     else if (command == "search") {
         CLI::searchFiles(avl);
+    }
+    else if (command == "view") {
+        CLI::startViewServer(avl, stats);
     }
     else {
         cerr << "Error: Unkowned command: " << command << "."
