@@ -333,6 +333,8 @@ This is a single pass over the input string: one `std::tolower + std::isalnum` p
 
 - *`DATA::tokenize`*:
 
+Each successful `archive >> word` pulls one token $=> W$ iterations. Inside the loop: `uniqWords.find(word)` and `uniqWords.insert(word)` are expected $O(1)$ because `std::unordered_set` is built on open-addressing / chained hash tables. `Normalise()` scans every character of the token once $=> sum norm(w_i)$ overall. So we have a total work of $O(W + sum norm(w_i))$
+
 - *`DATA::list_files_txt_in_path`*:
 
 Single pass over `std::filesystem::directory_iterator`, all work per entry is $O(1)$. So the total work is $O(F)$, where $F$ is the amount of entries in the directory.
@@ -363,7 +365,9 @@ Those are linear passes over the stats vectors ($S$ elements) plus calls to `TRE
 
 - *`CLI::startViewServer`*:
 
-Nothing more than stats arrays. Total work is $O(n + v)$, where KEEP WRITING
+here `add_node` performs a _single_ depth-first traversal; every call touches a node once and does a bounded-cost string append $=> O(n + L)$. The three simple `for` loops concatenate the stats arrays $=> O(V)$ The route registration & server start-up (`server.when(…)`) contains only a fixed number of pointer stores $=> O(1)$. Combining these we have a total work of $O(n + V + L)$.
+
+
 <section_inverted_index_implementation>
 === Algorithms
 <section_inverted_index_algorithms>
