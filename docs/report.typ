@@ -186,14 +186,7 @@ Rotations are local tree restructuring operations that change the structure of t
 
 #link("https://portaldoprofessor.fct.unesp.br/projetos/cadilag/apps/structs/arv_avl.php")[This] is a very good website to better visualize the creation of a tree. We recommend the user to play with it, inserting and deleting nodes, to see how the tree is balanced.
 
-The AVL Tree was created by Georgy Adelson-Velsky and Evgenii Landis in 1962, and it was the first self-balancing binary search tree. The name "AVL" comes from the initials of their last names. More information can be found #link("https://en.wikipedia.org/wiki/AVL_tree")[here]. Below is an example of the creation of an AVL tree:
-
-#figure(
-  image("images/example_avl.gif", width: 70%),
-  caption: [
-    Creation of an AVL Tree
-  ]
-) <figure_example_avl_gif>
+The AVL Tree was created by Georgy Adelson-Velsky and Evgenii Landis in 1962, and it was the first self-balancing binary search tree. The name "AVL" comes from the initials of their last names. More information can be found #link("https://en.wikipedia.org/wiki/AVL_tree")[here].
 
 
 == RBT Tree
@@ -222,177 +215,117 @@ Properties $3$ and $4$ forces long paths to pick up extra black nodes, capping t
 = Implementations
 <section_implementations>
 == Binary Search Tree (BST)
-<section_bst_implementation>
+<section_bst_complexity_analysis>
 
 Since the AVL and RBT trees are both subsystems of the classic BST, we have implemented the classic BST in the #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/tree_utils.cpp")[`tree_utils`] module, later used as based for the AVL and BST
 
-=== Algorithms
-<section_bst_algorithms>
+#link("https://github.com/arthurabello/dsa-final-project/blob/main/src/tree_utils.cpp")[Here] are all the functions written for the classic BST, and #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/tree_utils.h")[here] is the header file with the corresponding documentation. Below is a full complexity analysis alongside with a list of all implemented functions:
 
-#link("https://github.com/arthurabello/dsa-final-project/blob/main/src/tree_utils.cpp")[Here] are all the functions written for the classic BST, and #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/tree_utils.h")[here] is the header file with the corresponding documentation. The list of functions is:
+- *`Node* createNode(std::string, std::vector<int>, int)`*:
 
-- `createNode`
+No loops or recursions, it allocates a node, so it is $O(1)$
 
-- `createTree`
+- *`BinaryTree* createTree()`*:
 
-- `search`
+This is a single `new` + pointer initialization. $O(1)$
 
-- `deletionPostOrder`
+- *`InsertResult BST::insert(BinaryTree*, const string&, int)`*:
 
-- `destroy`
+The while loop descends one edge per iteration $=> h$ comparisons. If the word already exists, a `for` scans `current->documentIds` (of size $k$) to avoid duplicate doc-IDs. The Height update (`updateHeightUp`) walks $<= h$ parents but it does no recursion on kids. So this is $O(h + k)$
 
-- `calculateHeight`
+- *`SearchResult TREE::search(BinaryTree*, const string&)`*:
 
-- `updateHeightUp`
+This is an iterative root-to-leaf walk with at most one comparison per leve. Therefore it is $O(h)$.
 
-=== Complexity Analysis
-<section_bst_complexity_analysis>
+- *`void updateHeightUp(Node*)`*:
 
-Below is a full complexity analysis:
+This recomputes height, then climbs parent pointers until the value stabilises or the root is reached that's $<= h$ iterations, of constant work each. So this function is $O(h)$.
 
-*`createNode`*:
+- *`int calculateHeight(Node*)`*:
 
-Clearly $O(1)$, the function allocates memory for a new node and initializes it, independent of the size of the tree.
+This is a pure post-order recursion, each node visited exactly once (`1 + max(left,right)`), so it is $O(s)$, where $s$ is the  sub-tree size
 
-*`createTree`*:
+- *`int calculateMinDepth(Node*)`*:
 
-Also $O(1)$, an empty BST is allocated and initialized with a `nullptr` root.
+This recurses into both sub-branches unless one child is `nullptr`, still touches every node in worst case. So it is $O(s)$
 
-*`search`*:
+- *`int countNodes(Node*)`*:
 
-The search operation, unavoidably, has a time complexity of $O(h)$, with $h$ being the height of the tree. The function follows a single root-to-leaf path in the BST, making at most $h$ comparisons. No recursion, only a few local variables.
+Classic `1 + count(left)+count(right)`, each node hit once. So it is $O(s)$.
 
-*`deletionPostOrder`*:
+- *`void deletionPostOrder(Node*)`*:
 
-This function is $O(phi)$, where $phi$ is the size of the subtree rooted at the node to be deleted. It is a classic post-order traversal: each node is visited & deleted precisely once.
+Post-order traversal deletes each node once. Also $O(s)$.
 
-*`destroy`*:
+- *`void destroy(BinaryTree*)`*:
 
-This functon simply calls `deletionPostOrder` on the root node, so it is $O(h)$.
-
-*`calculateHeight`*:
-
-This is $O(k)$, with $k = "subtree size"$. It 	recursively explores both children of every node once to compute `max(left,right)+1`.
-
-*`updateHeightUp`*:
-
-This function is $O(h)$. It iterates upward, recomputing height until it stops changing or reaches the root; at most $h$ ancestor steps, no recursion on children. 
+Calls `deletionPostOrder` on the whole tree ($n$ nodes) then deletes the wrapper. So it is $O(n)$.
 
 == AVL Tree
 <section_avl_implementation>
-=== Algorithms
-<section_avl_algorithms>
 
-The functions implemented _stritly_ for the AVL can be found #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/avl/avl.cpp")[here], and the header file with the corresponding documentation #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/avl/avl.h")[here]. We have used many of the BST functions, as previously stated. The list of AVL-functions is:
+The functions implemented _strictly_ for the AVL can be found #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/avl/avl.cpp")[here], and the header file with the corresponding documentation #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/avl/avl.h")[here]. We have used many of the BST functions, as previously stated. Below is a full time complexity analysis of the AVL functions, alongside with a list of all implemented functions:
 
-- `getHeight(Node*)`
+- *`int getHeight(Node*)`*:
 
-- `bf(Node*)` [balance factor]
+It's one conditional, so it is $O(1)$.
 
-- `leftRotation(BinaryTree&, Node*)`
+- *`int bf(Node*)`*:
 
-- `rightRotation(BinaryTree&, Node*)`
+That's a pair of `getHeight` calls and some arithmetic, so it is $O(1)$.
 
-- `insert(BinaryTree& binary_tree, const std::string& word, int documentId)`
+- *`Node* updateHeightUp(Node*)`*:
 
-- `remove(Node*&, key)`
+Walks at most one edge per iteration from the inserted leaf up to the root, recomputing two child heights per level and stopping early if the height stabilises, no branching into sub-trees. So it is $O(h)$, where $h$ is the current height of the tree.
 
-- `remove(BinaryTree&, key)`
+- *`void leftRotation(BinaryTree&, Node*)`*:
 
-- `updateHeightUp(Node*)`
+This is a constant number of pointer rewires and $2$ height recalculations. So it is $O(1)$.
 
-- `clear(BinaryTree*)`
+- *`void rightRotation(BinaryTree&, Node*)`*:
 
-- `printInOrder`
+Same reasoning as above, $O(1)$.
 
-- `printLevelOrder`
+- *`void balanceTree(BinaryTree&, Node*)`*:
 
-=== Complexity Analysis
-<section_avl_complexity_analysis>
+Given _one_ already-detected unbalanced node, it executes at most one of four rotation cases (each case does $<= 2$ rotations) and then returns. No loops over height, so it is $O(1)$.
 
-Below is a full complexity analysis of the AVL functions:
+- *`InsertResult insert(BinaryTree&, string word, int docId)`*:
 
-*`getHeight`*:
-
-$O(1)$, it simply returns the stored `height` of a node.
-
-*`bf(Node*)`*:
-
-Also $O(1)$, this is nothing more than a subtraction of two integers.
-
-*`leftRotation(BinaryTree&, Node*)`*:
-
-This is a constant quantity of pointer rewires and some height updates, so $O(1)$.
-
-*`rightRotation(BinaryTree&, Node*)`*:
-
-Same as above, $O(1)$.
-
-*`insert(BinaryTree& binary_tree, const std::string& word, int documentId)`*:
-
-This is $O(h)$, where $h$ is the height of the tree. It does one BST descent $O(h)$ at most one rebalance per level. The rotations are constant.
-
-*`remove(Node*&, key)`*:
-
-This is $O(h)$. It is a classic BST deletion + at most one structural deletion + up-to-root rebalancing.
-
-*`remove(BinaryTree&, key)`*:
-
-Same as above, $O(h)$.
-
-*`updateHeightUp(Node*)`*:
-
-This function iterates upward recomputing height until the value stabilises or the root is reached. Therefore it is $O(h)$.
-
-*`clear(BinaryTree*)`*:
-
-Clearly $O(n)$, where $n$ is the size of the tree. It removes each node once.
-
-*`printInOrder`*:
-
-This is a classic traversal visiting every node once, so it is $O(n)$.
-
-*`printLevelOrder`*:
-
-Same as above, $O(n)$.
+Phase 1: classic BST descent to the insertion point touches *h* nodes. Phase 2: `updateHeightUp` climbs back up $h$ levels. Phase 3: `balanceTree` performs at most one constant-time rotation combo. In an AVL we have $h = O(log n)$ @mit_website, so insert is $O(log n)$.
 
 == Red-Black Tree (RBT)
 <section_rbt_impementation>
-=== Algorithms
-<section_rbt_algorithms>
 
-The functions implemented _strictly_ for the RBT can be found #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.cpp")[here], and the header file with the corresponding documentation #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.h")[here]. We have used many of the BST functions, as previously stated. The list of RBT-functions is:
+The functions implemented _strictly_ for the RBT can be found #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.cpp")[here], and the header file with the corresponding documentation #link("https://github.com/arthurabello/dsa-final-project/blob/main/src/rbt/rbt.h")[here]. We have used many of the BST functions, as previously stated. Below is a full time complexity analysis of the RBT functions, alongside with a list of all implemented functions:
 
-- `insert(BinaryTree& binary_tree, const std::string& word, int documentId)`
+- *`InsertResult insert(BinaryTree*, const std::string&, int)`*:
 
-- `int fixInsert(Node** root, Node* z)`
+$1$ BST descent does $<= h$ key comparisons ($h = "tree height"$). In an RBT $h ≤ 2 log_2(n + 1)$ @uwi_website, so descent is $O(log n)$. After the leaf is linked the function calls fixInsert, whose own cost is $O(log n)$ (see next row). Constant-time pointer rewires for at most 2 rotations do not change the order. Therefore the total complexity is $O(log n)$.
 
-- `Node* getUncle(Node* node)`
+- *`int fixInsert(Node** root, Node* z)`*:
 
-- `Node* getSibling(Node* node)`
+The while-loop climbs the tree a single level per iteration recolouring or doing $<= 2$ rotations. The number of iterations is bounded by the black-height of the tree, i.e. $O(log n)$. All work inside each iteration is constant. So the total complexity is $O(log n)$.
 
-=== Complexity Analysis
-<section_rbt_complexity_analysis>
+- *`Node* getUncle(Node*)`*:
 
-Below is a full complexity analysis of the RBT functions:
+This is a constant-time pointer dereference and arithmetic, so it is $O(1)$.
 
-*`int fixInsert(Node** root, Node* z)`*:
+- *`Node* getSibling(Node*)`*:
 
-The while loop climbs the tree one level per iteration, recolouring and performig $<= 2$ rotations per level. Since the maximum height of an RBT is $O(log n)$@uwi_website, this is $O(log n)$.
+Same reasoning as above, $O(1)$.
 
-*`insert(BinaryTree& t, const std::string& word, int documentId)`*:
+- *`void rotateLeft(Node**, Node*)`*:
 
-This is a standard descent to find the leaf position, and $"height" <= O(log n)$, then it calls `fixInsert`, so the total complexity is also $O(log n)$.
+Same reasoning as above, $O(1)$.
 
-*`Node* getUncle(Node* node)`*:
-
-There is no loop or recursion, just a few pointer dereferences, so this is $O(1)$.
-
-*`getSibling(Node* node)`*:
+- *`void rotateRight(Node**, Node*)`*:
 
 Same reasoning as above, $O(1)$.
 
 == Inverted Index
+ We used the 
+
 <section_inverted_index_implementation>
 === Algorithms
 <section_inverted_index_algorithms>
@@ -403,19 +336,37 @@ Same reasoning as above, $O(1)$.
 = Testing and Validation
 <section_testing_validation>
 == Unit Testing Method
-<section_unit_testing_method>
+<section_unit_testing_method> \
 
-We have used the #link("https://github.com/ThrowTheSwitch/Unity/tree/b9d897b5f38674248c86fb58342b87cb6006fe1f")[*Unity*] submodule for unit testing (espanio faz teu nome)
+For this project we used the #link("https://github.com/ThrowTheSwitch/Unity/tree/b9d897b5f38674248c86fb58342b87cb6006fe1f")[_Unity_] library for unit testing. _Unity_ is a C library that we included as a _git submodule_ in our repository, i.e., we cloned the library's folder inside our own and compiled it's source code together with our testing files.
 
-All trees were equivalently tested under the same principles blablabla
+Using a library for this allowed us to better organize our tests, requiring we write each one of them as a function and pass the name of all those functions to Unity afterwards, and making it explicit when we are comparing two values to determine the validity of the test.
 
-The testing module can be found here blablabla
+The tests are contained in their own file inside each of the tree's subfolders and can be run with _make test-\<tree type>_. We wrote similar tests for each of the trees, accounting for rotations and other tree-specific behaviours when needed.
 
 = Visualization with JavaScript
-<section_visualization>
+<section_visualization> \
 
-espanio faz teu nome
+Besides the required "search" and "stats" subcommands, we created a "view" subcommand to visualize some of the data we collected for individual trees. Running this subcommand for any type of tree (_.\/\<tree type> view \<number of documents> \<directory>_) goes through the indexing of the tree and then starts a HTTP server in the running machine. Opening the URL printed to _stdout_ will load a visualization of tree, made with #link("https://d3js.org/")[_D3.js_]. The visualizations give us interesting ways to compare the structure of the trees, as seen by looking at the graphs of BST and AVL trees built from the same amount of documents:
 
+#grid(columns: (1fr, 1fr), gutter: 5%,
+  figure(
+    image("images/tree3.png"),
+    caption: [
+      Structure of the BST Tree
+    ]
+  ),
+  figure(
+    image("images/tree2.png"),
+    caption: [
+      Structure of the AVL Tree
+    ]
+  ),
+)
+
+\
+
+As expected, AVL's node heights are less extreme, as a result of the rotations made after each insertion. Notice both trees hold the same amount of nodes, but the BST's ones are compressed to a smaller circle to accomodate the greater height of the tree.
 
 = Comparative Analysis
 <section_comparative_analysis>
@@ -447,38 +398,13 @@ For a better visualization of the statistics we will cover here, we recommend, t
 
 ```bash
 make bst && make avl && make rbt
-./(tree_name) stats 1000 data
+./(tree_name) view 10200 data
+./(tree_name) stats 10200 data
 ```
 
 Opening the generated JavaScript visualization in a browser, you will be able to see the graphs and the tree visualizations in a more interactive way.
 
 All statistics are also available in the `(tree_name).csv` file, generated by the `stats` command.
-
-=== AVL
-<section_graphs_avl>
-
-These graphs were generated by thye JavaScript visualizer.
-
-#figure(
-  image("images/avl_comparison.png", width: 70%),
-  caption: [
-    Number of Comparisons done by the AVL Tree
-  ] 
-) <figure_avl_comparison>
-
-#figure(
-  image("images/avl_insertion.png", width: 70%),
-  caption: [
-    Insertion time of the AVL Tree
-  ]
-) <figure_avl_insertion>
-
-#figure(
-  image("images/avl_search.png", width: 70%),
-  caption: [
-    Search time of the AVL Tree
-  ]
-) <figure_avl_search>
 
 === BST
 <section_graphs_bst>
@@ -492,6 +418,14 @@ These graphs were generated by thye JavaScript visualizer.
   ]
 ) <figure_bst_comparisons>
 
+\
+
+- Analysis of the Results
+
+The comparison data in the BST reveal important characteristics of this unbalanced structure. The minimum comparison value represents the best-case scenario, where the element is located exactly at the root of the tree. The average, which is much higher than the minimum, indicates that, in most cases, more operations are required to locate an element, especially when the tree is not perfectly balanced.
+
+The maximum value, which is high relative to the average, demonstrates the main issue of unbalanced BSTs, which is when it resembles a linked list, causing the number of comparisons to increase. The relatively high standard deviation confirms the significant inconsistency in performance.
+
 #figure(
   image("images/bst_insertion.png", width: 70%),
   caption: [
@@ -499,12 +433,93 @@ These graphs were generated by thye JavaScript visualizer.
   ]
 ) <figure_bst_insertion>
 
+\
+
+- Analysis of the Results
+
+The insertion times in the BST show significant variation, revealing the unpredictable behavior of this unbalanced structure. The minimum time represents quick insertions when the new element finds a position close to the root. The high average time reflects the cost of traversing multiple levels of the tree to place a new element.
+
+The maximum time reaches extremely high values, demonstrating when the BST resembles a linked list, requiring traversal of nearly all existing elements before performing the insertion. The high standard deviation confirms this large dispersion in execution times.
+
+The distribution of times in the graph shows a moderate concentration around the average, but with a long tail extending to very high values.
+
+This analysis suggests that the unbalanced nature of BSTs makes them unpredictable, especially when the tree grows uncontrollably.
+
 #figure(
   image("images/bst_search.png", width: 70%),
   caption: [
     Search time of the BST Tree
   ]
 ) <figure_bst_search>
+
+\
+
+- Analysis of the Results
+
+The search times in the BST exhibit behavior characteristic of unbalanced structures. The minimum time occurs when the sought element is at the root or close to it, while the average time reflects the typical cost of traversing multiple levels of the tree. The maximum time, significantly higher, reveals cases where the tree approaches a linked list, requiring traversal of nearly all the nodes.
+
+The relatively high standard deviation indicates considerable variation in search times. The graph shows an asymmetric distribution, with a peak around the average.
+
+These results suggest that, while BSTs can offer fast searches in some cases, their unbalanced nature can lead to inconsistency, especially when compared to AVL trees, which maintain a more stringent balance.
+
+\
+
+=== AVL
+<section_graphs_avl>
+
+These graphs were generated by thye JavaScript visualizer.
+
+#figure(
+  image("images/avl_comparison.png", width: 70%),
+  caption: [
+    Number of Comparisons done by the AVL Tree
+  ] 
+) <figure_avl_comparison>
+
+\
+
+- Analysis of the Results
+
+The table presents statistics on the number of comparisons made in an AVL tree, highlighting its characteristic efficiency. The minimum value represents the smallest number of comparisons required, occurring when the sought element is near the root. The average, on the other hand, reflects the expected performance in most cases, offering a view of the tree's typical behavior. The maximum value indicates the worst-case scenario, where more comparisons are needed, typically for elements located in the deepest nodes. The standard deviation, in turn, shows that most searches perform close to the average, with little variation, confirming the consistency of the structure.
+
+The histogram complements this data by displaying the distribution of comparisons. It is possible to observe that some searches are highly efficient (values on the left), while the majority cluster around the average (central values). Only a few searches require the maximum number of comparisons (values on the right), demonstrating the effectiveness of the AVL's automatic balancing.
+
+These results are possible because the AVL tree maintains its balance, ensuring that its height is always proportional to the logarithm of the number of elements. This ensures that even in the worst case, the number of comparisons remains limited and predictable—an advantage crucial when compared to unbalanced trees, such as degenerate BSTs, which can perform significantly worse in unfavorable situations.
+
+#figure(
+  image("images/avl_insertion.png", width: 70%),
+  caption: [
+    Insertion time of the AVL Tree
+  ]
+) <figure_avl_insertion>
+
+\
+
+- Analysis of the Results
+
+The data presented shows the insertion times in an AVL tree, measured in nanoseconds. The minimum time represents the fastest possible scenario, when the insertion occurs without the need for rebalancing. The average time reflects the typical performance of the structure, considering that most operations involve some local adjustment of the tree. The maximum time, significantly higher, corresponds to cases where a full tree rebalance is necessary, from the inserted leaf all the way up to the root.
+
+The relatively low standard deviation compared to the mean indicates that most insertions are executed in times close to the average value, with few operations requiring extreme times. The distribution graph shows that the majority of insertions occur within time intervals close to the average, with a long tail representing the few insertion cases that demand more processing due to deep rebalancing.
+
+These results demonstrate the efficiency characteristic of AVL trees. Although occasionally more costly operations may occur due to rebalancing, the vast majority of insertions maintain consistent performance. This contrasts with unbalanced structures like BSTs, where insertion times can vary uncontrollably as the tree grows.
+
+#figure(
+  image("images/avl_search.png", width: 70%),
+  caption: [
+    Search time of the AVL Tree
+  ]
+) <figure_avl_search>
+
+\
+
+- Analysis of Results
+
+The search times in the AVL tree demonstrate the characteristic efficiency of this balanced structure. The minimum time represents the ideal scenario, when the searched element is close to the root. The average time, only slightly higher than the minimum, shows the consistent performance of the AVL in most cases, reflecting its good balance. The maximum time remains within a reasonable range, indicating that even in the worst case, the search does not become excessively slow.
+
+The low observed standard deviation confirms that most search operations occur in times very close to the average, with little variation. The distribution graph reveals a concentration of searches around the average value, forming a peak with few cases at the extremes. This pattern is typical of well-balanced structures, where the height of the tree is kept under control.
+
+These results suggest that the AVL tree ensures predictable and efficient search times due to its rebalancing mechanism, unlike unbalanced trees, where searches can become slower.
+
 
 === RBT
 <section_graphs_rbt>
@@ -529,25 +544,25 @@ The raw statistics for the trees are:
     [*Metric*], [*BST*], [*AVL*], [*RBT*],
   ),
 
-  [Docs indexed],               [1000],      [1000],      [0],
-  [Words indexed],              [213099],    [213099],    [0],
-  [Total insertion time (ns)],  [373834912], [393149216], [0],
-  [Avg insertion time (ns)],    [1754],      [1844],      [0],
-  [Max insertion time (ns)],    [124644],    [189938],    [0],
-  [Min insertion time (ns)],    [168],       [147],       [0],
-  [Total search time (ns)],     [90034],     [81607],     [0],
-  [Avg search time (ns)],       [365],       [331],       [0],
-  [Max search time (ns)],       [910],       [773],       [0],
-  [Min search time (ns)],       [243],       [232],       [0],
-  [Total comparisons (search)], [3356],      [2942],      [0],
-  [Avg comparisons (search)],   [13],        [11],        [0],
-  [Max comparisons (search)],   [25],        [16],        [0],
-  [Min comparisons (search)],   [1],         [2],         [0],
-  [Node count],                 [16986],     [16986],     [0],
-  [Tree height],                [32],        [16],        [0],
-  [Min depth],                  [4],         [10],        [0],
-  [Balance diff],               [28],        [6],         [0],
-  [Relative balance],           [8],         [1.6],       [0],
+  [Docs indexed],               [10102],      [10102],      [10102],
+  [Words indexed],              [2201736],    [2201736],    [2201736],
+  [Total insertion time],  [17.28s], [17.67s], [5.75s],
+  [Avg insertion time],    [7.85 $mu$s],      [8.02$mu$s],      [2.36$mu$s],
+  [Max insertion time],    [9.39ms],    [53.52ms],    [41.96ms],
+  [Min insertion time],    [0],       [0],       [0],
+  [Total search time],     [0.24ms],     [0.25ms],     [0.53ms],
+  [Avg search time],       [980ns],       [1022ns],       [2193ns],
+  [Max search time],       [3498ns],       [5751ns],       [45858ns],
+  [Min search time],       [564ns],       [516ns],       [582ns],
+  [Total comparisons (search)], [3357],      [2899],      [2894],
+  [Avg comparisons (search)],   [13],        [11],        [11],
+  [Max comparisons (search)],   [25],        [16],        [16],
+  [Min comparisons (search)],   [1],         [2],         [2],
+  [Node count],                 [20273],     [20273],     [20273],
+  [Tree height],                [32],        [16],        [16],
+  [Min depth],                  [4],         [10],        [10],
+  [Balance diff],               [28],        [6],         [6],
+  [Relative balance],           [8],         [1.6],       [1.6],
 )
 
 == Actual Analysis
@@ -569,24 +584,30 @@ $
 
 Which might make the AVL interesting.
 
+For the RBT, its known that for a tree with n nodes, the height is asymptotically distributed as:
+
+$
+h_(max)(n) = 2log(n+1)
+$
+
+
+
 === Time Complexity
 <section_time_complexity>
 
 When analyzing time complexity for these trees, we look at the cost of each operation:
 
 #table(
-  columns: 4,
+  columns: 5,
   align: horizon,
 
   table.header(
-    [*Operation*], [*BST*], [*AVL*], [*Proof Idea*],
+    [*Operation*], [*BST*], [*AVL*], [*RBT*] ,  [*Proof Idea*],
   ),
 
-  [Insertion], [$O(h(n))$], [$O(h) + O(1) "rotations"$], [Keys are compared on a root-to-leaf path, so the height of the tree determines the number of comparisons. For BST, this is linear in the worst case, while AVL guarantees logarithmic height due to balancing rules.],
+  [Insertion], [$O(h(n))$], [$2O(h) + O(1) "rotations"$(because it has to actualize the height of the nodes, worst case is going up to the root)],[$O(h)+O(1)$ rotations and recoloring] , [Keys are compared on a root-to-leaf path, so the height of the tree determines the number of comparisons. For BST, this is linear in the worst case, while AVL and BRT guarantees logarithmic height due to balancing rules.],
 
-  [Search],    [$O(h(n))$], [$O(h(n))$], [Shown in @section_avl_complexity_analysis and @section_bst_complexity_analysis],
-  [Deletion],  [$O(h(n))$], [$O(h) + O(h) "rotations worst-case"$], [Each descent to find the node to delete is $O(h)$, and rebalancing may require up to $O(h)$ rotations in the worst case. For BST, this is linear in the worst case, while AVL guarantees logarithmic height due to balancing rules.],
-)
+  [Search],    [$O(h(n))$], [$O(h(n))$],[$O(h(n))$] ,[Shown in @section_implementations])
 
 === Memory Usage
 <section_memory_usage>
@@ -611,6 +632,35 @@ Field counts are identical, therefore heap consumption is $O(n)$ for the AVL and
 
 No additional global buffers are required; rotations operate with $O(1)$ local variables.
 
+
+=== Data visualization and interpretation of results
+
+#figure(
+  image("images/imagem1.jpg", width: 80%),
+  caption: [
+    Difference in the trees balancing 
+  ]
+)
+
+As the BST tree is unbalanced this result was expected (it having the most difference in the heights of the highest branch and the shortest branch). On the other hand AVL and RBT are self-balanced and have this measurement low. AVL is always balancing itself while RBT is sometimes not yet balanced, so AVL is the lowest of them all in this graph.
+
+#figure(
+  image("images/imagem3.jpg", width: 90%),
+  caption: [
+    Mean of insertion time in the trees by size
+  ]
+)
+
+In the RBT structure, the insertion is close to being constant because it doesn't recalculate the heights. While in BST and AVL
+
+#figure(
+  image("images/imagem4.jpg", width: 90%),
+  caption: [
+    Mean of search time in the trees by size
+  ]
+)
+Here, the mean of all of them appears to have a log(n) shape like, similar to what we expected.
+
 = Challenges and Difficulties (Required by the professor)
 <section_challenges_difficulties>
 
@@ -631,17 +681,67 @@ I must say that with other 4 courses, time management was a *very big challenge*
 == Gabrielle Mascarelo
 <section_challenges_difficulties_gabrielle>
 
+It may be silly but my main hurdle was to be able to run the MakeFile and dealing with it for the first time. Even though it appeared in our classes, I couldn't get it at the time. It was hard to deal with WSL in my computer.
+
+I also never did something of the kind about the CLI structure. I have to admit I don't quite got the tree structures very easily in my head but that's on me for not going to all the classes. I regret that strongly. 
+
+I just think the deadline was short for me to learn and manage that bunch of new things while doing a lot of other stuff.
+
 == Nícolas Spaniol
 <section_challenges_difficulties_nicolas>
 
+Time management was, by far, my biggest difficulty, given this project was proposed in a very unfortunate moment, when we had lots of other time-consuming assignment from the other courses.
+
+After that, I found some difficulty when dealing with _git submodules_ (that we used to include third-party libraries in our project), having to create a fork of _tinyhttp_ (our HTTP server library) to deal with a missing library for JSON parsing.
+
+Using _make_ also proved to be very difficult, as I had no past experience with this program and had to learn its distinct syntax in order to make compiling our program easier and faster.
+
 == Gabriel Carneiro
 <section_challenges_difficulties_gabriel>
+I've got trough bad times testing and implementing correctly the AVL Tree, since initially I had a wrong interpretation about how rotations worked and how to test correctly, since all examples have to be made by hand. I've also had to be a little bit more careful with pointers and references, so working on the project gave me a good lesson.
+
+For me, the deadlines were quite short. Despite the BST tree being quite simple, the other two are not so trivial (at least for me) and implementing them while having to do other college stuff was challenging, but I guess I made a decent job. 
+
+I really think I learned a lot by doing this project, not only about data structures but also on how work together with your group.
 
 = Source code
 <section_source_code_repository>
 
 All implementations and tests are available in the public repository at https://github.com/arthurabello/dsa-final-project
 
+Here is the organization of the code:
+
+`
+dsa-final-project
+
+->Unity                   * C++ Library for unit testing
+->tinyhttp                * C++ Library for http servers 
+->docs                    * Report and images 
+->data                    * Dataset of approximately 10000 documents
+->view                    * HTML configuration for visualization
+->src
+|-->bst                   * BST implementation
+|-->avl                   * AVL implementation
+|-->rbt                   * RBT implementation
+|
+|-->cli.cpp               * CLI structuring
+|-->cli.h                 * and library 
+|
+|-->data.cpp              * Data scrapping and treating  
+|-->data.h                * and library
+|
+|-->tree_utils.cpp        * General binary tree functions
+|-->tree_utils.h          * implementation, library
+|-->test_tree_utils.cpp   * and testing
+
+
+
+
+
+
+
+
+ `
 = Task Division  (Required by the professor)
 <section_task_division>
 == Arthur Rabello Oliveira
@@ -649,53 +749,66 @@ All implementations and tests are available in the public repository at https://
 
 Contributed with:
 
-- Keeping the repository civilized (main-protecting rules, enforcing code reviews)
+- Keeping the repository civilized (main-protecting rules, enforcing code reviews);
 
-- Writing and documenting the `Makefile` for building the project
+- Writing and documenting the `Makefile` for building the project;
 
-- Writing the `README.md` and `report.typ`
+- Writing the `README.md` and `report.typ`;
 
-- Writing and documenting functions for the classic BST in `bst.cpp`
+- Writing and documenting functions for the classic BST in `bst.cpp`.
 
 == Gabrielle Mascarelo
 <section_task_division_gabrielle>
 
 Contributed with:
 
-- Writing and documenting functions to read files in `data.cpp`
+- Writing and documenting functions to read files in `data.cpp`;
 
-- Structuring statistics in the CLI 
+- Structuring statistics and the initial search in the CLI;
+
+- Testing all functions related to the RBT;
+
+- Fixing bugs and finishing the RBT code;
+
+- Writing `report.typ`.
 
 == Eliane Moreira
 <section_task_division_eliane>
 
 Contributed with:
 
-- Testing all function related to the BST
+- Testing all functions related to the BST;
 
-- Writing and documenting functions for `tree_utils.cpp`
+- Writing and documenting functions for `tree_utils.cpp`;
 
-- Fixing bugs in `data.h`
+- Fixing bugs in `data.h`;
+
+- Writing `report.typ`.
 
 == Nícolas Spaniol
 <section_task_division_nicolas>
 
 Contributed with:
 
-- Code reviews and suggestions for improvements in the codebase.
+- Code reviews, suggestions for improvements in the codebase;
 
-- Built from scratch the JavaScript visualization of all trees
+- Built from scratch the JavaScript visualization of all trees;
 
+- CLI structuring and statistics.
+
+- Writing `report.typ`.
 == Gabriel Carneiro
 <section_task_division_gabriel>
 
 Contributed with:
 
-- Writing and documenting functions for the classic BST
+- Writing and documenting functions for the classic BST;
 
-- Writing and documenting functions for the AVL Tree
+- Writing and documenting functions and tests for the AVL Tree;
 
-- Testing functions for `tree_utils.cpp`
+- Testing functions for `tree_utils.cpp`;
+
+- Writing `report.typ`.
 
 #bibliography("bibliography.bib")
 
