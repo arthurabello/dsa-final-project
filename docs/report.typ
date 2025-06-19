@@ -368,13 +368,6 @@ Those are linear passes over the stats vectors ($S$ elements) plus calls to `TRE
 here `add_node` performs a _single_ depth-first traversal; every call touches a node once and does a bounded-cost string append $=> O(n + L)$. The three simple `for` loops concatenate the stats arrays $=> O(V)$ The route registration & server start-up (`server.when(…)`) contains only a fixed number of pointer stores $=> O(1)$. Combining these we have a total work of $O(n + V + L)$.
 
 
-<section_inverted_index_implementation>
-=== Algorithms
-<section_inverted_index_algorithms>
-
-=== Complexity Analysis
-<section_inverted_index_complexity_analysis>
-
 = Testing and Validation
 <section_testing_validation>
 == Unit Testing Method
