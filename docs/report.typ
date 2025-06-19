@@ -50,7 +50,7 @@
 ])
 
 #align(center, text(11pt)[
-  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarelo, Eliane Moreira, Nícolas Spaniol, Gabriel Carneiro
+  Arthur Rabello Oliveira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")], Gabrielle Mascarelo #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:arthur.oliveira.1@fgv.edu.br")] , Eliane Moreira #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:elianemoreira121095@gmail.com")], Nícolas Spaniol #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:nicolasmspaniol@gmail.com")], Gabriel Carneiro #footnote[#link("https://emap.fgv.br/")[Escola de Matemática Aplicada, Fundação Getúlio Vargas (FGV/EMAp)], email: #link("mailto:gabrielcarneiron@gmail.com")]
 ])
 #set par(first-line-indent: 1.5em,justify: true)
 
@@ -80,7 +80,7 @@ While the logical view of an inverted index is a simple dictionary, its physical
 
 - *Sub-millisecond* queries for ad-hoc keyword combinations.
 
-Choosing the proper data structure is therefore a trade-off between build-time cost and implementation complexity.
+Choosing the proper data structure is therefore a trade-off between query performance and insertion throughput, besides the edge cases introduced when we choose a more complex tree type.
 
 == Objectives
 <section_objectives>
@@ -95,7 +95,6 @@ Choosing the proper data structure is therefore a trade-off between build-time c
 
 = Motivation
 <section_motivation>
-
 == Why Inverted Index?
 <section_why_inverted_index>
 
@@ -367,7 +366,6 @@ Those are linear passes over the stats vectors ($S$ elements) plus calls to `TRE
 
 here `add_node` performs a _single_ depth-first traversal; every call touches a node once and does a bounded-cost string append $=> O(n + L)$. The three simple `for` loops concatenate the stats arrays $=> O(V)$ The route registration & server start-up (`server.when(…)`) contains only a fixed number of pointer stores $=> O(1)$. Combining these we have a total work of $O(n + V + L)$.
 
-
 = Testing and Validation
 <section_testing_validation>
 == Unit Testing Method
@@ -379,29 +377,47 @@ Using a library for this allowed us to better organize our tests, requiring we w
 
 The tests are contained in their own file inside each of the tree's subfolders and can be run with _make test-\<tree type>_. We wrote similar tests for each of the trees, accounting for rotations and other tree-specific behaviours when needed.
 
-= Visualization with JavaScript
-<section_visualization> \
+= Complexity comparative analysis of operations
+<section_complexity_analysis> \
 
-Besides the required "search" and "stats" subcommands, we created a "view" subcommand to visualize some of the data we collected for individual trees. Running this subcommand for any type of tree (_.\/\<tree type> view \<number of documents> \<directory>_) goes through the indexing of the tree and then starts a HTTP server in the running machine. Opening the URL printed to _stdout_ will load a visualization of tree, made with #link("https://d3js.org/")[_D3.js_]. The visualizations give us interesting ways to compare the structure of the trees, as seen by looking at the graphs of BST and AVL trees built from the same amount of documents:
+== Balancing Difference
+As the BST tree is unbalanced this result was expected (it having the most difference in the heights of the highest branch and the shortest branch). On the other hand, AVL and RBT are self-balanced and have this measurement low. AVL is always balancing itself while RBT is sometimes not yet balanced, so AVL is the lowest of them all in this graph.
 
-#grid(columns: (1fr, 1fr), gutter: 5%,
-  figure(
-    image("images/tree3.png"),
-    caption: [
-      Structure of the BST Tree
-    ]
-  ),
-  figure(
-    image("images/tree2.png"),
-    caption: [
-      Structure of the AVL Tree
-    ]
-  ),
+#figure(
+  image("images/imagem1.jpg", width: 80%),
+  caption: [
+    Difference in the trees balancing 
+  ]
+)
+== Insertion time
+In the RBT structure, the insertion is close to being constant because it doesn't recalculate heights like AVL and its balancing is more flexible than AVL, requiring less rotations (even if it requires recoloring operations, they are much more computationally cheaper). 
+
+The property that AVL holds by computing rotations in each insertion to balance itself increase significantly its insertion time.
+
+In contrast, the BST structure, the simplest of them all, even not having balancing costs, is high on that measure. It depends on the order the data were inserted, extending the order of time complexity from its height to its number of nodes in the worst case, the degenerated case.
+
+The plateau in BST and AVL reached after 200 documents indexed may occur because, from this point on, the number of new and unique words inserted decreased.
+
+#figure(
+  image("images/imagem3.jpg", width: 90%),
+  caption: [
+    Mean of insertion time in the trees by size
+  ]
 )
 
-\
 
-As expected, AVL's node heights are less extreme, as a result of the rotations made after each insertion. Notice both trees hold the same amount of nodes, but the BST's ones are compressed to a smaller circle to accomodate the greater height of the tree.
+
+#figure(
+  image("images/imagem4.jpg", width: 90%),
+  caption: [
+    Mean of search time in the trees by size
+  ]
+)
+Here, the mean of all of them appears to have a log(n) shape like, similar to what we expected. In a large number of documents, AVL appears to be the best structure of them in this sense.
+
+It is interesting to look that in both measures of time, the AVL took a bigger while to initialize. In other words, it had the initial iteration way up in the graph comparing to the following iterations.
+
+At last, we could say RBT is way much better in insertion time compared to the others, while in the other measures it is pretty close to being the best, at the side of AVL. We could bear to say that RBT is the overall best, being especially very requested in projects that needs a large number of insertions. AVL perhaps could perform better in projects that need a lot of search operations maintaining few insertions. BST could be put as the worst of all, but nevertheless it may still be used in educational contexts or when the dataset is small and its data is truly random (because it becomes inefficient and degenerated when the data is ordered).
 
 = Comparative Analysis
 <section_comparative_analysis>
@@ -433,8 +449,8 @@ For a better visualization of the statistics we will cover here, we recommend, t
 
 ```bash
 make bst && make avl && make rbt
-./(tree_name) view 10200 data
-./(tree_name) stats 10200 data
+./(tree_name) view 1000 data
+./(tree_name) stats 1000 data
 ```
 
 Opening the generated JavaScript visualization in a browser, you will be able to see the graphs and the tree visualizations in a more interactive way.
@@ -532,7 +548,7 @@ These results are possible because the AVL tree maintains its balance, ensuring 
 
 - Analysis of the Results
 
-The data presented shows the insertion times in an AVL tree, measured in nanoseconds. The minimum time represents the fastest possible scenario, when the insertion occurs without the need for rebalancing. The average time reflects the typical performance of the structure, considering that most operations involve some local adjustment of the tree. The maximum time, significantly higher, corresponds to cases where a full tree rebalance is necessary, from the inserted leaf all the way up to the root.
+The data presented shows the insertion times in an AVL tree, measured in nanoseconds. The minimum time represents the fastest possible scenario, which is, most likely the one where the insertion occurs without the need for rebalancing. The average time reflects the typical performance of the structure, considering that most operations involve some local adjustment of the tree. The maximum time, significantly higher, likely corresponds to cases where a full tree rebalance is necessary, from the inserted leaf all the way up to the root.
 
 The relatively low standard deviation compared to the mean indicates that most insertions are executed in times close to the average value, with few operations requiring extreme times. The distribution graph shows that the majority of insertions occur within time intervals close to the average, with a long tail representing the few insertion cases that demand more processing due to deep rebalancing.
 
@@ -561,6 +577,61 @@ These results suggest that the AVL tree ensures predictable and efficient search
 
 These graphs were generated by thye JavaScript visualizer.
 
+#figure(
+  image("images/rbt_comparison.PNG", width: 70%),
+  caption: [
+    Number of Comparisons done by the RBT Tree
+  ]
+) <figure_avl_comparison>
+
+\
+
+- Analysis of Results
+The Red-Black Tree (RBT) demonstrates excellent performance in search operations. The minimum number of comparisons occurs when the element is located near the root, while the average value showcases the efficiency characteristic of this balanced structure. The maximum number of comparisons, though higher than the average, is still controlled, highlighting how the tree's balancing prevents extreme cases.
+
+The small variation in the results, indicated by the low standard deviation, shows that most searches are performed with a number of comparisons very close to the average. This consistency contrasts strongly with the unpredictable behavior of the Binary Search Tree (BST).
+
+The distribution graph reveals a pattern concentrated around the average value, with few operations requiring the maximum number of comparisons, demonstrating how well the tree controls its height, ensuring that even in the worst-case scenario, performance remains strong.
+
+When compared to other structures, the Red-Black Tree shows similar advantages to the AVL Tree, with both maintaining efficient balancing that results in consistent search times. The primary difference lies in the specific balancing algorithms used by each, which lead to small variations in the number of comparisons but still deliver strong overall performance.
+
+
+#figure(
+  image("images/rbt_insertion_fixed.png", width: 70%),
+  caption: [
+    Insertion time of the RBT Tree
+  ]
+) <figure_avl_insertion>
+
+\
+
+- Analysis of Results
+_*Note:* We had to use another computer to regenerate this graph last minute, so the recorded times are approx. half of the ones in past graphs, in virtue of the differences in the speed of both computers._
+
+As with the AVL tree, the recorded minimum value here probably corresponds to simple insertions where the new node is added as a leaf without requiring significant structural changes. The average time highlights the efficient and stable behavior of the structure in most insertions.
+
+However, the maximum recorded time is significantly higher than the average. This occasional spike likely occurs in specific scenarios where the insertion requires multiple rotations and recolorings that propagate to higher levels of the tree, including cases where the root itself needs adjustment. These additional operations, though rare, are part of the Red-Black Tree's internal mechanisms to maintain its strict balance.
+
+The difference between the standard deviation and the mean, though more pronounced than in search operations, still suggests a predominance of fast insertions, with few outliers. The distribution graph shows that most insertions cluster around the average time but also exhibits isolated spikes resulting from more costly insertions.
+
+Despite occasional spikes in individual operation times, the structure’s automatic balancing prevents these costs from persisting. The predictability and self-maintaining equilibrium are the key advantages that distinguish Red-Black Trees from unbalanced structures like traditional BSTs.
+
+
+#figure(
+  image("images/rbt_search.PNG", width: 70%),
+  caption: [
+    Search time of the RBT Tree
+  ]
+) <figure_avl_search>
+
+\
+
+- Analysis of Results
+The search times in the Red-Black Tree demonstrate the characteristic efficiency of this balanced structure. The minimum value occurs when the desired element is near the root, while the average time reflects the consistent performance maintained in most cases. The maximum time, although higher, shows how the structure's automatic balancing prevents the extreme cases that can occur in unbalanced trees.
+
+The small difference between the standard deviation and the mean indicates that most search operations are concentrated within a narrow range of values. This consistency is one of the main advantages of the Red-Black Tree, which maintains a strict balance between node depth and operational efficiency.
+
+The distribution chart shows a pattern concentrated around the mean value, with few operations at the extremes. This predictable behavior contrasts with the variable performance of BSTs, where the lack of balancing can lead to significant differences in search times. Like AVL trees, the Red-Black Tree ensures that even in the worst case, search times remain within controlled limits, maintaining the logarithmic complexity characteristic of balanced structures.
 
 = Conclusion
 <section_conclusion>
@@ -568,7 +639,7 @@ These graphs were generated by thye JavaScript visualizer.
 == Raw stats
 <section_raw_stats>
 
-The raw statistics for the trees are:
+The raw statistics for the complete (with all the 10k documents) trees are:
 
 #table(
   columns: 4,
@@ -600,8 +671,12 @@ The raw statistics for the trees are:
   [Relative balance],           [8],         [1.6],       [1.6],
 )
 
-== Actual Analysis
-<section_actual_analysis>
+We see that the RBT and AVL tree are quite similar to each other, but the insert operation tends to be faster in the RBT, because the rotations and recoloring are less rigid than in AVL, permitting a better performance. On the other hand, the search is faster in AVL, because the tree is always balanced, meaning that the tree height its always minimized.
+
+The RBT is usually preferred because it has a more general purpose: it offers a good balance between the height(that has implications for search) and stiffness(that has implications for insertion/deletion).
+
+== Theoretical Results
+<section_theoretical_results>
 
 Let $h(n)$ be the height of node $n$. Because every AVL is a BST with an additional constraint, every theorem about BST search order also applies to AVL unless it contradicts the balance rule.
 
@@ -614,18 +689,20 @@ $
 For the AVL, the maximum height is logarithmical @mit_website, as it is a balanced tree. The height of an AVL tree with *n* nodes is at most:
 
 $
-  h_(max) (n) = O(log n)
+  h_(max) (n) = 1,44O(log (n)) = O(log(n))
 $
 
 Which might make the AVL interesting.
 
-For the RBT, its known that for a tree with n nodes, the height is asymptotically distributed as:
+For the RBT, its known that for a tree with n nodes, the height is:
 
 $
-h_(max)(n) = 2log(n+1)
+h_(max)(n) = 2log(n+1) = O(log(n+1))
 $
 
+As can be seen in @arxiv_article.
 
+This explains the behavior seen in @section_raw_stats and the previous visualizations. 
 
 === Time Complexity
 <section_time_complexity>
@@ -665,36 +742,60 @@ Field counts are identical, therefore heap consumption is $O(n)$ for the AVL and
 
 - AVL stack depth: $h = O(log n) -> $ asymptotically optimal.
 
-No additional global buffers are required; rotations operate with $O(1)$ local variables.
+- BST stack depth: $h = 2O(log(n+1)) ->$ worst than AVL, but its better than BST.
+
+No additional global buffers are required; rotations and recoloring operate with $O(1)$ local variables.
 
 
-=== Data visualization and interpretation of results
+=== Data visualization and extras
+<section_visualization_extra>
 
-#figure(
-  image("images/imagem1.jpg", width: 80%),
-  caption: [
-    Difference in the trees balancing 
-  ]
+Besides the required "search" and "stats" subcommands, we created a "view" subcommand to visualize some of the data we collected for individual trees in a radial form. Running this subcommand for any type of tree (_.\/\<tree type> view \<number of documents> \<directory>_) goes through the indexing of the tree and then starts a HTTP server in the running machine. Opening the URL printed to _stdout_ will load a visualization of tree, made with #link("https://d3js.org/")[_D3.js_]. The visualizations give us interesting ways to compare the structure of the trees, as seen by looking at the graphs of BST, AVL and RBT trees built from the same amount of documents (10) :
+
+#grid(columns: (1fr, 1fr,1fr), gutter: 5%,
+  figure(
+    image("images/tree_bst.PNG"),
+    caption: [
+      Structure of the BST Tree
+    ]
+  ),
+  figure(
+    image("images/tree_avl.PNG"),
+    caption: [
+      Structure of the AVL Tree
+    ]
+  ),
+
+  figure(
+    image("images/tree_rbt.PNG"),
+    caption: [
+      Structure of the RBT Tree
+    ]
+  )
+
 )
 
-As the BST tree is unbalanced this result was expected (it having the most difference in the heights of the highest branch and the shortest branch). On the other hand AVL and RBT are self-balanced and have this measurement low. AVL is always balancing itself while RBT is sometimes not yet balanced, so AVL is the lowest of them all in this graph.
+\
+
+As expected, AVL's and RBT's node heights are less extreme, as a result of the rotations made after each insertion. Notice all trees hold the same amount of nodes, but the BST's and RBT's ones are compressed to a smaller circle to accomodate the greater height of the tree. This facts also makes AVL looks more circular.
+
+These visualizations make clearer how the RBT is a perfect "middle term" between height-efficiency(for being more cirular) and height-distribution (for allowing unbalancing ergo "higher" nodes).
+
+Another interesting analysis we interest ourselves in doing is seeing the words frequency. As we can see below, the most common words are, as expected, articles, prepositions and conjunctions, since these are common for the composition of the words.
 
 #figure(
-  image("images/imagem3.jpg", width: 90%),
+  image("images/word_frequency.PNG", width: 70%),
   caption: [
-    Mean of insertion time in the trees by size
+    Insertion time of the RBT Tree
   ]
-)
+) <figure_avl_insertion>
 
-In the RBT structure, the insertion is close to being constant because it doesn't recalculate the heights. While in BST and AVL
+These are only extra analysis that give us a greater comprehension on what is happening while constructing the inverted index and give us a interesting way of seeing the elaboration of each tree.
 
-#figure(
-  image("images/imagem4.jpg", width: 90%),
-  caption: [
-    Mean of search time in the trees by size
-  ]
-)
-Here, the mean of all of them appears to have a log(n) shape like, similar to what we expected.
+
+==== Fun Fact
+
+The root of the tree (that is in the middle of the visualization of @section_visualization_extra) is the word "meio" ("middle" in portuguese).
 
 = Challenges and Difficulties (Required by the professor)
 <section_challenges_difficulties>
@@ -713,6 +814,20 @@ I must say that with other 4 courses, time management was a *very big challenge*
 == Eliane Moreira
 <section_challenges_difficulties_eliane>
 
+My biggest challenge was dealing with my VSCode, which had many issues, such as not being able to run programs, crashing while I was working on the project, among other things. Additionally, some of my commits were made as "root" instead of my user, due to the various bugs in VSCode. The solution I found was to write the code on Google Colab (after some time my Chrome start crashing too) and ask my classmates to test it on their computers.
+
+Regarding the project implementation, some of the difficulties were:
+
+- The implementation of the BST insertion had many cases to be checked to ensure they were working as expected.
+
+- There were many errors during the implementation of the RBT, especially in the insertion fix-up required to maintain the tree's logic.
+
+- I faced difficulties dealing with fstream when correcting the use of the library in the data file.
+
+And the worst villain of all was time, or rather, the lack of it... With other assignments to be done alongside this one, test days, to-do lists, English courses (which had to be put on hold for a bit), all of that and more resulted in very stressful submission periods, coinciding with many other tasks.
+
+But, at the end of it all, I enjoyed working with a very diverse group, including people from other courses.
+
 == Gabrielle Mascarelo
 <section_challenges_difficulties_gabrielle>
 
@@ -725,7 +840,7 @@ I just think the deadline was short for me to learn and manage that bunch of new
 == Nícolas Spaniol
 <section_challenges_difficulties_nicolas>
 
-Time management was, by far, my biggest difficulty, given this project was proposed in a very unfortunate moment, when we had lots of other time-consuming assignment from the other courses.
+Time management was, by far, my biggest difficulty, given this project was proposed in a very unfortunate moment, when we had lots of other time-consuming assignments from the other courses.
 
 After that, I found some difficulty when dealing with _git submodules_ (that we used to include third-party libraries in our project), having to create a fork of _tinyhttp_ (our HTTP server library) to deal with a missing library for JSON parsing.
 
@@ -733,11 +848,12 @@ Using _make_ also proved to be very difficult, as I had no past experience with 
 
 == Gabriel Carneiro
 <section_challenges_difficulties_gabriel>
+
 I've got trough bad times testing and implementing correctly the AVL Tree, since initially I had a wrong interpretation about how rotations worked and how to test correctly, since all examples have to be made by hand. I've also had to be a little bit more careful with pointers and references, so working on the project gave me a good lesson.
 
 For me, the deadlines were quite short. Despite the BST tree being quite simple, the other two are not so trivial (at least for me) and implementing them while having to do other college stuff was challenging, but I guess I made a decent job. 
 
-I really think I learned a lot by doing this project, not only about data structures but also on how work together with your group.
+I really think I learned a lot by doing this project, not only about data structures but also on how work together with my group.
 
 = Source code
 <section_source_code_repository>
@@ -752,7 +868,7 @@ dsa-final-project
 ->Unity                   * C++ Library for unit testing
 ->tinyhttp                * C++ Library for http servers 
 ->docs                    * Report and images 
-->data                    * Dataset of approximately 10000 documents
+->data                    * Dataset of approximately 10000 documents (the first one)
 ->view                    * HTML configuration for visualization
 ->src
 |-->bst                   * BST implementation
@@ -812,7 +928,9 @@ Contributed with:
 
 Contributed with:
 
-- Testing all functions related to the BST;
+- Writing and testing all functions related to the BST;
+
+- Writing all functions related to the RBT;
 
 - Writing and documenting functions for `tree_utils.cpp`;
 
@@ -832,6 +950,7 @@ Contributed with:
 - CLI structuring and statistics.
 
 - Writing `report.typ`.
+
 == Gabriel Carneiro
 <section_task_division_gabriel>
 
