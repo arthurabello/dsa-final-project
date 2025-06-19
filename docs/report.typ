@@ -324,8 +324,46 @@ Same reasoning as above, $O(1)$.
 Same reasoning as above, $O(1)$.
 
 == Inverted Index
- We used the 
 
+The inverted index has been built over the 3 data structures previously presented. Here we provide a list of the tools that actually power this pipeline (file $->$ tokenisation $->$ tree insertion $->$ stats/visualization):
+
+- *`DATA::normalise`*:
+
+This is a single pass over the input string: one `std::tolower + std::isalnum` per char, no allocations except the output buffer. Therefore it is $O(l)$, where $l$ is the input string length.
+
+- *`DATA::tokenize`*:
+
+- *`DATA::list_files_txt_in_path`*:
+
+Single pass over `std::filesystem::directory_iterator`, all work per entry is $O(1)$. So the total work is $O(F)$, where $F$ is the amount of entries in the directory.
+
+- *`DATA::buildNodes`*:
+
+This function calls `tokenize`(see above) then does one `createNode` per token (constant-time pointer allocation & initialisation). So the total work is $O(w)$, where $w$ is the number of tokens in the input file.
+
+- *`CLI::formatDouble`*:
+
+Simple` to_string` then substring, linear in string length, negligible in practice. So the total complexity is $O(k)$, where $k$ is the amount of digits in the number.
+
+- *`CLI::colorize`*:
+
+Those are 2 concatenations, so it is $O(L)$, where $L$ is the length of the string to be colorized.
+
+- *`CLI::indexFilesInDir`*:
+
+This is a loop over at most $n$ files, tokenises each, then calls the tree-specific insert once per token. All other body lines are constant time. So it is $O(D + sum T_i + sum I_i)$, where $T_i$ is the tokenization cost per file (see above), $I_i$ is the tree-insert cost per token and $D$ is the directory scan (delegated to `list_files_txt_in_path`).
+
+- *`CLI::testSearch`*:
+
+This is an outer loop over distinct sample words, inner fixed $100$-iteration loop calling generic TREE::search ($O(h)$). So the total work is $O(Q dot h)$, where $Q = "words"dot"numTries", h = "TreeHeight"$.
+
+- *`CLI::collectAggStats`*:
+
+Those are linear passes over the stats vectors ($S$ elements) plus calls to `TREE::countNodes, calculateHeight, calculateMinDepth` — each walks the whole tree once ($n$ = nodes). So the total work is $O(S + n)$.
+
+- *`CLI::startViewServer`*:
+
+Nothing more than stats arrays. Total work is $O(n + v)$, where KEEP WRITING
 <section_inverted_index_implementation>
 === Algorithms
 <section_inverted_index_algorithms>
